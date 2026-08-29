@@ -72,6 +72,216 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/brands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste des marques disponibles */
+        get: operations["getPublicBrands"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste des annonces de véhicules publiques */
+        get: operations["getPublicCars"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cars/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Détail d'une annonce publique par son slug */
+        get: operations["getPublicCarBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cars/{slug}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enregistrer un événement (vue ou clic WhatsApp) */
+        post: operations["recordCarEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste toutes les annonces (brouillons, publiées, vendues) */
+        get: operations["getAdminCars"];
+        put?: never;
+        /** Créer une nouvelle annonce (en statut draft) */
+        post: operations["createAdminCar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtenir une annonce par son ID */
+        get: operations["getAdminCarById"];
+        put?: never;
+        post?: never;
+        /** Supprimer une annonce */
+        delete: operations["deleteAdminCar"];
+        options?: never;
+        head?: never;
+        /** Modifier une annonce */
+        patch: operations["updateAdminCar"];
+        trace?: never;
+    };
+    "/admin/cars/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Changer le statut d'une annonce (draft -> available -> sold -> archived) */
+        patch: operations["changeCarStatus"];
+        trace?: never;
+    };
+    "/admin/media/upload-signature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Demander des paramètres d'upload direct signé vers Cloudinary/R2 */
+        post: operations["getUploadSignature"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars/{id}/media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtenir tous les médias d'une annonce */
+        get: operations["getCarMedia"];
+        put?: never;
+        /** Confirmer un média téléversé chez le fournisseur et le lier à l'annonce */
+        post: operations["confirmMediaUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/media/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Supprimer un média */
+        delete: operations["deleteMedia"];
+        options?: never;
+        head?: never;
+        /** Définir si la photo est la photo principale */
+        patch: operations["updateMedia"];
+        trace?: never;
+    };
+    "/admin/cars/{id}/media/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Re-ordonner les médias d'une annonce */
+        post: operations["reorderMedia"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/brands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste admin des marques */
+        get: operations["getAdminBrands"];
+        put?: never;
+        /** Ajouter une nouvelle marque */
+        post: operations["createBrand"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -86,8 +296,162 @@ export interface components {
              * @example mecanicien@garage.com
              */
             email: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @example 2026-08-01T10:00:00Z
+             */
             created_at: string;
+        };
+        Brand: {
+            /** @example 1 */
+            id: number;
+            /** @example Toyota */
+            name: string;
+            /** @example toyota */
+            slug: string;
+            /** @example 12 */
+            cars_count?: number;
+        };
+        FuelType: {
+            /**
+             * @example essence
+             * @enum {string}
+             */
+            value: "essence" | "diesel" | "hybride" | "electrique";
+            /** @example Essence */
+            label: string;
+        };
+        TransmissionType: {
+            /**
+             * @example automatique
+             * @enum {string}
+             */
+            value: "manuelle" | "automatique";
+            /** @example Automatique */
+            label: string;
+        };
+        CarStatus: {
+            /**
+             * @example available
+             * @enum {string}
+             */
+            value: "draft" | "available" | "sold" | "archived";
+            /** @example Disponible */
+            label: string;
+        };
+        CarInput: {
+            /** @example 1 */
+            brand_id: number;
+            /** @example Corolla */
+            model_name: string;
+            /** @example 2018 */
+            year: number;
+            /** @example 85000 */
+            mileage_km: number;
+            /** @example 4500000 */
+            price_xaf: number;
+            /**
+             * @example essence
+             * @enum {string}
+             */
+            fuel_type: "essence" | "diesel" | "hybride" | "electrique";
+            /**
+             * @example automatique
+             * @enum {string}
+             */
+            transmission: "manuelle" | "automatique";
+            /**
+             * @example bon
+             * @enum {string}
+             */
+            condition?: "excellent" | "bon" | "moyen";
+            /** @example Véhicule très bien entretenu, vidange récente effectuée. */
+            description?: string | null;
+        };
+        Media: {
+            /** @example 101 */
+            id: number;
+            /**
+             * @example photo
+             * @enum {string}
+             */
+            kind: "photo" | "video";
+            /** @example true */
+            is_main: boolean;
+            /** @example 1 */
+            position: number;
+            /** @example https://res.cloudinary.com/garage/image/upload/v1/cars/42/photo1.jpg */
+            original_url: string;
+            /** @example https://res.cloudinary.com/garage/image/upload/f_auto,q_auto,w_1200/cars/42/photo1.jpg */
+            published_url: string;
+            /** @example 1920 */
+            width: number;
+            /** @example 1080 */
+            height: number;
+        };
+        CarPublic: {
+            /** @example 42 */
+            id: number;
+            /** @example toyota-corolla-2018-42 */
+            slug: string;
+            /** @example Toyota Corolla 2018 */
+            title: string;
+            brand: components["schemas"]["Brand"];
+            /** @example 4500000 */
+            price_xaf: number;
+            /** @example 2018 */
+            year: number;
+            /** @example 85000 */
+            mileage_km: number;
+            fuel_type: components["schemas"]["FuelType"];
+            transmission: components["schemas"]["TransmissionType"];
+            /** @example false */
+            is_sold: boolean;
+            main_photo: components["schemas"]["Media"];
+            /**
+             * Format: date-time
+             * @example 2026-08-20T14:00:00Z
+             */
+            created_at: string;
+        };
+        CarPublicDetail: components["schemas"]["CarPublic"] & {
+            /** @example Toyota Corolla en parfait état avec climatisation d'origine. */
+            description?: string | null;
+            photos: components["schemas"]["Media"][];
+            /** @example https://wa.me/22990000000?text=Bonjour,%20je%20suis%20intéressé%20par%20la%20Toyota%20Corolla%202018%20(4500000%20FCFA) */
+            whatsapp_url: string;
+        };
+        CarAdmin: components["schemas"]["CarPublicDetail"] & {
+            status: components["schemas"]["CarStatus"];
+            /** @example 342 */
+            views_count: number;
+            /** @example 28 */
+            whatsapp_clicks_count: number;
+            /**
+             * Format: date-time
+             * @example 2026-08-25T16:20:00Z
+             */
+            updated_at: string;
+        };
+        PaginationMeta: {
+            /** @example 1 */
+            current_page: number;
+            /** @example 20 */
+            per_page: number;
+            /** @example 47 */
+            total: number;
+            /** @example 3 */
+            last_page: number;
+        };
+        PaginationLinks: {
+            /** @example https://api.garage.com/api/v1/cars?page=1 */
+            first: string;
+            /** @example null */
+            prev: string | null;
+            /** @example https://api.garage.com/api/v1/cars?page=2 */
+            next: string | null;
+            /** @example https://api.garage.com/api/v1/cars?page=3 */
+            last: string;
         };
         /** @description Structure standard des erreurs d'API */
         ErrorDetail: {
@@ -95,6 +459,13 @@ export interface components {
             code: string;
             /** @example Certains champs sont invalides. */
             message: string;
+            /**
+             * @example {
+             *       "price_xaf": [
+             *         "Le prix doit être un entier positif."
+             *       ]
+             *     }
+             */
             details?: Record<string, never> | null;
         };
     };
@@ -136,7 +507,10 @@ export interface operations {
                     "application/json": {
                         /** @example ok */
                         status: string;
-                        /** Format: date-time */
+                        /**
+                         * Format: date-time
+                         * @example 2026-08-29T17:30:00Z
+                         */
                         timestamp: string;
                     };
                 };
@@ -167,13 +541,14 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Connexion réussie, renvoie le jeton d'accès et l'utilisateur */
+            /** @description Connexion réussie */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @example 1|QWERTYUIOP1234567890abcdef */
                         token: string;
                         user: components["schemas"]["User"];
                     };
@@ -192,7 +567,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Déconnexion réussie (sans corps) */
+            /** @description Déconnexion réussie */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -211,7 +586,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Informations sur l'utilisateur courant */
+            /** @description Profil de l'utilisateur courant */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -223,6 +598,549 @@ export interface operations {
                 };
             };
             401: components["responses"]["ErrorResponse"];
+        };
+    };
+    getPublicBrands: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des marques */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Brand"][];
+                    };
+                };
+            };
+        };
+    };
+    getPublicCars: {
+        parameters: {
+            query?: {
+                /** @description Slug de la marque (ex. toyota) */
+                marque?: string;
+                /** @description Prix minimum en FCFA */
+                prix_min?: number;
+                /** @description Prix maximum en FCFA */
+                prix_max?: number;
+                /** @description Année minimum */
+                annee_min?: number;
+                /** @description Année maximum */
+                annee_max?: number;
+                /** @description Type de carburant */
+                carburant?: components["schemas"]["FuelType"];
+                /** @description Type de transmission */
+                transmission?: components["schemas"]["TransmissionType"];
+                /** @description Inclure les véhicules vendus (false par défaut) */
+                inclure_vendus?: boolean;
+                /** @description Critère de tri */
+                tri?: "recent" | "prix_asc" | "prix_desc" | "km_asc";
+                /** @description Numéro de page */
+                page?: number;
+                /** @description Éléments par page (max 50) */
+                per_page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Collection paginée d'annonces */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarPublic"][];
+                        meta: components["schemas"]["PaginationMeta"];
+                        links: components["schemas"]["PaginationLinks"];
+                    };
+                };
+            };
+        };
+    };
+    getPublicCarBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Slug unique du véhicule */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fiche véhicule publique */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarPublicDetail"];
+                    };
+                };
+            };
+            404: components["responses"]["ErrorResponse"];
+        };
+    };
+    recordCarEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @example whatsapp_click
+                     * @enum {string}
+                     */
+                    type: "view" | "whatsapp_click";
+                };
+            };
+        };
+        responses: {
+            /** @description Événement enregistré avec succès */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["ErrorResponse"];
+        };
+    };
+    getAdminCars: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["CarStatus"];
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste admin des véhicules */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarAdmin"][];
+                        meta: components["schemas"]["PaginationMeta"];
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+        };
+    };
+    createAdminCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CarInput"];
+            };
+        };
+        responses: {
+            /** @description Annonce créée avec succès */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarAdmin"];
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+            422: components["responses"]["ErrorResponse"];
+        };
+    };
+    getAdminCarById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fiche annonce complète pour édition */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarAdmin"];
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+            404: components["responses"]["ErrorResponse"];
+        };
+    };
+    deleteAdminCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Annonce supprimée */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["ErrorResponse"];
+            404: components["responses"]["ErrorResponse"];
+        };
+    };
+    updateAdminCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CarInput"];
+            };
+        };
+        responses: {
+            /** @description Annonce mise à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarAdmin"];
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+            422: components["responses"]["ErrorResponse"];
+        };
+    };
+    changeCarStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    status: components["schemas"]["CarStatus"];
+                };
+            };
+        };
+        responses: {
+            /** @description Statut mis à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CarAdmin"];
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+            409: components["responses"]["ErrorResponse"];
+        };
+    };
+    getUploadSignature: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @example photo
+                     * @enum {string}
+                     */
+                    kind: "photo" | "video";
+                    /** @example voiture1.jpg */
+                    filename: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Signature d'upload et URL cible */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example https://api.cloudinary.com/v1_1/mecano/image/upload */
+                        upload_url: string;
+                        /**
+                         * @example {
+                         *       "timestamp": 1724950000,
+                         *       "signature": "a1b2c3d4e5f6...",
+                         *       "api_key": "123456789",
+                         *       "folder": "cars/temp"
+                         *     }
+                         */
+                        params: Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+        };
+    };
+    getCarMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des médias d'une annonce */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Media"][];
+                    };
+                };
+            };
+        };
+    };
+    confirmMediaUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example cars/123/img_001 */
+                    provider_public_id: string;
+                    /**
+                     * @example photo
+                     * @enum {string}
+                     */
+                    kind: "photo" | "video";
+                    /** @example 1920 */
+                    width: number;
+                    /** @example 1080 */
+                    height: number;
+                    /** @example 450000 */
+                    bytes: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Média confirmé et attaché */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Media"];
+                    };
+                };
+            };
+            401: components["responses"]["ErrorResponse"];
+            409: components["responses"]["ErrorResponse"];
+        };
+    };
+    deleteMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Média supprimé */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example true */
+                    is_main: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Média mis à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Media"];
+                    };
+                };
+            };
+        };
+    };
+    reorderMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @example [
+                     *       102,
+                     *       101,
+                     *       103
+                     *     ]
+                     */
+                    media_ids: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ordre mis à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Media"][];
+                    };
+                };
+            };
+        };
+    };
+    getAdminBrands: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des marques */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Brand"][];
+                    };
+                };
+            };
+        };
+    };
+    createBrand: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Toyota */
+                    name: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Marque créée */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["Brand"];
+                    };
+                };
+            };
         };
     };
 }

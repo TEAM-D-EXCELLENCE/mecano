@@ -1,14 +1,22 @@
 openapi: 3.0.3
 info:
   title: API Mecano
-  description: Contrat d'interface pour la plateforme Mecano. Source de vérité.
+  description: |
+    Source de vérité unique du projet Mecano.
+    Cette documentation interactif permet aux équipes Backend et Frontend d'explorer les schémas,
+    d'effectuer des requêtes de test et de vérifier la conformité des types.
   version: 1.0.0
 servers:
   - url: https://api.garage.com/api/v1
     description: Serveur de production / recette
+  - url: http://localhost:8000/api/v1
+    description: Serveur de développement local
+
 paths:
   /health:
     get:
+      tags:
+        - Socle (M0)
       summary: État de santé du système
       operationId: getHealth
       responses:
@@ -25,11 +33,15 @@ paths:
                   timestamp:
                     type: string
                     format: date-time
+                    example: "2026-08-29T17:30:00Z"
                 required:
                   - status
                   - timestamp
+
   /auth/login:
     post:
+      tags:
+        - Authentification (M0)
       summary: Connexion utilisateur (BFF / Admin)
       operationId: login
       requestBody:
@@ -52,7 +64,7 @@ paths:
                 - password
       responses:
         '200':
-          description: Connexion réussie, renvoie le jeton d'accès et l'utilisateur
+          description: Connexion réussie
           content:
             application/json:
               schema:
@@ -60,6 +72,7 @@ paths:
                 properties:
                   token:
                     type: string
+                    example: "1|QWERTYUIOP1234567890abcdef"
                   user:
                     $ref: '#/components/schemas/User'
                 required:
@@ -69,26 +82,32 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '422':
           $ref: '#/components/responses/ErrorResponse'
+
   /auth/logout:
     post:
+      tags:
+        - Authentification (M0)
       summary: Déconnexion utilisateur
       operationId: logout
       security:
         - bearerAuth: []
       responses:
         '204':
-          description: Déconnexion réussie (sans corps)
+          description: Déconnexion réussie
         '401':
           $ref: '#/components/responses/ErrorResponse'
+
   /auth/me:
     get:
+      tags:
+        - Authentification (M0)
       summary: Utilisateur connecté
       operationId: getMe
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Informations sur l'utilisateur courant
+          description: Profil de l'utilisateur courant
           content:
             application/json:
               schema:
@@ -101,12 +120,699 @@ paths:
         '401':
           $ref: '#/components/responses/ErrorResponse'
 
+  /brands:
+    get:
+      tags:
+        - Public - Référentiel (M1)
+      summary: Liste des marques disponibles
+      operationId: getPublicBrands
+      responses:
+        '200':
+          description: Liste des marques
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Brand'
+                required:
+                  - data
+
+  /cars:
+    get:
+      tags:
+        - Public - Catalogue (M1)
+      summary: Liste des annonces de véhicules publiques
+      operationId: getPublicCars
+      parameters:
+        - name: marque
+          in: query
+          description: Slug de la marque (ex. toyota)
+          required: false
+          schema:
+            type: string
+            example: toyota
+        - name: prix_min
+          in: query
+          description: Prix minimum en FCFA
+          required: false
+          schema:
+            type: integer
+            example: 2000000
+        - name: prix_max
+          in: query
+          description: Prix maximum en FCFA
+          required: false
+          schema:
+            type: integer
+            example: 8000000
+        - name: annee_min
+          in: query
+          description: Année minimum
+          required: false
+          schema:
+            type: integer
+            example: 2012
+        - name: annee_max
+          in: query
+          description: Année maximum
+          required: false
+          schema:
+            type: integer
+            example: 2024
+        - name: carburant
+          in: query
+          description: Type de carburant
+          required: false
+          schema:
+            $ref: '#/components/schemas/FuelType'
+        - name: transmission
+          in: query
+          description: Type de transmission
+          required: false
+          schema:
+            $ref: '#/components/schemas/TransmissionType'
+        - name: inclure_vendus
+          in: query
+          description: Inclure les véhicules vendus (false par défaut)
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: tri
+          in: query
+          description: Critère de tri
+          required: false
+          schema:
+            type: string
+            enum: [recent, prix_asc, prix_desc, km_asc]
+            default: recent
+        - name: page
+          in: query
+          description: Numéro de page
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Éléments par page (max 50)
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Collection paginée d'annonces
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CarPublic'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                required:
+                  - data
+                  - meta
+                  - links
+
+  /cars/{slug}:
+    get:
+      tags:
+        - Public - Catalogue (M1)
+      summary: Détail d'une annonce publique par son slug
+      operationId: getPublicCarBySlug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Slug unique du véhicule
+          schema:
+            type: string
+            example: toyota-corolla-2018-42
+      responses:
+        '200':
+          description: Fiche véhicule publique
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CarPublicDetail'
+                required:
+                  - data
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /cars/{slug}/events:
+    post:
+      tags:
+        - Public - Analytics (M1)
+      summary: Enregistrer un événement (vue ou clic WhatsApp)
+      operationId: recordCarEvent
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            example: toyota-corolla-2018-42
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [view, whatsapp_click]
+                  example: whatsapp_click
+              required:
+                - type
+      responses:
+        '204':
+          description: Événement enregistré avec succès
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /admin/cars:
+    get:
+      tags:
+        - Admin - Annonces (M1)
+      summary: Liste toutes les annonces (brouillons, publiées, vendues)
+      operationId: getAdminCars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/CarStatus'
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Liste admin des véhicules
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CarAdmin'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+                required:
+                  - data
+                  - meta
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+
+    post:
+      tags:
+        - Admin - Annonces (M1)
+      summary: Créer une nouvelle annonce (en statut draft)
+      operationId: createAdminCar
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '201':
+          description: Annonce créée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CarAdmin'
+                required:
+                  - data
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /admin/cars/{id}:
+    get:
+      tags:
+        - Admin - Annonces (M1)
+      summary: Obtenir une annonce par son ID
+      operationId: getAdminCarById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        '200':
+          description: Fiche annonce complète pour édition
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CarAdmin'
+                required:
+                  - data
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
+    patch:
+      tags:
+        - Admin - Annonces (M1)
+      summary: Modifier une annonce
+      operationId: updateAdminCar
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '200':
+          description: Annonce mise à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CarAdmin'
+                required:
+                  - data
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+
+    delete:
+      tags:
+        - Admin - Annonces (M1)
+      summary: Supprimer une annonce
+      operationId: deleteAdminCar
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        '204':
+          description: Annonce supprimée
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /admin/cars/{id}/status:
+    patch:
+      tags:
+        - Admin - Annonces (M1)
+      summary: Changer le statut d'une annonce (draft -> available -> sold -> archived)
+      operationId: changeCarStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/CarStatus'
+              required:
+                - status
+      responses:
+        '200':
+          description: Statut mis à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CarAdmin'
+                required:
+                  - data
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /admin/media/upload-signature:
+    post:
+      tags:
+        - Admin - Médias (M1)
+      summary: Demander des paramètres d'upload direct signé vers Cloudinary/R2
+      operationId: getUploadSignature
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kind:
+                  type: string
+                  enum: [photo, video]
+                  example: photo
+                filename:
+                  type: string
+                  example: voiture1.jpg
+              required:
+                - kind
+                - filename
+      responses:
+        '200':
+          description: Signature d'upload et URL cible
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upload_url:
+                    type: string
+                    example: "https://api.cloudinary.com/v1_1/mecano/image/upload"
+                  params:
+                    type: object
+                    example:
+                      timestamp: 1724950000
+                      signature: "a1b2c3d4e5f6..."
+                      api_key: "123456789"
+                      folder: "cars/temp"
+                required:
+                  - upload_url
+                  - params
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /admin/cars/{id}/media:
+    get:
+      tags:
+        - Admin - Médias (M1)
+      summary: Obtenir tous les médias d'une annonce
+      operationId: getCarMedia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        '200':
+          description: Liste des médias d'une annonce
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Media'
+                required:
+                  - data
+
+    post:
+      tags:
+        - Admin - Médias (M1)
+      summary: Confirmer un média téléversé chez le fournisseur et le lier à l'annonce
+      operationId: confirmMediaUpload
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider_public_id:
+                  type: string
+                  example: "cars/123/img_001"
+                kind:
+                  type: string
+                  enum: [photo, video]
+                  example: photo
+                width:
+                  type: integer
+                  example: 1920
+                height:
+                  type: integer
+                  example: 1080
+                bytes:
+                  type: integer
+                  example: 450000
+              required:
+                - provider_public_id
+                - kind
+                - width
+                - height
+                - bytes
+      responses:
+        '201':
+          description: Média confirmé et attaché
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Media'
+                required:
+                  - data
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /admin/media/{id}:
+    patch:
+      tags:
+        - Admin - Médias (M1)
+      summary: Définir si la photo est la photo principale
+      operationId: updateMedia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 101
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_main:
+                  type: boolean
+                  example: true
+              required:
+                - is_main
+      responses:
+        '200':
+          description: Média mis à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Media'
+                required:
+                  - data
+
+    delete:
+      tags:
+        - Admin - Médias (M1)
+      summary: Supprimer un média
+      operationId: deleteMedia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 101
+      responses:
+        '204':
+          description: Média supprimé
+
+  /admin/cars/{id}/media/reorder:
+    post:
+      tags:
+        - Admin - Médias (M1)
+      summary: Re-ordonner les médias d'une annonce
+      operationId: reorderMedia
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                media_ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [102, 101, 103]
+              required:
+                - media_ids
+      responses:
+        '200':
+          description: Ordre mis à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Media'
+                required:
+                  - data
+
+  /admin/brands:
+    get:
+      tags:
+        - Admin - Marques (M1)
+      summary: Liste admin des marques
+      operationId: getAdminBrands
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste des marques
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Brand'
+                required:
+                  - data
+
+    post:
+      tags:
+        - Admin - Marques (M1)
+      summary: Ajouter une nouvelle marque
+      operationId: createBrand
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Toyota
+              required:
+                - name
+      responses:
+        '201':
+          description: Marque créée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Brand'
+                required:
+                  - data
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   schemas:
     User:
       type: object
@@ -124,11 +830,294 @@ components:
         created_at:
           type: string
           format: date-time
+          example: "2026-08-01T10:00:00Z"
       required:
         - id
         - name
         - email
         - created_at
+
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Toyota
+        slug:
+          type: string
+          example: toyota
+        cars_count:
+          type: integer
+          example: 12
+      required:
+        - id
+        - name
+        - slug
+
+    FuelType:
+      type: object
+      properties:
+        value:
+          type: string
+          enum: [essence, diesel, hybride, electrique]
+          example: essence
+        label:
+          type: string
+          example: Essence
+      required:
+        - value
+        - label
+
+    TransmissionType:
+      type: object
+      properties:
+        value:
+          type: string
+          enum: [manuelle, automatique]
+          example: automatique
+        label:
+          type: string
+          example: Automatique
+      required:
+        - value
+        - label
+
+    CarStatus:
+      type: object
+      properties:
+        value:
+          type: string
+          enum: [draft, available, sold, archived]
+          example: available
+        label:
+          type: string
+          example: Disponible
+      required:
+        - value
+        - label
+
+    CarInput:
+      type: object
+      properties:
+        brand_id:
+          type: integer
+          example: 1
+        model_name:
+          type: string
+          example: Corolla
+        year:
+          type: integer
+          example: 2018
+        mileage_km:
+          type: integer
+          example: 85000
+        price_xaf:
+          type: integer
+          example: 4500000
+        fuel_type:
+          type: string
+          enum: [essence, diesel, hybride, electrique]
+          example: essence
+        transmission:
+          type: string
+          enum: [manuelle, automatique]
+          example: automatique
+        condition:
+          type: string
+          enum: [excellent, bon, moyen]
+          example: bon
+        description:
+          type: string
+          nullable: true
+          example: "Véhicule très bien entretenu, vidange récente effectuée."
+      required:
+        - brand_id
+        - model_name
+        - year
+        - mileage_km
+        - price_xaf
+        - fuel_type
+        - transmission
+
+    Media:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+        kind:
+          type: string
+          enum: [photo, video]
+          example: photo
+        is_main:
+          type: boolean
+          example: true
+        position:
+          type: integer
+          example: 1
+        original_url:
+          type: string
+          example: "https://res.cloudinary.com/garage/image/upload/v1/cars/42/photo1.jpg"
+        published_url:
+          type: string
+          example: "https://res.cloudinary.com/garage/image/upload/f_auto,q_auto,w_1200/cars/42/photo1.jpg"
+        width:
+          type: integer
+          example: 1920
+        height:
+          type: integer
+          example: 1080
+      required:
+        - id
+        - kind
+        - is_main
+        - position
+        - original_url
+        - published_url
+        - width
+        - height
+
+    CarPublic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        slug:
+          type: string
+          example: toyota-corolla-2018-42
+        title:
+          type: string
+          example: Toyota Corolla 2018
+        brand:
+          $ref: '#/components/schemas/Brand'
+        price_xaf:
+          type: integer
+          example: 4500000
+        year:
+          type: integer
+          example: 2018
+        mileage_km:
+          type: integer
+          example: 85000
+        fuel_type:
+          $ref: '#/components/schemas/FuelType'
+        transmission:
+          $ref: '#/components/schemas/TransmissionType'
+        is_sold:
+          type: boolean
+          example: false
+        main_photo:
+          $ref: '#/components/schemas/Media'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-08-20T14:00:00Z"
+      required:
+        - id
+        - slug
+        - title
+        - brand
+        - price_xaf
+        - year
+        - mileage_km
+        - fuel_type
+        - transmission
+        - is_sold
+        - main_photo
+        - created_at
+
+    CarPublicDetail:
+      allOf:
+        - $ref: '#/components/schemas/CarPublic'
+        - type: object
+          properties:
+            description:
+              type: string
+              nullable: true
+              example: "Toyota Corolla en parfait état avec climatisation d'origine."
+            photos:
+              type: array
+              items:
+                $ref: '#/components/schemas/Media'
+            whatsapp_url:
+              type: string
+              example: "https://wa.me/22990000000?text=Bonjour,%20je%20suis%20intéressé%20par%20la%20Toyota%20Corolla%202018%20(4500000%20FCFA)"
+          required:
+            - photos
+            - whatsapp_url
+
+    CarAdmin:
+      allOf:
+        - $ref: '#/components/schemas/CarPublicDetail'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/CarStatus'
+            views_count:
+              type: integer
+              example: 342
+            whatsapp_clicks_count:
+              type: integer
+              example: 28
+            updated_at:
+              type: string
+              format: date-time
+              example: "2026-08-25T16:20:00Z"
+          required:
+            - status
+            - views_count
+            - whatsapp_clicks_count
+            - updated_at
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 47
+        last_page:
+          type: integer
+          example: 3
+      required:
+        - current_page
+        - per_page
+        - total
+        - last_page
+
+    PaginationLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          example: "https://api.garage.com/api/v1/cars?page=1"
+        prev:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: "https://api.garage.com/api/v1/cars?page=2"
+        last:
+          type: string
+          example: "https://api.garage.com/api/v1/cars?page=3"
+      required:
+        - first
+        - prev
+        - next
+        - last
+
     ErrorDetail:
       type: object
       description: Structure standard des erreurs d'API
@@ -142,9 +1131,12 @@ components:
         details:
           type: object
           nullable: true
+          example:
+            price_xaf: ["Le prix doit être un entier positif."]
       required:
         - code
         - message
+
   responses:
     ErrorResponse:
       description: Erreur API structurée
