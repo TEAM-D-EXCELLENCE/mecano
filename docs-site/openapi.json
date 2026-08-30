@@ -1,0 +1,2373 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Mékano",
+    "description": "Documentation et contrat d'interface officiel pour l'API REST de la plateforme **Mékano** (Vente de véhicules d'occasion, atelier de réparation mécanique, blog technique et médias IA).\n\n### Authentification\nL'API utilise **Laravel Sanctum**. Pour accéder aux endpoints `/admin/*` :\n1. Envoyez vos identifiants à `POST /api/v1/auth/login`.\n2. Récupérez le `token` dans la réponse.\n3. Ajoutez le header `Authorization: Bearer <votre_token>` dans toutes vos requêtes suivantes.\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Équipe Technique Mékano",
+      "email": "contact@garage.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api/v1",
+      "description": "Serveur de développement local"
+    },
+    {
+      "url": "https://api.garage.com/api/v1",
+      "description": "Serveur de production / recette"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Système & Santé",
+      "description": "Endpoints de vérification technique"
+    },
+    {
+      "name": "Authentification",
+      "description": "Gestion des sessions et tokens Sanctum"
+    },
+    {
+      "name": "Catalogue Public (Véhicules & Marques)",
+      "description": "Consultation des annonces et mesure d'audience"
+    },
+    {
+      "name": "Atelier Public (Prestations)",
+      "description": "Forfaits et services de réparation mécanique"
+    },
+    {
+      "name": "Blog Technique Public",
+      "description": "Articles et conseils d'entretien"
+    },
+    {
+      "name": "Réglages Publics",
+      "description": "Coordonnées et horaires de l'établissement"
+    },
+    {
+      "name": "Admin — Tableau de bord",
+      "description": "Métriques décisionnelles et taux de conversion"
+    },
+    {
+      "name": "Admin — Véhicules & Marques",
+      "description": "Gestion du stock et machine à états"
+    },
+    {
+      "name": "Admin — Médias & Traitement IA",
+      "description": "Upload direct Cloudinary/R2, recadrage et détourage"
+    },
+    {
+      "name": "Admin — Prestations Atelier",
+      "description": "Administration des forfaits"
+    },
+    {
+      "name": "Admin — Blog",
+      "description": "Rédaction et publication d'articles"
+    },
+    {
+      "name": "Admin — Réglages",
+      "description": "Configuration du garage"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "État de santé du système",
+        "description": "Vérifie la connectivité à PostgreSQL (Supabase), au cache et aux services critiques.",
+        "operationId": "getHealth",
+        "tags": [
+          "Système & Santé"
+        ],
+        "responses": {
+          "200": {
+            "description": "Système opérationnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-08-30T03:30:00Z"
+                    },
+                    "database": {
+                      "type": "string",
+                      "example": "connected"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "timestamp"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Connexion utilisateur (Admin / Mécanicien)",
+        "description": "Authentifie un utilisateur et génère un token d'accès Sanctum.",
+        "operationId": "login",
+        "tags": [
+          "Authentification"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "mecanicien@garage.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "secret123"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connexion réussie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "1|7x3kLmQ..."
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "user"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Déconnexion utilisateur",
+        "description": "Révoque le jeton d'accès courant.",
+        "operationId": "logout",
+        "tags": [
+          "Authentification"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Déconnexion réussie (sans contenu)"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Profil de l'utilisateur connecté",
+        "description": "Renvoie les informations de l'administrateur courant.",
+        "operationId": "getMe",
+        "tags": [
+          "Authentification"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profil utilisateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          }
+        }
+      }
+    },
+    "/brands": {
+      "get": {
+        "summary": "Référentiel des marques actives",
+        "description": "Liste toutes les marques ayant des véhicules au catalogue pour alimenter les filtres.",
+        "operationId": "getPublicBrands",
+        "tags": [
+          "Catalogue Public (Véhicules & Marques)"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des marques",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Brand"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cars": {
+      "get": {
+        "summary": "Catalogue public des annonces",
+        "description": "Liste paginée des véhicules disponibles à la vente avec filtres multicritères.",
+        "operationId": "getPublicCars",
+        "tags": [
+          "Catalogue Public (Véhicules & Marques)"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "marque",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Slug de la marque (exemple: toyota)"
+          },
+          {
+            "in": "query",
+            "name": "prix_min",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 3000000
+          },
+          {
+            "in": "query",
+            "name": "prix_max",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 15000000
+          },
+          {
+            "in": "query",
+            "name": "carburant",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "essence",
+                "diesel",
+                "hybride",
+                "electrique"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "transmission",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "automatique",
+                "manuelle"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "inclure_vendus",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Inclure les véhicules déjà vendus"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer",
+              "default": 12
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalogue de véhicules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CarListItem"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cars/{slug}": {
+      "get": {
+        "summary": "Fiche détaillée d'une annonce",
+        "description": "Retourne l'annonce complète avec sa galerie photo haute définition et ses vidéos intérieures/extérieures.",
+        "operationId": "getPublicCarDetail",
+        "tags": [
+          "Catalogue Public (Véhicules & Marques)"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "toyota-rav4-2021-1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Détail du véhicule",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CarDetail"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/cars/{slug}/events": {
+      "post": {
+        "summary": "Enregistrement d'un événement d'audience (Vue ou Clic WhatsApp)",
+        "description": "Enregistre de façon anonymisée (hachage salé SHA-256) l'intérêt d'un visiteur pour alimenter le tableau de bord.",
+        "operationId": "recordCarEvent",
+        "tags": [
+          "Catalogue Public (Véhicules & Marques)"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "toyota-rav4-2021-1"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "view",
+                      "whatsapp_click"
+                    ],
+                    "example": "whatsapp_click"
+                  },
+                  "referer": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "https://google.com"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Événement enregistré"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/services": {
+      "get": {
+        "summary": "Liste des prestations atelier",
+        "description": "Retourne les forfaits et services actifs de l'atelier ordonnancés par position.",
+        "operationId": "getPublicServices",
+        "tags": [
+          "Atelier Public (Prestations)"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des prestations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Service"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts": {
+      "get": {
+        "summary": "Liste des articles de blog",
+        "description": "Liste paginée des articles techniques publiés.",
+        "operationId": "getPublicPosts",
+        "tags": [
+          "Blog Technique Public"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "service",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filtrer par slug de prestation atelier rattachée"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PostListItem"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{slug}": {
+      "get": {
+        "summary": "Lecture d'un article de blog",
+        "description": "Contenu complet de l'article au format texte brut structuré (sans HTML injectable).",
+        "operationId": "getPublicPostDetail",
+        "tags": [
+          "Blog Technique Public"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "5-signes-usure-plaquettes-frein"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article de blog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PostDetail"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/settings": {
+      "get": {
+        "summary": "Coordonnées et horaires du garage",
+        "description": "Informations publiques de l'établissement (numéro WhatsApp, adresse, nom commercial).",
+        "operationId": "getPublicSettings",
+        "tags": [
+          "Réglages Publics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Réglages du garage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "example": {
+                        "garage_name": "Garage Mékano Yaoundé",
+                        "whatsapp_number": "+237699000000",
+                        "address": "Quartier Bastos, Yaoundé",
+                        "opening_hours": "Lun - Sam : 08h00 - 18h00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "summary": "Métriques et indicateurs clés de performance",
+        "description": "Retourne l'ensemble des indicateurs (vues, clics WhatsApp, taux de conversion, délai moyen de vente, top annonces et quotas IA).",
+        "operationId": "getAdminDashboard",
+        "tags": [
+          "Admin — Tableau de bord"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tableau de bord complet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/DashboardMetrics"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          }
+        }
+      }
+    },
+    "/admin/brands": {
+      "get": {
+        "summary": "Liste complète des marques",
+        "operationId": "getAdminBrands",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des marques"
+          }
+        }
+      },
+      "post": {
+        "summary": "Ajout d'une marque au référentiel",
+        "operationId": "createBrand",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Toyota"
+                  },
+                  "logo_url": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Marque créée"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          }
+        }
+      }
+    },
+    "/admin/cars": {
+      "get": {
+        "summary": "Liste des annonces pour le backoffice",
+        "description": "Inclut tous les états (brouillons, disponibles, réservés, vendus).",
+        "operationId": "getAdminCars",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "available",
+                "reserved",
+                "sold"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des véhicules"
+          }
+        }
+      },
+      "post": {
+        "summary": "Création d'une annonce (créée à l'état brouillon)",
+        "operationId": "createCar",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCarRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Annonce créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminCarDetail"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          }
+        }
+      }
+    },
+    "/admin/cars/{id}": {
+      "get": {
+        "summary": "Consultation d'une annonce pour modification",
+        "operationId": "getAdminCar",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fiche annonce complète"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Mise à jour des informations d'une annonce",
+        "operationId": "updateCar",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCarRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Annonce mise à jour"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Suppression logique d'une annonce (Soft Delete)",
+        "operationId": "deleteCar",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Annonce supprimée"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/admin/cars/{id}/status": {
+      "patch": {
+        "summary": "Changement d'état métier d'une annonce",
+        "description": "Gère les transitions valides (ex: draft vers available requiert au moins 1 photo principale).",
+        "operationId": "changeCarStatus",
+        "tags": [
+          "Admin — Véhicules & Marques"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "available",
+                      "reserved",
+                      "sold"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Statut modifié"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          }
+        }
+      }
+    },
+    "/admin/media/upload-signature": {
+      "post": {
+        "summary": "Génération de signature d'upload direct",
+        "description": "Émet les paramètres signés sécurisés pour uploader directement vers Cloudinary (photos) ou Cloudflare R2 (vidéos).",
+        "operationId": "getUploadSignature",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "car_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "photo",
+                      "video"
+                    ]
+                  },
+                  "mime": {
+                    "type": "string",
+                    "example": "image/jpeg"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "example": 2500000
+                  }
+                },
+                "required": [
+                  "car_id",
+                  "kind",
+                  "mime",
+                  "bytes"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paramètres signés",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string",
+                      "example": "cloudinary"
+                    },
+                    "upload_url": {
+                      "type": "string"
+                    },
+                    "params": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/cars/{id}/media": {
+      "get": {
+        "summary": "Galerie des médias d'une annonce",
+        "operationId": "getCarMedia",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste ordonnée des médias"
+          }
+        }
+      },
+      "post": {
+        "summary": "Confirmation d'un média uploadé",
+        "description": "Enregistre le média en base après upload réussi sur le CDN.",
+        "operationId": "confirmMediaUpload",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "photo",
+                      "video"
+                    ]
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "main",
+                      "gallery",
+                      "video_interior",
+                      "video_exterior"
+                    ]
+                  },
+                  "storage_key": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "mime": {
+                    "type": "string"
+                  },
+                  "bytes": {
+                    "type": "integer"
+                  },
+                  "width": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "height": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "alt": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "kind",
+                  "role",
+                  "storage_key",
+                  "url",
+                  "mime",
+                  "bytes"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Média confirmé"
+          }
+        }
+      }
+    },
+    "/admin/cars/{id}/media/reorder": {
+      "post": {
+        "summary": "Réordonnancement des médias de la galerie",
+        "operationId": "reorderCarMedia",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "media_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [
+                      14,
+                      12,
+                      13,
+                      15
+                    ]
+                  }
+                },
+                "required": [
+                  "media_ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Positions mises à jour"
+          }
+        }
+      }
+    },
+    "/admin/media/{id}": {
+      "patch": {
+        "summary": "Mise à jour des métadonnées d'un média (alt, rôle)",
+        "operationId": "updateMedia",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "alt": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "main",
+                      "gallery",
+                      "video_interior",
+                      "video_exterior"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Média mis à jour"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Suppression d'un média",
+        "operationId": "deleteMedia",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Média supprimé"
+          }
+        }
+      }
+    },
+    "/admin/media/{id}/enhance": {
+      "post": {
+        "summary": "Demande d'amélioration IA d'une photo",
+        "description": "Exécute une transformation IA (amélioration automatique, recadrage intelligent ou détourage).",
+        "operationId": "enhanceMedia",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "auto_improve",
+                      "smart_crop",
+                      "background_removal"
+                    ]
+                  },
+                  "params": {
+                    "type": "object",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Dérivé généré (état ready)"
+          },
+          "409": {
+            "description": "Quota mensuel épuisé (remove.bg)"
+          }
+        }
+      }
+    },
+    "/admin/media/{id}/enhancements": {
+      "get": {
+        "summary": "Liste des dérivés d'une photo",
+        "operationId": "getMediaEnhancements",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des dérivés"
+          }
+        }
+      }
+    },
+    "/admin/enhancements/{id}/approve": {
+      "post": {
+        "summary": "Approbation d'un dérivé IA",
+        "description": "Promeut l'URL dérivée en published_url publique (l'original reste intact).",
+        "operationId": "approveEnhancement",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dérivé approuvé et publié"
+          }
+        }
+      }
+    },
+    "/admin/admin/quotas": {
+      "get": {
+        "summary": "Suivi des quotas IA mensuels (remove.bg)",
+        "operationId": "getQuotas",
+        "tags": [
+          "Admin — Médias & Traitement IA"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Crédits utilisés et restants"
+          }
+        }
+      }
+    },
+    "/admin/services": {
+      "get": {
+        "summary": "Liste des prestations pour le backoffice",
+        "operationId": "getAdminServices",
+        "tags": [
+          "Admin — Prestations Atelier"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des forfaits"
+          }
+        }
+      },
+      "post": {
+        "summary": "Création d'une prestation atelier",
+        "operationId": "createService",
+        "tags": [
+          "Admin — Prestations Atelier"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Diagnostic Électronique Complet"
+                  },
+                  "excerpt": {
+                    "type": "string",
+                    "example": "Recherche de pannes calculateur et capteurs"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Passage à la valise constructeur..."
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "cpu"
+                  },
+                  "price_from_xaf": {
+                    "type": "integer",
+                    "example": 25000
+                  },
+                  "position": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "is_active": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Prestation créée"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}": {
+      "patch": {
+        "summary": "Mise à jour ou désactivation douce d'une prestation",
+        "operationId": "updateService",
+        "tags": [
+          "Admin — Prestations Atelier"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "excerpt": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "price_from_xaf": {
+                    "type": "integer"
+                  },
+                  "position": {
+                    "type": "integer"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Prestation mise à jour"
+          }
+        }
+      }
+    },
+    "/admin/posts": {
+      "get": {
+        "summary": "Liste des articles de blog pour le backoffice",
+        "operationId": "getAdminPosts",
+        "tags": [
+          "Admin — Blog"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des articles"
+          }
+        }
+      },
+      "post": {
+        "summary": "Rédaction d'un nouvel article de blog",
+        "operationId": "createPost",
+        "tags": [
+          "Admin — Blog"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Comment entretenir sa boîte automatique en climat tropical"
+                  },
+                  "excerpt": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "Texte brut structuré (zéro HTML)"
+                  },
+                  "service_id": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "draft",
+                      "published"
+                    ],
+                    "default": "draft"
+                  }
+                },
+                "required": [
+                  "title",
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Article créé"
+          }
+        }
+      }
+    },
+    "/admin/posts/{id}": {
+      "get": {
+        "summary": "Fiche d'un article pour édition",
+        "operationId": "getAdminPost",
+        "tags": [
+          "Admin — Blog"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article complet"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Mise à jour ou publication d'un article",
+        "operationId": "updatePost",
+        "tags": [
+          "Admin — Blog"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "excerpt": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "service_id": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "draft",
+                      "published"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Article mis à jour"
+          }
+        }
+      }
+    },
+    "/admin/settings": {
+      "get": {
+        "summary": "Liste complète des réglages",
+        "operationId": "getAdminSettings",
+        "tags": [
+          "Admin — Réglages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réglages du garage"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Modification en masse des réglages du garage",
+        "operationId": "updateAdminSettings",
+        "tags": [
+          "Admin — Réglages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "settings": {
+                    "type": "object",
+                    "example": {
+                      "garage_name": "Garage Mékano Yaoundé",
+                      "whatsapp_number": "+237699000000",
+                      "address": "Bastos, Yaoundé",
+                      "email": "contact@mekano.cm"
+                    }
+                  }
+                },
+                "required": [
+                  "settings"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Réglages enregistrés"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Mécanicien Chef"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "mecanicien@garage.com"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email"
+        ]
+      },
+      "Brand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "slug": {
+            "type": "string",
+            "example": "toyota"
+          },
+          "name": {
+            "type": "string",
+            "example": "Toyota"
+          },
+          "logo_url": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://res.cloudinary.com/..."
+          }
+        }
+      },
+      "CarListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "slug": {
+            "type": "string",
+            "example": "toyota-rav4-2021-1"
+          },
+          "brand": {
+            "$ref": "#/components/schemas/Brand"
+          },
+          "model": {
+            "type": "string",
+            "example": "RAV4 Limited"
+          },
+          "year": {
+            "type": "integer",
+            "example": 2021
+          },
+          "price_xaf": {
+            "type": "integer",
+            "example": 14500000
+          },
+          "mileage_km": {
+            "type": "integer",
+            "example": 48000
+          },
+          "fuel": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "example": "essence"
+              },
+              "label": {
+                "type": "string",
+                "example": "Essence"
+              }
+            }
+          },
+          "transmission": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "example": "automatique"
+              },
+              "label": {
+                "type": "string",
+                "example": "Automatique"
+              }
+            }
+          },
+          "condition": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "example": "occasion_europe"
+              },
+              "label": {
+                "type": "string",
+                "example": "Occasion Europe (Premier choix)"
+              }
+            }
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "example": "available"
+              },
+              "label": {
+                "type": "string",
+                "example": "Disponible"
+              }
+            }
+          },
+          "main_photo": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "url": {
+                "type": "string",
+                "example": "https://res.cloudinary.com/..."
+              },
+              "width": {
+                "type": "integer",
+                "example": 1920
+              },
+              "height": {
+                "type": "integer",
+                "example": 1080
+              }
+            }
+          }
+        }
+      },
+      "CarDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CarListItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "example": "Véhicule en parfait état, révision complète effectuée..."
+              },
+              "photos": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "videos": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AdminCarDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CarDetail"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "views_count": {
+                "type": "integer",
+                "example": 142
+              },
+              "whatsapp_clicks_count": {
+                "type": "integer",
+                "example": 18
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "CreateCarRequest": {
+        "type": "object",
+        "properties": {
+          "brand_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "model": {
+            "type": "string",
+            "example": "RAV4 Limited"
+          },
+          "year": {
+            "type": "integer",
+            "example": 2021
+          },
+          "price_xaf": {
+            "type": "integer",
+            "example": 14500000
+          },
+          "mileage_km": {
+            "type": "integer",
+            "example": 48000
+          },
+          "fuel": {
+            "type": "string",
+            "enum": [
+              "essence",
+              "diesel",
+              "hybride",
+              "electrique"
+            ],
+            "example": "essence"
+          },
+          "transmission": {
+            "type": "string",
+            "enum": [
+              "automatique",
+              "manuelle"
+            ],
+            "example": "automatique"
+          },
+          "condition": {
+            "type": "string",
+            "enum": [
+              "neuf",
+              "occasion_europe",
+              "occasion_locale"
+            ],
+            "example": "occasion_europe"
+          },
+          "color": {
+            "type": "string",
+            "example": "Gris métallisé"
+          },
+          "description": {
+            "type": "string",
+            "example": "Climatisation d'origine, intérieur cuir..."
+          }
+        },
+        "required": [
+          "brand_id",
+          "model",
+          "year",
+          "price_xaf",
+          "mileage_km",
+          "fuel",
+          "transmission",
+          "condition"
+        ]
+      },
+      "UpdateCarRequest": {
+        "type": "object",
+        "properties": {
+          "brand_id": {
+            "type": "integer"
+          },
+          "model": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "price_xaf": {
+            "type": "integer"
+          },
+          "mileage_km": {
+            "type": "integer"
+          },
+          "fuel": {
+            "type": "string"
+          },
+          "transmission": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "slug": {
+            "type": "string",
+            "example": "diagnostic-electronique"
+          },
+          "title": {
+            "type": "string",
+            "example": "Diagnostic Électronique Complet"
+          },
+          "excerpt": {
+            "type": "string",
+            "example": "Recherche de pannes avec valise constructeur"
+          },
+          "description": {
+            "type": "string",
+            "example": "Analyse des calculateurs moteur, boîte, freinage ABS/ESP..."
+          },
+          "icon": {
+            "type": "string",
+            "example": "cpu"
+          },
+          "price_from_xaf": {
+            "type": "integer",
+            "example": 25000
+          },
+          "position": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "PostListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "slug": {
+            "type": "string",
+            "example": "5-signes-usure-plaquettes-frein"
+          },
+          "title": {
+            "type": "string",
+            "example": "5 signes qui indiquent que vos plaquettes de frein sont usées"
+          },
+          "excerpt": {
+            "type": "string",
+            "example": "Bruits suspects, pédale molle, distance de freinage allongée..."
+          },
+          "service": {
+            "$ref": "#/components/schemas/Service"
+          },
+          "author": {
+            "$ref": "#/components/schemas/User"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PostDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PostListItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "body": {
+                "type": "string",
+                "description": "Texte brut structuré sans balises HTML"
+              },
+              "cover_media": {
+                "type": "object",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "DashboardMetrics": {
+        "type": "object",
+        "properties": {
+          "overview": {
+            "type": "object",
+            "properties": {
+              "total_cars": {
+                "type": "integer",
+                "example": 15
+              },
+              "available_cars": {
+                "type": "integer",
+                "example": 10
+              },
+              "reserved_cars": {
+                "type": "integer",
+                "example": 2
+              },
+              "sold_cars": {
+                "type": "integer",
+                "example": 3
+              },
+              "draft_cars": {
+                "type": "integer",
+                "example": 0
+              }
+            }
+          },
+          "engagement": {
+            "type": "object",
+            "properties": {
+              "total_views": {
+                "type": "integer",
+                "example": 1840
+              },
+              "total_whatsapp_clicks": {
+                "type": "integer",
+                "example": 215
+              },
+              "conversion_rate_percentage": {
+                "type": "number",
+                "example": 11.68
+              },
+              "average_days_to_sell": {
+                "type": "number",
+                "example": 8.5
+              }
+            }
+          },
+          "workshop_and_content": {
+            "type": "object",
+            "properties": {
+              "total_services": {
+                "type": "integer",
+                "example": 6
+              },
+              "active_services": {
+                "type": "integer",
+                "example": 6
+              },
+              "total_posts": {
+                "type": "integer",
+                "example": 5
+              },
+              "published_posts": {
+                "type": "integer",
+                "example": 5
+              }
+            }
+          },
+          "quotas": {
+            "type": "object",
+            "properties": {
+              "removebg": {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "example": "2026-08"
+                  },
+                  "used": {
+                    "type": "integer",
+                    "example": 12
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "example": 50
+                  },
+                  "available": {
+                    "type": "integer",
+                    "example": 38
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "current_page": {
+            "type": "integer",
+            "example": 1
+          },
+          "last_page": {
+            "type": "integer",
+            "example": 3
+          },
+          "per_page": {
+            "type": "integer",
+            "example": 12
+          },
+          "total": {
+            "type": "integer",
+            "example": 28
+          }
+        }
+      },
+      "ErrorDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "VALIDATION_FAILED"
+          },
+          "message": {
+            "type": "string",
+            "example": "Données de formulaire invalides."
+          },
+          "errors": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "responses": {
+      "Error401": {
+        "description": "Non authentifié (token Sanctum manquant ou expiré)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            }
+          }
+        }
+      },
+      "Error404": {
+        "description": "Ressource non trouvée",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            }
+          }
+        }
+      },
+      "Error422": {
+        "description": "Erreur de validation des champs",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            }
+          }
+        }
+      }
+    }
+  }
+}
