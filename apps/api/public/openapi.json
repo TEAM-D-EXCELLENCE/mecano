@@ -366,6 +366,9 @@
                         "$ref": "#/components/schemas/CarListItem"
                       }
                     },
+                    "links": {
+                      "$ref": "#/components/schemas/PaginationLinks"
+                    },
                     "meta": {
                       "$ref": "#/components/schemas/PaginationMeta"
                     }
@@ -545,6 +548,9 @@
                         "$ref": "#/components/schemas/PostListItem"
                       }
                     },
+                    "links": {
+                      "$ref": "#/components/schemas/PaginationLinks"
+                    },
                     "meta": {
                       "$ref": "#/components/schemas/PaginationMeta"
                     }
@@ -679,7 +685,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste des marques"
+            "description": "Liste des marques",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminBrand"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -719,7 +740,19 @@
         },
         "responses": {
           "201": {
-            "description": "Marque créée"
+            "description": "Marque créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminBrand"
+                    }
+                  }
+                }
+              }
+            }
           },
           "422": {
             "$ref": "#/components/responses/Error422"
@@ -757,7 +790,28 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste des véhicules"
+            "description": "Liste des véhicules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminCarDetail"
+                      }
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/PaginationLinks"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -828,7 +882,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Fiche annonce complète"
+            "description": "Fiche annonce complète",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminCarDetail"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "$ref": "#/components/responses/Error404"
@@ -868,7 +934,19 @@
         },
         "responses": {
           "200": {
-            "description": "Annonce mise à jour"
+            "description": "Annonce mise à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminCarDetail"
+                    }
+                  }
+                }
+              }
+            }
           },
           "422": {
             "$ref": "#/components/responses/Error422"
@@ -954,7 +1032,19 @@
         },
         "responses": {
           "200": {
-            "description": "Statut modifié"
+            "description": "Statut modifié",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminCarDetail"
+                    }
+                  }
+                }
+              }
+            }
           },
           "422": {
             "$ref": "#/components/responses/Error422"
@@ -1062,7 +1152,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste ordonnée des médias"
+            "description": "Liste ordonnée des médias",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminMedia"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1150,7 +1255,19 @@
         },
         "responses": {
           "201": {
-            "description": "Média confirmé"
+            "description": "Média confirmé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminMedia"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1206,7 +1323,22 @@
         },
         "responses": {
           "200": {
-            "description": "Positions mises à jour"
+            "description": "Positions mises à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminMedia"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1260,7 +1392,19 @@
         },
         "responses": {
           "200": {
-            "description": "Média mis à jour"
+            "description": "Média mis à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminMedia"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1344,7 +1488,19 @@
         },
         "responses": {
           "201": {
-            "description": "Dérivé généré (état ready)"
+            "description": "Dérivé généré (état ready)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminMediaEnhancement"
+                    }
+                  }
+                }
+              }
+            }
           },
           "409": {
             "description": "Quota mensuel épuisé (remove.bg)"
@@ -1376,7 +1532,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste des dérivés"
+            "description": "Liste des dérivés",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminMediaEnhancement"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1406,7 +1577,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Dérivé approuvé et publié"
+            "description": "Dérivé approuvé et publié",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminMediaEnhancement"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1425,7 +1608,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Crédits utilisés et restants"
+            "description": "Crédits utilisés et restants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/IntegrationQuota"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1444,7 +1639,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste des forfaits"
+            "description": "Liste des forfaits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminService"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1504,7 +1714,19 @@
         },
         "responses": {
           "201": {
-            "description": "Prestation créée"
+            "description": "Prestation créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminService"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1566,7 +1788,19 @@
         },
         "responses": {
           "200": {
-            "description": "Prestation mise à jour"
+            "description": "Prestation mise à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminService"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1585,7 +1819,28 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste des articles"
+            "description": "Liste des articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminPost"
+                      }
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/PaginationLinks"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1641,7 +1896,19 @@
         },
         "responses": {
           "201": {
-            "description": "Article créé"
+            "description": "Article créé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminPost"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1670,7 +1937,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Article complet"
+            "description": "Article complet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminPost"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1729,7 +2008,19 @@
         },
         "responses": {
           "200": {
-            "description": "Article mis à jour"
+            "description": "Article mis à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminPost"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1748,7 +2039,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Réglages du garage"
+            "description": "Réglages du garage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminSettings"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1789,7 +2092,19 @@
         },
         "responses": {
           "200": {
-            "description": "Réglages enregistrés"
+            "description": "Réglages enregistrés",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminSettings"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1984,27 +2299,137 @@
         ]
       },
       "AdminCarDetail": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CarDetail"
+        "type": "object",
+        "description": "Annonce vue du backoffice. Distincte de `CarDetail` : elle porte les\nchamps de pilotage (`is_publishable`, compteurs, `deleted_at`) et ne\nporte pas `whatsapp_url`, qui n'a de sens que sur la vitrine.\n",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 3
           },
-          {
-            "type": "object",
-            "properties": {
-              "views_count": {
-                "type": "integer",
-                "example": 142
-              },
-              "whatsapp_clicks_count": {
-                "type": "integer",
-                "example": 18
-              },
-              "created_at": {
-                "type": "string",
-                "format": "date-time"
+          "slug": {
+            "type": "string",
+            "example": "toyota-rav4-2021-3"
+          },
+          "brand_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "brand": {
+            "$ref": "#/components/schemas/AdminBrand"
+          },
+          "model": {
+            "type": "string",
+            "example": "RAV4 Limited"
+          },
+          "year": {
+            "type": "integer",
+            "example": 2021
+          },
+          "mileage_km": {
+            "type": "integer",
+            "example": 48000
+          },
+          "price_xaf": {
+            "type": "integer",
+            "example": 14500000
+          },
+          "fuel": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "transmission": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "color": {
+            "type": "string",
+            "example": "Gris métallisé"
+          },
+          "condition": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "example": false
+          },
+          "is_publishable": {
+            "type": "boolean",
+            "description": "Faux tant que l'annonce n'a pas de photo principale : le passage en `available` sera refusé.",
+            "example": true
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sold_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "views_count": {
+            "type": "integer",
+            "example": 142
+          },
+          "whatsapp_clicks_count": {
+            "type": "integer",
+            "example": 18
+          },
+          "main_photo": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdminMedia"
               }
+            ],
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminMedia"
             }
+          },
+          "videos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminMedia"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Renseigné lorsque l'annonce est archivée."
           }
+        },
+        "required": [
+          "id",
+          "slug",
+          "brand_id",
+          "model",
+          "year",
+          "mileage_km",
+          "price_xaf",
+          "fuel",
+          "transmission",
+          "color",
+          "condition",
+          "status",
+          "is_featured",
+          "is_publishable"
         ]
       },
       "CreateCarRequest": {
@@ -2064,6 +2489,11 @@
           "description": {
             "type": "string",
             "example": "Climatisation d'origine, intérieur cuir..."
+          },
+          "is_featured": {
+            "type": "boolean",
+            "description": "Met l'annonce en avant sur la vitrine.",
+            "example": false
           }
         },
         "required": [
@@ -2074,7 +2504,8 @@
           "mileage_km",
           "fuel",
           "transmission",
-          "condition"
+          "condition",
+          "color"
         ]
       },
       "UpdateCarRequest": {
@@ -2300,6 +2731,7 @@
       },
       "PaginationMeta": {
         "type": "object",
+        "description": "Métadonnées de pagination, identiques sur tous les endpoints paginés.",
         "properties": {
           "current_page": {
             "type": "integer",
@@ -2316,8 +2748,53 @@
           "total": {
             "type": "integer",
             "example": 28
+          },
+          "from": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Rang du premier élément de la page. `null` sur une page vide.",
+            "example": 1
+          },
+          "to": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Rang du dernier élément de la page. `null` sur une page vide.",
+            "example": 12
+          },
+          "path": {
+            "type": "string",
+            "example": "https://api.garage.com/api/v1/cars"
+          },
+          "links": {
+            "type": "array",
+            "description": "Liens de pagination prêts à l'affichage.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "label": {
+                  "type": "string"
+                },
+                "page": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "active": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
-        }
+        },
+        "required": [
+          "current_page",
+          "last_page",
+          "per_page",
+          "total"
+        ]
       },
       "ErrorDetail": {
         "type": "object",
@@ -2332,6 +2809,462 @@
           },
           "errors": {
             "type": "object",
+            "nullable": true
+          }
+        }
+      },
+      "EnumValue": {
+        "type": "object",
+        "description": "Énumération : le front affiche `label` et compare sur `value`.",
+        "properties": {
+          "value": {
+            "type": "string",
+            "example": "diesel"
+          },
+          "label": {
+            "type": "string",
+            "example": "Diesel"
+          }
+        },
+        "required": [
+          "value",
+          "label"
+        ]
+      },
+      "AdminBrand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "slug": {
+            "type": "string",
+            "example": "toyota"
+          },
+          "name": {
+            "type": "string",
+            "example": "Toyota"
+          },
+          "logo_url": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://res.cloudinary.com/demo/image/upload/marques/toyota.png"
+          },
+          "position": {
+            "type": "integer",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          },
+          "cars_count": {
+            "type": "integer",
+            "description": "Présent uniquement lorsque le comptage est demandé.",
+            "example": 4
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "position",
+          "is_active"
+        ]
+      },
+      "AdminMedia": {
+        "type": "object",
+        "description": "Média vu du backoffice : inclut la clé de stockage et l'original, jamais exposés publiquement.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 12
+          },
+          "car_id": {
+            "type": "integer",
+            "example": 3
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "role": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "storage_key": {
+            "type": "string",
+            "example": "mecano/cars/3/9f1c2e40-1a7b-4c11-9c33-2b7d0a5e77aa"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL de l'original. N'est jamais écrasée par une amélioration.",
+            "example": "https://res.cloudinary.com/demo/image/upload/mecano/cars/3/9f1c.jpg"
+          },
+          "published_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "Version servie au public. Ne change qu'à l'approbation d'un dérivé.",
+            "example": "https://res.cloudinary.com/demo/image/upload/mecano/cars/3/9f1c.jpg"
+          },
+          "mime": {
+            "type": "string",
+            "example": "image/jpeg"
+          },
+          "bytes": {
+            "type": "integer",
+            "example": 2418123
+          },
+          "width": {
+            "type": "integer",
+            "nullable": true,
+            "example": 1600
+          },
+          "height": {
+            "type": "integer",
+            "nullable": true,
+            "example": 1200
+          },
+          "duration_s": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Vidéos uniquement.",
+            "example": 45
+          },
+          "position": {
+            "type": "integer",
+            "example": 1
+          },
+          "alt": {
+            "type": "string",
+            "nullable": true,
+            "example": "Toyota RAV4 2021 — photo 1"
+          },
+          "confirmed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "car_id",
+          "kind",
+          "role",
+          "provider",
+          "storage_key",
+          "url",
+          "mime",
+          "bytes",
+          "position"
+        ]
+      },
+      "AdminService": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 2
+          },
+          "slug": {
+            "type": "string",
+            "example": "vidange-complete"
+          },
+          "title": {
+            "type": "string",
+            "example": "Vidange complète"
+          },
+          "excerpt": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string",
+            "nullable": true,
+            "example": "wrench"
+          },
+          "price_from_xaf": {
+            "type": "integer",
+            "nullable": true,
+            "example": 25000
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          },
+          "position": {
+            "type": "integer",
+            "example": 2
+          },
+          "posts_count": {
+            "type": "integer",
+            "description": "Présent uniquement lorsque le comptage est demandé."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "is_active",
+          "position"
+        ]
+      },
+      "AdminPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 5
+          },
+          "slug": {
+            "type": "string",
+            "example": "quand-changer-ses-plaquettes"
+          },
+          "title": {
+            "type": "string",
+            "example": "Quand changer ses plaquettes de frein"
+          },
+          "excerpt": {
+            "type": "string",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "service": {
+            "type": "object",
+            "nullable": true,
+            "description": "Forfait atelier rattaché, si l'article en cite un.",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "author": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "cover_media_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "status"
+        ]
+      },
+      "AdminMediaEnhancement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 7
+          },
+          "media_id": {
+            "type": "integer",
+            "example": 12
+          },
+          "type": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EnumValue"
+          },
+          "params": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true,
+            "description": "Paramètres de la transformation appliquée."
+          },
+          "result_key": {
+            "type": "string",
+            "nullable": true
+          },
+          "result_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "Dérivé produit. Tant qu'il n'est pas approuvé, il n'est jamais servi au public."
+          },
+          "error": {
+            "type": "string",
+            "nullable": true,
+            "description": "Renseigné lorsque `status` vaut `failed`."
+          },
+          "cost_units": {
+            "type": "integer",
+            "description": "Unités de quota consommées chez le fournisseur.",
+            "example": 1
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "media_id",
+          "type",
+          "provider",
+          "status",
+          "cost_units"
+        ]
+      },
+      "AdminSettings": {
+        "type": "object",
+        "description": "Réglages du garage, stockés en clé / valeur. Les clés listées ici sont\ncelles qu'alimente le seeder ; le magasin en accepte d'autres.\n",
+        "additionalProperties": true,
+        "properties": {
+          "garage_name": {
+            "type": "string",
+            "example": "Garage Mecano Yaoundé"
+          },
+          "whatsapp_number": {
+            "type": "string",
+            "example": "237690000000"
+          },
+          "hero_title": {
+            "type": "string"
+          },
+          "hero_subtitle": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "opening_hours": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "logo_url": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "IntegrationQuota": {
+        "type": "object",
+        "description": "État du quota mensuel d'un fournisseur externe.",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "example": "removebg"
+          },
+          "period": {
+            "type": "string",
+            "description": "Mois concerné, au format AAAA-MM.",
+            "example": "2026-08"
+          },
+          "used": {
+            "type": "integer",
+            "example": 12
+          },
+          "limit": {
+            "type": "integer",
+            "example": 50
+          },
+          "available": {
+            "type": "integer",
+            "example": 38
+          }
+        },
+        "required": [
+          "provider",
+          "period",
+          "used",
+          "limit",
+          "available"
+        ]
+      },
+      "PaginationLinks": {
+        "type": "object",
+        "description": "URL de navigation renvoyées avec toute collection paginée.",
+        "properties": {
+          "first": {
+            "type": "string",
+            "nullable": true
+          },
+          "last": {
+            "type": "string",
+            "nullable": true
+          },
+          "prev": {
+            "type": "string",
+            "nullable": true
+          },
+          "next": {
+            "type": "string",
             "nullable": true
           }
         }

@@ -661,13 +661,61 @@ export interface components {
             photos?: Record<string, never>[];
             videos?: Record<string, never>[];
         };
-        AdminCarDetail: components["schemas"]["CarDetail"] & {
+        /**
+         * @description Annonce vue du backoffice. Distincte de `CarDetail` : elle porte les
+         *     champs de pilotage (`is_publishable`, compteurs, `deleted_at`) et ne
+         *     porte pas `whatsapp_url`, qui n'a de sens que sur la vitrine.
+         */
+        AdminCarDetail: {
+            /** @example 3 */
+            id: number;
+            /** @example toyota-rav4-2021-3 */
+            slug: string;
+            /** @example 1 */
+            brand_id: number;
+            brand?: components["schemas"]["AdminBrand"];
+            /** @example RAV4 Limited */
+            model: string;
+            /** @example 2021 */
+            year: number;
+            /** @example 48000 */
+            mileage_km: number;
+            /** @example 14500000 */
+            price_xaf: number;
+            fuel: components["schemas"]["EnumValue"];
+            transmission: components["schemas"]["EnumValue"];
+            /** @example Gris métallisé */
+            color: string;
+            condition: components["schemas"]["EnumValue"];
+            description?: string | null;
+            status: components["schemas"]["EnumValue"];
+            /** @example false */
+            is_featured: boolean;
+            /**
+             * @description Faux tant que l'annonce n'a pas de photo principale : le passage en `available` sera refusé.
+             * @example true
+             */
+            is_publishable: boolean;
+            /** Format: date-time */
+            published_at?: string | null;
+            /** Format: date-time */
+            sold_at?: string | null;
             /** @example 142 */
             views_count?: number;
             /** @example 18 */
             whatsapp_clicks_count?: number;
+            main_photo?: components["schemas"]["AdminMedia"] | null;
+            photos?: components["schemas"]["AdminMedia"][];
+            videos?: components["schemas"]["AdminMedia"][];
             /** Format: date-time */
             created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+            /**
+             * Format: date-time
+             * @description Renseigné lorsque l'annonce est archivée.
+             */
+            deleted_at?: string | null;
         };
         CreateCarRequest: {
             /** @example 1 */
@@ -696,9 +744,14 @@ export interface components {
              */
             condition: "neuf" | "occasion_europe" | "occasion_locale";
             /** @example Gris métallisé */
-            color?: string;
+            color: string;
             /** @example Climatisation d'origine, intérieur cuir... */
             description?: string;
+            /**
+             * @description Met l'annonce en avant sur la vitrine.
+             * @example false
+             */
+            is_featured?: boolean;
         };
         UpdateCarRequest: {
             brand_id?: number;
@@ -795,15 +848,35 @@ export interface components {
                 };
             };
         };
+        /** @description Métadonnées de pagination, identiques sur tous les endpoints paginés. */
         PaginationMeta: {
             /** @example 1 */
-            current_page?: number;
+            current_page: number;
             /** @example 3 */
-            last_page?: number;
+            last_page: number;
             /** @example 12 */
-            per_page?: number;
+            per_page: number;
             /** @example 28 */
-            total?: number;
+            total: number;
+            /**
+             * @description Rang du premier élément de la page. `null` sur une page vide.
+             * @example 1
+             */
+            from?: number | null;
+            /**
+             * @description Rang du dernier élément de la page. `null` sur une page vide.
+             * @example 12
+             */
+            to?: number | null;
+            /** @example https://api.garage.com/api/v1/cars */
+            path?: string;
+            /** @description Liens de pagination prêts à l'affichage. */
+            links?: {
+                url?: string | null;
+                label?: string;
+                page?: number | null;
+                active?: boolean;
+            }[];
         };
         ErrorDetail: {
             /** @example VALIDATION_FAILED */
@@ -811,6 +884,202 @@ export interface components {
             /** @example Données de formulaire invalides. */
             message?: string;
             errors?: Record<string, never> | null;
+        };
+        /** @description Énumération : le front affiche `label` et compare sur `value`. */
+        EnumValue: {
+            /** @example diesel */
+            value: string;
+            /** @example Diesel */
+            label: string;
+        };
+        AdminBrand: {
+            /** @example 1 */
+            id: number;
+            /** @example toyota */
+            slug: string;
+            /** @example Toyota */
+            name: string;
+            /** @example https://res.cloudinary.com/demo/image/upload/marques/toyota.png */
+            logo_url?: string | null;
+            /** @example 1 */
+            position: number;
+            /** @example true */
+            is_active: boolean;
+            /**
+             * @description Présent uniquement lorsque le comptage est demandé.
+             * @example 4
+             */
+            cars_count?: number;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        /** @description Média vu du backoffice : inclut la clé de stockage et l'original, jamais exposés publiquement. */
+        AdminMedia: {
+            /** @example 12 */
+            id: number;
+            /** @example 3 */
+            car_id: number;
+            kind: components["schemas"]["EnumValue"];
+            role: components["schemas"]["EnumValue"];
+            provider: components["schemas"]["EnumValue"];
+            /** @example mecano/cars/3/9f1c2e40-1a7b-4c11-9c33-2b7d0a5e77aa */
+            storage_key: string;
+            /**
+             * @description URL de l'original. N'est jamais écrasée par une amélioration.
+             * @example https://res.cloudinary.com/demo/image/upload/mecano/cars/3/9f1c.jpg
+             */
+            url: string;
+            /**
+             * @description Version servie au public. Ne change qu'à l'approbation d'un dérivé.
+             * @example https://res.cloudinary.com/demo/image/upload/mecano/cars/3/9f1c.jpg
+             */
+            published_url?: string | null;
+            /** @example image/jpeg */
+            mime: string;
+            /** @example 2418123 */
+            bytes: number;
+            /** @example 1600 */
+            width?: number | null;
+            /** @example 1200 */
+            height?: number | null;
+            /**
+             * @description Vidéos uniquement.
+             * @example 45
+             */
+            duration_s?: number | null;
+            /** @example 1 */
+            position: number;
+            /** @example Toyota RAV4 2021 — photo 1 */
+            alt?: string | null;
+            /** Format: date-time */
+            confirmed_at?: string | null;
+            /** Format: date-time */
+            created_at?: string;
+        };
+        AdminService: {
+            /** @example 2 */
+            id: number;
+            /** @example vidange-complete */
+            slug: string;
+            /** @example Vidange complète */
+            title: string;
+            excerpt?: string | null;
+            description?: string | null;
+            /** @example wrench */
+            icon?: string | null;
+            /** @example 25000 */
+            price_from_xaf?: number | null;
+            /** @example true */
+            is_active: boolean;
+            /** @example 2 */
+            position: number;
+            /** @description Présent uniquement lorsque le comptage est demandé. */
+            posts_count?: number;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        AdminPost: {
+            /** @example 5 */
+            id: number;
+            /** @example quand-changer-ses-plaquettes */
+            slug: string;
+            /** @example Quand changer ses plaquettes de frein */
+            title: string;
+            excerpt?: string | null;
+            body?: string | null;
+            status: components["schemas"]["EnumValue"];
+            /** @description Forfait atelier rattaché, si l'article en cite un. */
+            service?: {
+                id?: number;
+                slug?: string;
+                title?: string;
+            } | null;
+            author?: {
+                id?: number;
+                name?: string;
+            };
+            cover_media_id?: number | null;
+            /** Format: date-time */
+            published_at?: string | null;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        AdminMediaEnhancement: {
+            /** @example 7 */
+            id: number;
+            /** @example 12 */
+            media_id: number;
+            type: components["schemas"]["EnumValue"];
+            provider: components["schemas"]["EnumValue"];
+            status: components["schemas"]["EnumValue"];
+            /** @description Paramètres de la transformation appliquée. */
+            params?: {
+                [key: string]: unknown;
+            } | null;
+            result_key?: string | null;
+            /** @description Dérivé produit. Tant qu'il n'est pas approuvé, il n'est jamais servi au public. */
+            result_url?: string | null;
+            /** @description Renseigné lorsque `status` vaut `failed`. */
+            error?: string | null;
+            /**
+             * @description Unités de quota consommées chez le fournisseur.
+             * @example 1
+             */
+            cost_units: number;
+            /** Format: date-time */
+            approved_at?: string | null;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        /**
+         * @description Réglages du garage, stockés en clé / valeur. Les clés listées ici sont
+         *     celles qu'alimente le seeder ; le magasin en accepte d'autres.
+         */
+        AdminSettings: {
+            /** @example Garage Mecano Yaoundé */
+            garage_name?: string;
+            /** @example 237690000000 */
+            whatsapp_number?: string;
+            hero_title?: string;
+            hero_subtitle?: string;
+            address?: string;
+            opening_hours?: {
+                [key: string]: unknown;
+            };
+            logo_url?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description État du quota mensuel d'un fournisseur externe. */
+        IntegrationQuota: {
+            /** @example removebg */
+            provider: string;
+            /**
+             * @description Mois concerné, au format AAAA-MM.
+             * @example 2026-08
+             */
+            period: string;
+            /** @example 12 */
+            used: number;
+            /** @example 50 */
+            limit: number;
+            /** @example 38 */
+            available: number;
+        };
+        /** @description URL de navigation renvoyées avec toute collection paginée. */
+        PaginationLinks: {
+            first?: string | null;
+            last?: string | null;
+            prev?: string | null;
+            next?: string | null;
         };
     };
     responses: {
@@ -1014,6 +1283,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         data?: components["schemas"]["CarListItem"][];
+                        links?: components["schemas"]["PaginationLinks"];
                         meta?: components["schemas"]["PaginationMeta"];
                     };
                 };
@@ -1123,6 +1393,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         data?: components["schemas"]["PostListItem"][];
+                        links?: components["schemas"]["PaginationLinks"];
                         meta?: components["schemas"]["PaginationMeta"];
                     };
                 };
@@ -1222,7 +1493,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminBrand"][];
+                    };
+                };
             };
         };
     };
@@ -1248,7 +1523,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminBrand"];
+                    };
+                };
             };
             422: components["responses"]["Error422"];
         };
@@ -1269,7 +1548,13 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminCarDetail"][];
+                        links?: components["schemas"]["PaginationLinks"];
+                        meta?: components["schemas"]["PaginationMeta"];
+                    };
+                };
             };
         };
     };
@@ -1316,7 +1601,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminCarDetail"];
+                    };
+                };
             };
             404: components["responses"]["Error404"];
         };
@@ -1362,7 +1651,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminCarDetail"];
+                    };
+                };
             };
             422: components["responses"]["Error422"];
         };
@@ -1390,7 +1683,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminCarDetail"];
+                    };
+                };
             };
             422: components["responses"]["Error422"];
         };
@@ -1449,7 +1746,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMedia"][];
+                    };
+                };
             };
         };
     };
@@ -1485,7 +1786,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMedia"];
+                    };
+                };
             };
         };
     };
@@ -1519,7 +1824,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMedia"][];
+                    };
+                };
             };
         };
     };
@@ -1567,7 +1876,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMedia"];
+                    };
+                };
             };
         };
     };
@@ -1595,7 +1908,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMediaEnhancement"];
+                    };
+                };
             };
             /** @description Quota mensuel épuisé (remove.bg) */
             409: {
@@ -1622,7 +1939,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMediaEnhancement"][];
+                    };
+                };
             };
         };
     };
@@ -1642,7 +1963,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminMediaEnhancement"];
+                    };
+                };
             };
         };
     };
@@ -1660,7 +1985,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["IntegrationQuota"];
+                    };
+                };
             };
         };
     };
@@ -1678,7 +2007,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminService"][];
+                    };
+                };
             };
         };
     };
@@ -1715,7 +2048,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminService"];
+                    };
+                };
             };
         };
     };
@@ -1747,7 +2084,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminService"];
+                    };
+                };
             };
         };
     };
@@ -1765,7 +2106,13 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminPost"][];
+                        links?: components["schemas"]["PaginationLinks"];
+                        meta?: components["schemas"]["PaginationMeta"];
+                    };
+                };
             };
         };
     };
@@ -1799,7 +2146,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminPost"];
+                    };
+                };
             };
         };
     };
@@ -1819,7 +2170,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminPost"];
+                    };
+                };
             };
         };
     };
@@ -1850,7 +2205,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminPost"];
+                    };
+                };
             };
         };
     };
@@ -1868,7 +2227,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminSettings"];
+                    };
+                };
             };
         };
     };
@@ -1900,7 +2263,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminSettings"];
+                    };
+                };
             };
         };
     };
