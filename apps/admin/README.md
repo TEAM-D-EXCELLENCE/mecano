@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Backoffice — Mecano (`apps/admin`)
 
-## Getting Started
+Interface de gestion du garage. Next.js (App Router), TypeScript strict,
+Tailwind, shadcn/ui. Elle ne parle jamais directement à l'API : tout passe par
+le BFF, qui détient le jeton d'authentification.
 
-First, run the development server:
+## Démarrer en local
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install                 # régénère aussi types/api.d.ts depuis openapi.yaml
+cp .env.example .env.local  # puis renseigner API_BASE_URL
+npm run dev -- -p 3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+L'API Laravel doit tourner en parallèle (voir `apps/api`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables d'environnement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Obligatoire | Rôle |
+|---|---|---|
+| `API_BASE_URL` | **oui** | Racine de l'API Laravel, sans barre oblique finale. Ex. `https://api.garage.com/api/v1` |
+| `COOKIE_NAME` | non | Nom du cookie de session du BFF. `mc_s` par défaut |
 
-## Learn More
+Elles sont lues **à la requête**, jamais au chargement des modules : le build
+n'a pas besoin de connaître l'API, seul l'exécution en a besoin.
 
-To learn more about Next.js, take a look at the following resources:
+## Déploiement Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Root Directory** : `apps/admin`
+- **Environment Variables** : `API_BASE_URL` sur les trois environnements
+  (Production, Preview, Development)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Le reste est détecté automatiquement.
 
-## Deploy on Vercel
+## Ce qu'il faut savoir avant de contribuer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `types/api.d.ts` est **généré** depuis `openapi.yaml`. Le modifier à la main
+  fait refuser la PR. Un champ manquant se corrige dans le contrat.
+- Les composants de `components/ui/` viennent de la CLI shadcn et ne se
+  modifient pas à la main : `npx shadcn@latest add <composant>`.
+- Aucune règle métier ici. Voir
+  [le contrat frontend / backend](../../docs/02-conventions/contrat-frontend-backend.md).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Vérifications avant de pousser
+
+```bash
+npx tsc --noEmit   # ou npx next build, qui inclut le typage
+npx eslint .
+```

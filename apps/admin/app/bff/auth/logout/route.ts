@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import { COOKIE_NAME } from "@/lib/api/config";
+import { cookieName } from "@/lib/api/config";
 import { apiFetch } from "@/lib/api/server";
 
 /**
@@ -12,7 +12,7 @@ import { apiFetch } from "@/lib/api/server";
  */
 export async function POST(): Promise<Response> {
   const store = await cookies();
-  const token = store.get(COOKIE_NAME)?.value;
+  const token = store.get(cookieName())?.value;
 
   if (token) {
     try {
@@ -22,7 +22,7 @@ export async function POST(): Promise<Response> {
     }
   }
 
-  store.delete(COOKIE_NAME);
+  store.delete(cookieName());
 
   return new Response(null, { status: 204 });
 }

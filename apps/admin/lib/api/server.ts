@@ -2,7 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-import { API_BASE_URL, COOKIE_NAME } from "./config";
+import { apiBaseUrl, cookieName } from "./config";
 import { ApiError, toApiError } from "./errors";
 
 /**
@@ -25,7 +25,7 @@ function isFrameworkSignal(error: unknown): boolean {
 /** Jeton Sanctum lu dans le cookie httpOnly. `null` si la session est absente. */
 export async function getSessionToken(): Promise<string | null> {
   const store = await cookies();
-  return store.get(COOKIE_NAME)?.value ?? null;
+  return store.get(cookieName())?.value ?? null;
 }
 
 interface ApiFetchInit extends Omit<RequestInit, "body"> {
@@ -65,7 +65,7 @@ export async function apiFetch(path: string, init: ApiFetchInit = {}): Promise<R
     }
   }
 
-  return fetch(`${API_BASE_URL}/${path.replace(/^\/+/, "")}`, {
+  return fetch(`${apiBaseUrl()}/${path.replace(/^\/+/, "")}`, {
     ...rest,
     headers: requestHeaders,
     body: requestBody,

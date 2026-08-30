@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import { COOKIE_NAME, COOKIE_OPTIONS } from "@/lib/api/config";
+import { COOKIE_OPTIONS, cookieName } from "@/lib/api/config";
 import { apiFetch } from "@/lib/api/server";
 
 /**
@@ -81,7 +81,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const store = await cookies();
-  store.set(COOKIE_NAME, parsed.token, COOKIE_OPTIONS);
+  store.set(cookieName(), parsed.token, COOKIE_OPTIONS);
 
   // Le jeton est volontairement absent de la réponse.
   return Response.json({ user: parsed.user ?? null }, { status: 200 });

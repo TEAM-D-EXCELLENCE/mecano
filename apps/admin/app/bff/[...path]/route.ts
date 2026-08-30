@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import { API_BASE_URL, COOKIE_NAME } from "@/lib/api/config";
+import { apiBaseUrl, cookieName } from "@/lib/api/config";
 
 /**
  * BFF — relais authentifié vers l'API Laravel.
@@ -54,7 +54,7 @@ async function relay(
   method: Relayed,
 ): Promise<Response> {
   const store = await cookies();
-  const token = store.get(COOKIE_NAME)?.value;
+  const token = store.get(cookieName())?.value;
 
   if (!token) {
     return unauthenticated();
@@ -85,7 +85,7 @@ async function relay(
   let upstream: Response;
 
   try {
-    upstream = await fetch(`${API_BASE_URL}/${target}${search}`, {
+    upstream = await fetch(`${apiBaseUrl()}/${target}${search}`, {
       method,
       headers,
       body: method === "GET" ? undefined : await request.text(),
@@ -107,7 +107,7 @@ async function relay(
   // Jeton expiré ou révoqué : on purge le cookie pour que la prochaine navigation
   // reparte proprement sur la page de connexion.
   if (upstream.status === 401) {
-    store.delete(COOKIE_NAME);
+    store.delete(cookieName());
   }
 
   const body = await upstream.text();
