@@ -2135,6 +2135,8 @@ export interface operations {
                     /** @description Texte brut structuré (zéro HTML) */
                     body: string;
                     service_id?: number | null;
+                    /** @description Média servant d'image de couverture. Doit exister. */
+                    cover_media_id?: number | null;
                     /**
                      * @default draft
                      * @enum {string}
@@ -2197,6 +2199,8 @@ export interface operations {
                     excerpt?: string;
                     body?: string;
                     service_id?: number | null;
+                    /** @description Média servant d'image de couverture. Doit exister. */
+                    cover_media_id?: number | null;
                     /** @enum {string} */
                     status?: "draft" | "published";
                 };

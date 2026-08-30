@@ -1878,6 +1878,11 @@
                     "type": "integer",
                     "nullable": true
                   },
+                  "cover_media_id": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "Média servant d'image de couverture. Doit exister."
+                  },
                   "status": {
                     "type": "string",
                     "enum": [
@@ -1994,6 +1999,11 @@
                   "service_id": {
                     "type": "integer",
                     "nullable": true
+                  },
+                  "cover_media_id": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "Média servant d'image de couverture. Doit exister."
                   },
                   "status": {
                     "type": "string",

@@ -13,9 +13,9 @@ interface StatusBadgeProps {
  */
 const TONE: Record<string, string> = {
   draft: "bg-muted text-muted-foreground border-transparent",
-  available: "bg-emerald-100 text-emerald-900 border-transparent dark:bg-emerald-950 dark:text-emerald-200",
-  reserved: "bg-amber-100 text-amber-900 border-transparent dark:bg-amber-950 dark:text-amber-200",
-  sold: "bg-zinc-900 text-zinc-50 border-transparent dark:bg-zinc-100 dark:text-zinc-900",
+  available: "bg-success text-success-foreground border-transparent",
+  reserved: "bg-warning text-warning-foreground border-transparent",
+  sold: "bg-foreground text-background border-transparent",
 };
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {

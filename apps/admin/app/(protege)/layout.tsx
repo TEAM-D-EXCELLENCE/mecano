@@ -1,8 +1,7 @@
-import { Wrench } from "lucide-react";
-
 import { LogoutButton } from "@/components/layout/LogoutButton";
 import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { Wordmark } from "@/components/layout/Wordmark";
 import { requireUser } from "@/lib/api/session";
 
 /**
@@ -22,11 +21,8 @@ export default async function ProtectedLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-full flex-1 flex-col md:flex-row">
       <aside className="bg-sidebar text-sidebar-foreground border-sidebar-border flex flex-col border-b md:min-h-screen md:w-60 md:shrink-0 md:border-r md:border-b-0">
-        <div className="flex items-center gap-2.5 px-5 py-4">
-          <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg">
-            <Wrench className="size-4" aria-hidden="true" />
-          </span>
-          <span className="text-sm font-semibold tracking-tight">Mecano</span>
+        <div className="border-sidebar-border flex items-center border-b px-4 py-4">
+          <Wordmark />
         </div>
 
         <Sidebar />

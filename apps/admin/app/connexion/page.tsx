@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Wrench } from "lucide-react";
-
 import { LoginForm } from "@/components/forms/LoginForm";
+import { Wordmark } from "@/components/layout/Wordmark";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSessionToken } from "@/lib/api/server";
 
@@ -19,17 +18,12 @@ export default async function LoginPage() {
   return (
     <main className="flex flex-1 items-center justify-center p-6">
       <div className="w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center gap-3 text-center">
-          <span className="bg-primary text-primary-foreground flex size-12 items-center justify-center rounded-xl">
-            <Wrench className="size-6" aria-hidden="true" />
-          </span>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">Backoffice Mecano</h1>
-            <p className="text-muted-foreground text-sm">Gestion du garage</p>
-          </div>
+        <div className="mb-8 flex flex-col items-center gap-4 text-center">
+          <Wordmark className="text-foreground [&_span:first-child]:size-9" />
+          <p className="text-muted-foreground text-sm">Gestion du garage</p>
         </div>
 
-        <Card>
+        <Card className="border-t-primary border-t-2">
           <CardHeader>
             <CardTitle>Connexion</CardTitle>
             <CardDescription>

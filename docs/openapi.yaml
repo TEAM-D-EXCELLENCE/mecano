@@ -1173,6 +1173,10 @@ paths:
                 service_id:
                   type: integer
                   nullable: true
+                cover_media_id:
+                  type: integer
+                  nullable: true
+                  description: "Média servant d'image de couverture. Doit exister."
                 status:
                   type: string
                   enum: [draft, published]
@@ -1242,6 +1246,10 @@ paths:
                 service_id:
                   type: integer
                   nullable: true
+                cover_media_id:
+                  type: integer
+                  nullable: true
+                  description: "Média servant d'image de couverture. Doit exister."
                 status:
                   type: string
                   enum: [draft, published]
