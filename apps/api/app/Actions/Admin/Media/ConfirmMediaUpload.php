@@ -12,6 +12,7 @@ use App\Exceptions\MediaUploadNotFoundException;
 use App\Jobs\Media\GenerateDerivatives;
 use App\Models\Car;
 use App\Models\Media;
+use App\Support\Contracts\FrontendRevalidator;
 use App\Support\Contracts\ImageStorage;
 use App\Support\Contracts\VideoStorage;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ final readonly class ConfirmMediaUpload
     public function __construct(
         private ImageStorage $imageStorage,
         private VideoStorage $videoStorage,
+        private FrontendRevalidator $revalidator,
     ) {}
 
     /**
@@ -105,6 +107,8 @@ final readonly class ConfirmMediaUpload
         if ($isPhoto) {
             GenerateDerivatives::dispatch($media->id);
         }
+
+        $this->revalidator->revalidate(["car:{$car->slug}"]);
 
         return $media;
     }

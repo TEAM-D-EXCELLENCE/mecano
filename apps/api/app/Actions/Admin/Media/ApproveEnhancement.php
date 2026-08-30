@@ -7,12 +7,17 @@ namespace App\Actions\Admin\Media;
 use App\Enums\EnhancementStatus;
 use App\Models\Media;
 use App\Models\MediaEnhancement;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 final readonly class ApproveEnhancement
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     /**
      * Approve an enhancement and set media.published_url.
      *
@@ -42,6 +47,11 @@ final readonly class ApproveEnhancement
                 'published_url' => $enhancement->result_url,
             ]);
         });
+
+        $car = $enhancement->media?->car;
+        if ($car !== null) {
+            $this->revalidator->revalidate(["car:{$car->slug}"]);
+        }
 
         return $enhancement->refresh();
     }

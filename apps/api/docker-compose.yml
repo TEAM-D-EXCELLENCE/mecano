@@ -1,0 +1,130 @@
+# ============================================================
+# docker-compose.yml – Mecano API (backend only)
+#
+# Talks to:
+#   Admin:   https://admin-nine-smoky-13.vercel.app
+#            https://admin.garage.excellenceteam.site
+#   Client:  https://web-mu-three-85.vercel.app
+#            https://webgarage.excellenceteam.site
+#
+# Usage:
+#   docker compose up -d --build
+# ============================================================
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: mecano-api:latest
+    container_name: mecano_api
+    restart: unless-stopped
+
+    # ---- Environment variables ----------------------------------------
+    environment:
+      # App
+      APP_NAME: "Mecano API"
+      APP_ENV: "${APP_ENV:-production}"
+      APP_KEY: "${APP_KEY}"
+      APP_DEBUG: "${APP_DEBUG:-false}"
+      APP_TIMEZONE: UTC
+      APP_URL: "${APP_URL:-http://localhost}"
+
+      # Locale
+      APP_LOCALE: fr
+      APP_FALLBACK_LOCALE: fr
+      APP_FAKER_LOCALE: fr_FR
+
+      # === Frontend URLs (CORS + Sanctum) ===
+      APP_FRONTEND_URL: "${APP_FRONTEND_URL:-https://web-mu-three-85.vercel.app}"
+      APP_ADMIN_URL: "${APP_ADMIN_URL:-https://admin-nine-smoky-13.vercel.app}"
+
+      CORS_ALLOWED_ORIGINS: >-
+        https://admin-nine-smoky-13.vercel.app,
+        https://admin.garage.excellenceteam.site,
+        https://web-mu-three-85.vercel.app,
+        https://webgarage.excellenceteam.site
+
+      SANCTUM_STATEFUL_DOMAINS: >-
+        admin-nine-smoky-13.vercel.app,
+        admin.garage.excellenceteam.site,
+        web-mu-three-85.vercel.app,
+        webgarage.excellenceteam.site
+
+      REVALIDATION_SECRET: "${REVALIDATION_SECRET}"
+
+      # Logging
+      LOG_CHANNEL: stack
+      LOG_STACK: single
+      LOG_LEVEL: "${LOG_LEVEL:-error}"
+
+      # Database (Supabase PostgreSQL)
+      DB_CONNECTION: pgsql
+      DB_HOST: "${DB_HOST}"
+      DB_PORT: "${DB_PORT:-5432}"
+      DB_DATABASE: "${DB_DATABASE:-postgres}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_SSLMODE: "${DB_SSLMODE:-require}"
+
+      # Session / Cache / Queue
+      SESSION_DRIVER: database
+      SESSION_LIFETIME: 120
+      BROADCAST_CONNECTION: log
+      FILESYSTEM_DISK: local
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
+
+      # Cloudinary
+      CLOUDINARY_CLOUD_NAME: "${CLOUDINARY_CLOUD_NAME}"
+      CLOUDINARY_API_KEY: "${CLOUDINARY_API_KEY}"
+      CLOUDINARY_API_SECRET: "${CLOUDINARY_API_SECRET}"
+      CLOUDINARY_FOLDER: "${CLOUDINARY_FOLDER:-production}"
+
+      # Cloudflare R2
+      R2_ACCOUNT_ID: "${R2_ACCOUNT_ID}"
+      R2_ACCESS_KEY_ID: "${R2_ACCESS_KEY_ID}"
+      R2_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY}"
+      R2_BUCKET: "${R2_BUCKET}"
+      R2_PUBLIC_DOMAIN: "${R2_PUBLIC_DOMAIN}"
+
+      # remove.bg
+      REMOVE_BG_API_KEY: "${REMOVE_BG_API_KEY}"
+
+    # ---- Ports --------------------------------------------------------
+    ports:
+      - "${API_PORT:-8000}:80"
+
+    # ---- Volumes (persistent storage for uploaded files) --------------
+    volumes:
+      - mecano_storage:/var/www/html/storage/app/public
+      - mecano_logs:/var/www/html/storage/logs
+
+    # ---- Health check -------------------------------------------------
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+    # ---- Network ------------------------------------------------------
+    networks:
+      - mecano_network
+
+# ============================================================
+# Volumes
+# ============================================================
+volumes:
+  mecano_storage:
+    driver: local
+  mecano_logs:
+    driver: local
+
+# ============================================================
+# Networks
+# ============================================================
+networks:
+  mecano_network:
+    driver: bridge

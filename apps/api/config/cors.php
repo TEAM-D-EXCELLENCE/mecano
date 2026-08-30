@@ -15,23 +15,37 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'up'],
 
-    'allowed_methods' => ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_values(array_filter([
-        env('APP_FRONTEND_URL', 'http://localhost:3000'),
-        env('APP_ADMIN_URL', 'http://localhost:3001'),
-    ])),
+    'allowed_origins' => array_values(array_unique(array_filter(
+        array_merge(
+            [
+                // Admin Frontends
+                'https://admin-nine-smoky-13.vercel.app',
+                'https://admin.garage.excellenceteam.site',
+                // Client Web Frontends
+                'https://web-mu-three-85.vercel.app',
+                'https://webgarage.excellenceteam.site',
+            ],
+            // Additional custom origins from environment
+            array_filter(explode(',', (string) env('CORS_ALLOWED_ORIGINS', ''))),
+            [
+                env('APP_FRONTEND_URL'),
+                env('APP_ADMIN_URL'),
+            ]
+        )
+    ))),
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+    'allowed_headers' => ['*'],
 
     'exposed_headers' => [],
 
-    'max_age' => 0,
+    'max_age' => 86400,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];

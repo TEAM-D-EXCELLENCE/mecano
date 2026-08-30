@@ -8,10 +8,15 @@ use App\Enums\PostStatus;
 use App\Http\Requests\Admin\Posts\CreatePostRequest;
 use App\Models\Post;
 use App\Models\User;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Str;
 
 final readonly class CreatePost
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     public function handle(CreatePostRequest $request, User $author): Post
     {
         $title = (string) $request->validated('title');
@@ -42,6 +47,8 @@ final readonly class CreatePost
         ]);
 
         $post->load(['service', 'author']);
+
+        $this->revalidator->revalidate(["post:{$post->slug}", 'posts']);
 
         return $post;
     }

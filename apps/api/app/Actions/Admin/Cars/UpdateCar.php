@@ -6,9 +6,14 @@ namespace App\Actions\Admin\Cars;
 
 use App\Data\UpdateCarData;
 use App\Models\Car;
+use App\Support\Contracts\FrontendRevalidator;
 
 final readonly class UpdateCar
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     /**
      * Update car listing attributes (slug remains immutable).
      */
@@ -59,6 +64,8 @@ final readonly class UpdateCar
         }
 
         $car->save();
+
+        $this->revalidator->revalidate(["car:{$car->slug}", 'cars', 'home']);
 
         return $car->load(['brand', 'mainPhoto', 'photos', 'videos']);
     }

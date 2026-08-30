@@ -6,11 +6,16 @@ namespace App\Actions\Admin\Media;
 
 use App\Models\Car;
 use App\Models\Media;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final readonly class ReorderMedia
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     /**
      * Reorder media items for a given car by their provided ID sequence.
      *
@@ -30,6 +35,8 @@ final readonly class ReorderMedia
                     ->update(['position' => $index + 1]);
             }
         });
+
+        $this->revalidator->revalidate(["car:{$car->slug}"]);
 
         return Media::query()
             ->where('car_id', $car->id)

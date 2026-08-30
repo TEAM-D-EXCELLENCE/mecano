@@ -7,9 +7,14 @@ namespace App\Actions\Admin\Posts;
 use App\Enums\PostStatus;
 use App\Http\Requests\Admin\Posts\UpdatePostRequest;
 use App\Models\Post;
+use App\Support\Contracts\FrontendRevalidator;
 
 final readonly class UpdatePost
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     public function handle(Post $post, UpdatePostRequest $request): Post
     {
         if ($request->has('title')) {
@@ -43,6 +48,8 @@ final readonly class UpdatePost
 
         $post->save();
         $post->load(['service', 'author']);
+
+        $this->revalidator->revalidate(["post:{$post->slug}", 'posts']);
 
         return $post;
     }

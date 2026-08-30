@@ -52,6 +52,14 @@ final class AppServiceProvider extends ServiceProvider
                 cloudName: (string) config('media.cloudinary.cloud_name', 'default')
             );
         });
+
+        $this->app->singleton(\App\Support\Contracts\FrontendRevalidator::class, static function ($app): \App\Support\Contracts\FrontendRevalidator {
+            if ($app->environment('testing') || config('services.frontend.driver') === 'fake') {
+                return new \App\Services\Revalidation\FakeFrontendRevalidator;
+            }
+
+            return new \App\Services\Revalidation\NextRevalidator;
+        });
     }
 
     /**

@@ -1,0 +1,41 @@
+# Dépendances Node (pas nécessaires à la build PHP)
+node_modules/
+
+# Vendor PHP – rebuild par Composer dans le Dockerfile
+vendor/
+
+# Logs locaux
+storage/logs/*.log
+
+# Cache local
+bootstrap/cache/*.php
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Tests
+tests/
+
+# Artefacts CI / config IDE
+.git/
+.github/
+.gitignore
+.editorconfig
+.styleci.yml
+phpunit.xml
+.phpunit.result.cache
+.phpunit.cache/
+*.log
+*.lock
+
+# Builds Next.js des frontends (si jamais dans le repo)
+apps/admin/
+apps/web/
+
+# Env files sensibles
+.env
+.env.*
+!.env.example
+
+# Docker meta-files (éviter récursion)
+docker-compose.override.yml

@@ -7,6 +7,7 @@ namespace App\Actions\Admin\Media;
 use App\Enums\MediaKind;
 use App\Enums\MediaRole;
 use App\Models\Media;
+use App\Support\Contracts\FrontendRevalidator;
 use App\Support\Contracts\ImageStorage;
 use App\Support\Contracts\VideoStorage;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ final readonly class DeleteMedia
     public function __construct(
         private ImageStorage $imageStorage,
         private VideoStorage $videoStorage,
+        private FrontendRevalidator $revalidator,
     ) {}
 
     /**
@@ -25,6 +27,8 @@ final readonly class DeleteMedia
      */
     public function handle(Media $media): void
     {
+        $car = $media->car;
+
         // 1. Delete from external storage
         if ($media->kind === MediaKind::Photo) {
             $this->imageStorage->delete($media->storage_key);
@@ -54,5 +58,9 @@ final readonly class DeleteMedia
                 }
             }
         });
+
+        if ($car !== null) {
+            $this->revalidator->revalidate(["car:{$car->slug}"]);
+        }
     }
 }

@@ -8,9 +8,13 @@ use App\Enums\CarStatus;
 use App\Exceptions\CarNotPublishableException;
 use App\Exceptions\InvalidStatusTransitionException;
 use App\Models\Car;
+use App\Support\Contracts\FrontendRevalidator;
 
 final readonly class ChangeCarStatus
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
     /**
      * Allowed status transition map.
      *
@@ -70,6 +74,8 @@ final readonly class ChangeCarStatus
         }
 
         $car->save();
+
+        $this->revalidator->revalidate(["car:{$car->slug}", 'cars', 'home']);
 
         return $car->load(['brand', 'mainPhoto']);
     }

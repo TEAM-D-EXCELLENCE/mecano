@@ -7,10 +7,15 @@ namespace App\Actions\Admin\Cars;
 use App\Data\CreateCarData;
 use App\Models\Brand;
 use App\Models\Car;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Str;
 
 final readonly class CreateCar
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     /**
      * Create a new car listing in the database with an immutable generated slug.
      */
@@ -49,6 +54,8 @@ final readonly class CreateCar
         $finalSlug = "{$brandSlug}-{$modelSlug}-{$data->year}-{$car->id}";
         $car->slug = $finalSlug;
         $car->save();
+
+        $this->revalidator->revalidate(["car:{$finalSlug}", 'cars', 'home']);
 
         return $car->load(['brand', 'mainPhoto', 'photos', 'videos']);
     }

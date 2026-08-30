@@ -6,15 +6,22 @@ namespace App\Actions\Admin\Media;
 
 use App\Enums\MediaRole;
 use App\Models\Media;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Facades\DB;
 
 final readonly class UpdateMedia
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     /**
      * Update media attributes (e.g. promote to main photo, set alt text).
      */
     public function handle(Media $media, ?MediaRole $role = null, ?string $alt = null): Media
     {
+        $car = $media->car;
+
         DB::transaction(function () use ($media, $role, $alt): void {
             if ($role !== null) {
                 // If promoting to Main photo, demote existing main photo of the same car
@@ -34,6 +41,10 @@ final readonly class UpdateMedia
 
             $media->save();
         });
+
+        if ($car !== null) {
+            $this->revalidator->revalidate(["car:{$car->slug}"]);
+        }
 
         return $media;
     }

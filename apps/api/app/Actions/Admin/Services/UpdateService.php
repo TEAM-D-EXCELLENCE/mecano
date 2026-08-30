@@ -6,9 +6,14 @@ namespace App\Actions\Admin\Services;
 
 use App\Http\Requests\Admin\Services\UpdateServiceRequest;
 use App\Models\Service;
+use App\Support\Contracts\FrontendRevalidator;
 
 final readonly class UpdateService
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     /**
      * Update service attributes.
      * Note: Deactivation (is_active = false) is always preferred over deletion (CDC §3.3).
@@ -44,6 +49,8 @@ final readonly class UpdateService
         }
 
         $service->save();
+
+        $this->revalidator->revalidate(['services']);
 
         return $service;
     }

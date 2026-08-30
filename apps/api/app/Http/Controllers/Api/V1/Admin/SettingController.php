@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ final class SettingController extends Controller
     /**
      * Update settings in bulk.
      */
-    public function update(Request $request): JsonResponse
+    public function update(Request $request, FrontendRevalidator $revalidator): JsonResponse
     {
         $validated = $request->validate([
             'settings' => ['required', 'array'],
@@ -39,6 +40,8 @@ final class SettingController extends Controller
         foreach ($items as $key => $value) {
             Setting::set((string) $key, $value);
         }
+
+        $revalidator->revalidate(['settings', 'home']);
 
         $allSettings = Setting::query()->pluck('value', 'key')->all();
 

@@ -6,10 +6,15 @@ namespace App\Actions\Admin\Services;
 
 use App\Http\Requests\Admin\Services\CreateServiceRequest;
 use App\Models\Service;
+use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Str;
 
 final readonly class CreateService
 {
+    public function __construct(
+        private FrontendRevalidator $revalidator,
+    ) {}
+
     public function handle(CreateServiceRequest $request): Service
     {
         $title = (string) $request->validated('title');
@@ -33,6 +38,8 @@ final readonly class CreateService
             'is_active' => $request->boolean('is_active', true),
             'position' => (int) $request->validated('position', 0),
         ]);
+
+        $this->revalidator->revalidate(['services']);
 
         return $service;
     }
