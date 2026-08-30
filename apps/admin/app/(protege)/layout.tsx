@@ -1,6 +1,7 @@
 import { Wrench } from "lucide-react";
 
 import { LogoutButton } from "@/components/layout/LogoutButton";
+import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { requireUser } from "@/lib/api/session";
 
@@ -45,6 +46,8 @@ export default async function ProtectedLayout({ children }: LayoutProps<"/">) {
         </header>
         <main className="flex-1 p-6 md:p-8">{children}</main>
       </div>
+
+      <Toaster position="bottom-right" />
     </div>
   );
 }

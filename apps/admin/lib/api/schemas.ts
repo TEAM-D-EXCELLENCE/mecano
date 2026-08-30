@@ -26,3 +26,13 @@ export interface Paginated<T> {
 }
 
 export type DashboardMetrics = Schemas["DashboardMetrics"];
+
+export type AdminCar = Schemas["AdminCarDetail"];
+export type AdminBrand = Schemas["AdminBrand"];
+export type AdminMedia = Schemas["AdminMedia"];
+export type CreateCarBody = Schemas["CreateCarRequest"];
+export type UpdateCarBody = Schemas["UpdateCarRequest"];
+export type PaginationLinks = Schemas["PaginationLinks"];
+
+/** Statuts d'annonce, tels que le contrat les déclare. */
+export type CarStatus = "draft" | "available" | "reserved" | "sold";
