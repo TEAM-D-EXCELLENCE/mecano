@@ -211,7 +211,7 @@ paths:
           name: carburant
           schema:
             type: string
-            enum: [essence, diesel, hybride, electrique]
+            enum: [essence, diesel, hybride, electrique, gpl]
         - in: query
           name: transmission
           schema:
@@ -1404,10 +1404,10 @@ components:
           properties:
             value:
               type: string
-              example: "occasion_europe"
+              example: "excellent"
             label:
               type: string
-              example: "Occasion Europe (Premier choix)"
+              example: "Excellent état"
         status:
           type: object
           properties:
@@ -1572,7 +1572,7 @@ components:
           example: 48000
         fuel:
           type: string
-          enum: [essence, diesel, hybride, electrique]
+          enum: [essence, diesel, hybride, electrique, gpl]
           example: "essence"
         transmission:
           type: string
@@ -1580,8 +1580,8 @@ components:
           example: "automatique"
         condition:
           type: string
-          enum: [neuf, occasion_europe, occasion_locale]
-          example: "occasion_europe"
+          enum: [neuf, excellent, bon, moyen]
+          example: "excellent"
         color:
           type: string
           example: "Gris métallisé"
@@ -1618,10 +1618,13 @@ components:
           type: integer
         fuel:
           type: string
+          enum: [essence, diesel, hybride, electrique, gpl]
         transmission:
           type: string
+          enum: [automatique, manuelle]
         condition:
           type: string
+          enum: [neuf, excellent, bon, moyen]
         color:
           type: string
         description:

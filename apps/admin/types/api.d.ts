@@ -635,9 +635,9 @@ export interface components {
                 label?: string;
             };
             condition?: {
-                /** @example occasion_europe */
+                /** @example excellent */
                 value?: string;
-                /** @example Occasion Europe (Premier choix) */
+                /** @example Excellent état */
                 label?: string;
             };
             status?: {
@@ -732,17 +732,17 @@ export interface components {
              * @example essence
              * @enum {string}
              */
-            fuel: "essence" | "diesel" | "hybride" | "electrique";
+            fuel: "essence" | "diesel" | "hybride" | "electrique" | "gpl";
             /**
              * @example automatique
              * @enum {string}
              */
             transmission: "automatique" | "manuelle";
             /**
-             * @example occasion_europe
+             * @example excellent
              * @enum {string}
              */
-            condition: "neuf" | "occasion_europe" | "occasion_locale";
+            condition: "neuf" | "excellent" | "bon" | "moyen";
             /** @example Gris métallisé */
             color: string;
             /** @example Climatisation d'origine, intérieur cuir... */
@@ -759,9 +759,12 @@ export interface components {
             year?: number;
             price_xaf?: number;
             mileage_km?: number;
-            fuel?: string;
-            transmission?: string;
-            condition?: string;
+            /** @enum {string} */
+            fuel?: "essence" | "diesel" | "hybride" | "electrique" | "gpl";
+            /** @enum {string} */
+            transmission?: "automatique" | "manuelle";
+            /** @enum {string} */
+            condition?: "neuf" | "excellent" | "bon" | "moyen";
             color?: string;
             description?: string;
         };
@@ -1262,7 +1265,7 @@ export interface operations {
                 prix_min?: number;
                 /** @example 15000000 */
                 prix_max?: number;
-                carburant?: "essence" | "diesel" | "hybride" | "electrique";
+                carburant?: "essence" | "diesel" | "hybride" | "electrique" | "gpl";
                 transmission?: "automatique" | "manuelle";
                 /** @description Inclure les véhicules déjà vendus */
                 inclure_vendus?: boolean;

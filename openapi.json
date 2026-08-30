@@ -311,7 +311,8 @@
                 "essence",
                 "diesel",
                 "hybride",
-                "electrique"
+                "electrique",
+                "gpl"
               ]
             }
           },
@@ -2229,11 +2230,11 @@
             "properties": {
               "value": {
                 "type": "string",
-                "example": "occasion_europe"
+                "example": "excellent"
               },
               "label": {
                 "type": "string",
-                "example": "Occasion Europe (Premier choix)"
+                "example": "Excellent état"
               }
             }
           },
@@ -2461,7 +2462,8 @@
               "essence",
               "diesel",
               "hybride",
-              "electrique"
+              "electrique",
+              "gpl"
             ],
             "example": "essence"
           },
@@ -2477,10 +2479,11 @@
             "type": "string",
             "enum": [
               "neuf",
-              "occasion_europe",
-              "occasion_locale"
+              "excellent",
+              "bon",
+              "moyen"
             ],
-            "example": "occasion_europe"
+            "example": "excellent"
           },
           "color": {
             "type": "string",
@@ -2527,13 +2530,30 @@
             "type": "integer"
           },
           "fuel": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "essence",
+              "diesel",
+              "hybride",
+              "electrique",
+              "gpl"
+            ]
           },
           "transmission": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "automatique",
+              "manuelle"
+            ]
           },
           "condition": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "neuf",
+              "excellent",
+              "bon",
+              "moyen"
+            ]
           },
           "color": {
             "type": "string"
