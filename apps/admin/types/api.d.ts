@@ -11,7 +11,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** État de santé du système */
+        /**
+         * État de santé du système
+         * @description Vérifie la connectivité à PostgreSQL (Supabase), au cache et aux services critiques.
+         */
         get: operations["getHealth"];
         put?: never;
         post?: never;
@@ -30,7 +33,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Connexion utilisateur (BFF / Admin) */
+        /**
+         * Connexion utilisateur (Admin / Mécanicien)
+         * @description Authentifie un utilisateur et génère un token d'accès Sanctum.
+         */
         post: operations["login"];
         delete?: never;
         options?: never;
@@ -47,7 +53,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Déconnexion utilisateur */
+        /**
+         * Déconnexion utilisateur
+         * @description Révoque le jeton d'accès courant.
+         */
         post: operations["logout"];
         delete?: never;
         options?: never;
@@ -62,7 +71,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Utilisateur connecté */
+        /**
+         * Profil de l'utilisateur connecté
+         * @description Renvoie les informations de l'administrateur courant.
+         */
         get: operations["getMe"];
         put?: never;
         post?: never;
@@ -72,6 +84,503 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/brands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Référentiel des marques actives
+         * @description Liste toutes les marques ayant des véhicules au catalogue pour alimenter les filtres.
+         */
+        get: operations["getPublicBrands"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Catalogue public des annonces
+         * @description Liste paginée des véhicules disponibles à la vente avec filtres multicritères.
+         */
+        get: operations["getPublicCars"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cars/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fiche détaillée d'une annonce
+         * @description Retourne l'annonce complète avec sa galerie photo haute définition et ses vidéos intérieures/extérieures.
+         */
+        get: operations["getPublicCarDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cars/{slug}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enregistrement d'un événement d'audience (Vue ou Clic WhatsApp)
+         * @description Enregistre de façon anonymisée (hachage salé SHA-256) l'intérêt d'un visiteur pour alimenter le tableau de bord.
+         */
+        post: operations["recordCarEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Liste des prestations atelier
+         * @description Retourne les forfaits et services actifs de l'atelier ordonnancés par position.
+         */
+        get: operations["getPublicServices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Liste des articles de blog
+         * @description Liste paginée des articles techniques publiés.
+         */
+        get: operations["getPublicPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/posts/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lecture d'un article de blog
+         * @description Contenu complet de l'article au format texte brut structuré (sans HTML injectable).
+         */
+        get: operations["getPublicPostDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Coordonnées et horaires du garage
+         * @description Informations publiques de l'établissement (numéro WhatsApp, adresse, nom commercial).
+         */
+        get: operations["getPublicSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Métriques et indicateurs clés de performance
+         * @description Retourne l'ensemble des indicateurs (vues, clics WhatsApp, taux de conversion, délai moyen de vente, top annonces et quotas IA).
+         */
+        get: operations["getAdminDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/brands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste complète des marques */
+        get: operations["getAdminBrands"];
+        put?: never;
+        /** Ajout d'une marque au référentiel */
+        post: operations["createBrand"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Liste des annonces pour le backoffice
+         * @description Inclut tous les états (brouillons, disponibles, réservés, vendus).
+         */
+        get: operations["getAdminCars"];
+        put?: never;
+        /** Création d'une annonce (créée à l'état brouillon) */
+        post: operations["createCar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consultation d'une annonce pour modification */
+        get: operations["getAdminCar"];
+        put?: never;
+        post?: never;
+        /** Suppression logique d'une annonce (Soft Delete) */
+        delete: operations["deleteCar"];
+        options?: never;
+        head?: never;
+        /** Mise à jour des informations d'une annonce */
+        patch: operations["updateCar"];
+        trace?: never;
+    };
+    "/admin/cars/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Changement d'état métier d'une annonce
+         * @description Gère les transitions valides (ex: draft vers available requiert au moins 1 photo principale).
+         */
+        patch: operations["changeCarStatus"];
+        trace?: never;
+    };
+    "/admin/media/upload-signature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Génération de signature d'upload direct
+         * @description Émet les paramètres signés sécurisés pour uploader directement vers Cloudinary (photos) ou Cloudflare R2 (vidéos).
+         */
+        post: operations["getUploadSignature"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars/{id}/media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Galerie des médias d'une annonce */
+        get: operations["getCarMedia"];
+        put?: never;
+        /**
+         * Confirmation d'un média uploadé
+         * @description Enregistre le média en base après upload réussi sur le CDN.
+         */
+        post: operations["confirmMediaUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/cars/{id}/media/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Réordonnancement des médias de la galerie */
+        post: operations["reorderCarMedia"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/media/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Suppression d'un média */
+        delete: operations["deleteMedia"];
+        options?: never;
+        head?: never;
+        /** Mise à jour des métadonnées d'un média (alt, rôle) */
+        patch: operations["updateMedia"];
+        trace?: never;
+    };
+    "/admin/media/{id}/enhance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Demande d'amélioration IA d'une photo
+         * @description Exécute une transformation IA (amélioration automatique, recadrage intelligent ou détourage).
+         */
+        post: operations["enhanceMedia"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/media/{id}/enhancements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste des dérivés d'une photo */
+        get: operations["getMediaEnhancements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/enhancements/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approbation d'un dérivé IA
+         * @description Promeut l'URL dérivée en published_url publique (l'original reste intact).
+         */
+        post: operations["approveEnhancement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/admin/quotas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Suivi des quotas IA mensuels (remove.bg) */
+        get: operations["getQuotas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste des prestations pour le backoffice */
+        get: operations["getAdminServices"];
+        put?: never;
+        /** Création d'une prestation atelier */
+        post: operations["createService"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/services/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mise à jour ou désactivation douce d'une prestation */
+        patch: operations["updateService"];
+        trace?: never;
+    };
+    "/admin/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste des articles de blog pour le backoffice */
+        get: operations["getAdminPosts"];
+        put?: never;
+        /** Rédaction d'un nouvel article de blog */
+        post: operations["createPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fiche d'un article pour édition */
+        get: operations["getAdminPost"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mise à jour ou publication d'un article */
+        patch: operations["updatePost"];
+        trace?: never;
+    };
+    "/admin/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liste complète des réglages */
+        get: operations["getAdminSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Modification en masse des réglages du garage */
+        patch: operations["updateAdminSettings"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -79,7 +588,7 @@ export interface components {
         User: {
             /** @example 1 */
             id: number;
-            /** @example Mécanicien Admin */
+            /** @example Mécanicien Chef */
             name: string;
             /**
              * Format: email
@@ -87,27 +596,249 @@ export interface components {
              */
             email: string;
             /** Format: date-time */
-            created_at: string;
+            created_at?: string;
         };
-        /** @description Structure standard des erreurs d'API */
+        Brand: {
+            /** @example 1 */
+            id?: number;
+            /** @example toyota */
+            slug?: string;
+            /** @example Toyota */
+            name?: string;
+            /** @example https://res.cloudinary.com/... */
+            logo_url?: string | null;
+        };
+        CarListItem: {
+            /** @example 1 */
+            id?: number;
+            /** @example toyota-rav4-2021-1 */
+            slug?: string;
+            brand?: components["schemas"]["Brand"];
+            /** @example RAV4 Limited */
+            model?: string;
+            /** @example 2021 */
+            year?: number;
+            /** @example 14500000 */
+            price_xaf?: number;
+            /** @example 48000 */
+            mileage_km?: number;
+            fuel?: {
+                /** @example essence */
+                value?: string;
+                /** @example Essence */
+                label?: string;
+            };
+            transmission?: {
+                /** @example automatique */
+                value?: string;
+                /** @example Automatique */
+                label?: string;
+            };
+            condition?: {
+                /** @example occasion_europe */
+                value?: string;
+                /** @example Occasion Europe (Premier choix) */
+                label?: string;
+            };
+            status?: {
+                /** @example available */
+                value?: string;
+                /** @example Disponible */
+                label?: string;
+            };
+            main_photo?: {
+                /** @example https://res.cloudinary.com/... */
+                url?: string;
+                /** @example 1920 */
+                width?: number;
+                /** @example 1080 */
+                height?: number;
+            } | null;
+        };
+        CarDetail: components["schemas"]["CarListItem"] & {
+            /** @example Véhicule en parfait état, révision complète effectuée... */
+            description?: string;
+            photos?: Record<string, never>[];
+            videos?: Record<string, never>[];
+        };
+        AdminCarDetail: components["schemas"]["CarDetail"] & {
+            /** @example 142 */
+            views_count?: number;
+            /** @example 18 */
+            whatsapp_clicks_count?: number;
+            /** Format: date-time */
+            created_at?: string;
+        };
+        CreateCarRequest: {
+            /** @example 1 */
+            brand_id: number;
+            /** @example RAV4 Limited */
+            model: string;
+            /** @example 2021 */
+            year: number;
+            /** @example 14500000 */
+            price_xaf: number;
+            /** @example 48000 */
+            mileage_km: number;
+            /**
+             * @example essence
+             * @enum {string}
+             */
+            fuel: "essence" | "diesel" | "hybride" | "electrique";
+            /**
+             * @example automatique
+             * @enum {string}
+             */
+            transmission: "automatique" | "manuelle";
+            /**
+             * @example occasion_europe
+             * @enum {string}
+             */
+            condition: "neuf" | "occasion_europe" | "occasion_locale";
+            /** @example Gris métallisé */
+            color?: string;
+            /** @example Climatisation d'origine, intérieur cuir... */
+            description?: string;
+        };
+        UpdateCarRequest: {
+            brand_id?: number;
+            model?: string;
+            year?: number;
+            price_xaf?: number;
+            mileage_km?: number;
+            fuel?: string;
+            transmission?: string;
+            condition?: string;
+            color?: string;
+            description?: string;
+        };
+        Service: {
+            /** @example 1 */
+            id?: number;
+            /** @example diagnostic-electronique */
+            slug?: string;
+            /** @example Diagnostic Électronique Complet */
+            title?: string;
+            /** @example Recherche de pannes avec valise constructeur */
+            excerpt?: string;
+            /** @example Analyse des calculateurs moteur, boîte, freinage ABS/ESP... */
+            description?: string;
+            /** @example cpu */
+            icon?: string;
+            /** @example 25000 */
+            price_from_xaf?: number;
+            /** @example 1 */
+            position?: number;
+        };
+        PostListItem: {
+            /** @example 1 */
+            id?: number;
+            /** @example 5-signes-usure-plaquettes-frein */
+            slug?: string;
+            /** @example 5 signes qui indiquent que vos plaquettes de frein sont usées */
+            title?: string;
+            /** @example Bruits suspects, pédale molle, distance de freinage allongée... */
+            excerpt?: string;
+            service?: components["schemas"]["Service"];
+            author?: components["schemas"]["User"];
+            /** Format: date-time */
+            published_at?: string;
+        };
+        PostDetail: components["schemas"]["PostListItem"] & {
+            /** @description Texte brut structuré sans balises HTML */
+            body?: string;
+            cover_media?: Record<string, never> | null;
+        };
+        DashboardMetrics: {
+            overview?: {
+                /** @example 15 */
+                total_cars?: number;
+                /** @example 10 */
+                available_cars?: number;
+                /** @example 2 */
+                reserved_cars?: number;
+                /** @example 3 */
+                sold_cars?: number;
+                /** @example 0 */
+                draft_cars?: number;
+            };
+            engagement?: {
+                /** @example 1840 */
+                total_views?: number;
+                /** @example 215 */
+                total_whatsapp_clicks?: number;
+                /** @example 11.68 */
+                conversion_rate_percentage?: number;
+                /** @example 8.5 */
+                average_days_to_sell?: number;
+            };
+            workshop_and_content?: {
+                /** @example 6 */
+                total_services?: number;
+                /** @example 6 */
+                active_services?: number;
+                /** @example 5 */
+                total_posts?: number;
+                /** @example 5 */
+                published_posts?: number;
+            };
+            quotas?: {
+                removebg?: {
+                    /** @example 2026-08 */
+                    period?: string;
+                    /** @example 12 */
+                    used?: number;
+                    /** @example 50 */
+                    limit?: number;
+                    /** @example 38 */
+                    available?: number;
+                };
+            };
+        };
+        PaginationMeta: {
+            /** @example 1 */
+            current_page?: number;
+            /** @example 3 */
+            last_page?: number;
+            /** @example 12 */
+            per_page?: number;
+            /** @example 28 */
+            total?: number;
+        };
         ErrorDetail: {
             /** @example VALIDATION_FAILED */
-            code: string;
-            /** @example Certains champs sont invalides. */
-            message: string;
-            details?: Record<string, never> | null;
+            code?: string;
+            /** @example Données de formulaire invalides. */
+            message?: string;
+            errors?: Record<string, never> | null;
         };
     };
     responses: {
-        /** @description Erreur API structurée */
-        ErrorResponse: {
+        /** @description Non authentifié (token Sanctum manquant ou expiré) */
+        Error401: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/json": {
-                    error: components["schemas"]["ErrorDetail"];
-                };
+                "application/json": components["schemas"]["ErrorDetail"];
+            };
+        };
+        /** @description Ressource non trouvée */
+        Error404: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorDetail"];
+            };
+        };
+        /** @description Erreur de validation des champs */
+        Error422: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorDetail"];
             };
         };
     };
@@ -136,8 +867,13 @@ export interface operations {
                     "application/json": {
                         /** @example ok */
                         status: string;
-                        /** Format: date-time */
+                        /**
+                         * Format: date-time
+                         * @example 2026-08-30T03:30:00Z
+                         */
                         timestamp: string;
+                        /** @example connected */
+                        database?: string;
                     };
                 };
             };
@@ -167,20 +903,21 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Connexion réussie, renvoie le jeton d'accès et l'utilisateur */
+            /** @description Connexion réussie */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @example 1|7x3kLmQ... */
                         token: string;
                         user: components["schemas"]["User"];
                     };
                 };
             };
-            401: components["responses"]["ErrorResponse"];
-            422: components["responses"]["ErrorResponse"];
+            401: components["responses"]["Error401"];
+            422: components["responses"]["Error422"];
         };
     };
     logout: {
@@ -192,14 +929,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Déconnexion réussie (sans corps) */
+            /** @description Déconnexion réussie (sans contenu) */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            401: components["responses"]["ErrorResponse"];
+            401: components["responses"]["Error401"];
         };
     };
     getMe: {
@@ -211,7 +948,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Informations sur l'utilisateur courant */
+            /** @description Profil utilisateur */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -222,7 +959,949 @@ export interface operations {
                     };
                 };
             };
-            401: components["responses"]["ErrorResponse"];
+            401: components["responses"]["Error401"];
+        };
+    };
+    getPublicBrands: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des marques */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Brand"][];
+                    };
+                };
+            };
+        };
+    };
+    getPublicCars: {
+        parameters: {
+            query?: {
+                /** @description Slug de la marque (exemple: toyota) */
+                marque?: string;
+                /** @example 3000000 */
+                prix_min?: number;
+                /** @example 15000000 */
+                prix_max?: number;
+                carburant?: "essence" | "diesel" | "hybride" | "electrique";
+                transmission?: "automatique" | "manuelle";
+                /** @description Inclure les véhicules déjà vendus */
+                inclure_vendus?: boolean;
+                page?: number;
+                per_page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalogue de véhicules */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["CarListItem"][];
+                        meta?: components["schemas"]["PaginationMeta"];
+                    };
+                };
+            };
+        };
+    };
+    getPublicCarDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @example toyota-rav4-2021-1 */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Détail du véhicule */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["CarDetail"];
+                    };
+                };
+            };
+            404: components["responses"]["Error404"];
+        };
+    };
+    recordCarEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @example toyota-rav4-2021-1 */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @example whatsapp_click
+                     * @enum {string}
+                     */
+                    type: "view" | "whatsapp_click";
+                    /** @example https://google.com */
+                    referer?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Événement enregistré */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["Error404"];
+        };
+    };
+    getPublicServices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des prestations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Service"][];
+                    };
+                };
+            };
+        };
+    };
+    getPublicPosts: {
+        parameters: {
+            query?: {
+                /** @description Filtrer par slug de prestation atelier rattachée */
+                service?: string;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des articles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["PostListItem"][];
+                        meta?: components["schemas"]["PaginationMeta"];
+                    };
+                };
+            };
+        };
+    };
+    getPublicPostDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @example 5-signes-usure-plaquettes-frein */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Article de blog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["PostDetail"];
+                    };
+                };
+            };
+            404: components["responses"]["Error404"];
+        };
+    };
+    getPublicSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réglages du garage */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @example {
+                         *       "garage_name": "Garage Mékano Yaoundé",
+                         *       "whatsapp_number": "+237699000000",
+                         *       "address": "Quartier Bastos, Yaoundé",
+                         *       "opening_hours": "Lun - Sam : 08h00 - 18h00"
+                         *     }
+                         */
+                        data?: Record<string, never>;
+                    };
+                };
+            };
+        };
+    };
+    getAdminDashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tableau de bord complet */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["DashboardMetrics"];
+                    };
+                };
+            };
+            401: components["responses"]["Error401"];
+        };
+    };
+    getAdminBrands: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des marques */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createBrand: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Toyota */
+                    name: string;
+                    logo_url?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Marque créée */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["Error422"];
+        };
+    };
+    getAdminCars: {
+        parameters: {
+            query?: {
+                status?: "draft" | "available" | "reserved" | "sold";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des véhicules */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCarRequest"];
+            };
+        };
+        responses: {
+            /** @description Annonce créée */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["AdminCarDetail"];
+                    };
+                };
+            };
+            422: components["responses"]["Error422"];
+        };
+    };
+    getAdminCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fiche annonce complète */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["Error404"];
+        };
+    };
+    deleteCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Annonce supprimée */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["Error404"];
+        };
+    };
+    updateCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCarRequest"];
+            };
+        };
+        responses: {
+            /** @description Annonce mise à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["Error422"];
+        };
+    };
+    changeCarStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    status: "available" | "reserved" | "sold";
+                };
+            };
+        };
+        responses: {
+            /** @description Statut modifié */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["Error422"];
+        };
+    };
+    getUploadSignature: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example 1 */
+                    car_id: number;
+                    /** @enum {string} */
+                    kind: "photo" | "video";
+                    /** @example image/jpeg */
+                    mime: string;
+                    /** @example 2500000 */
+                    bytes: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Paramètres signés */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example cloudinary */
+                        provider?: string;
+                        upload_url?: string;
+                        params?: Record<string, never>;
+                    };
+                };
+            };
+        };
+    };
+    getCarMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste ordonnée des médias */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    confirmMediaUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "photo" | "video";
+                    /** @enum {string} */
+                    role: "main" | "gallery" | "video_interior" | "video_exterior";
+                    storage_key: string;
+                    url: string;
+                    mime: string;
+                    bytes: number;
+                    width?: number | null;
+                    height?: number | null;
+                    alt?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Média confirmé */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    reorderCarMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @example [
+                     *       14,
+                     *       12,
+                     *       13,
+                     *       15
+                     *     ]
+                     */
+                    media_ids: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Positions mises à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    deleteMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Média supprimé */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    alt?: string | null;
+                    /** @enum {string} */
+                    role?: "main" | "gallery" | "video_interior" | "video_exterior";
+                };
+            };
+        };
+        responses: {
+            /** @description Média mis à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    enhanceMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    type: "auto_improve" | "smart_crop" | "background_removal";
+                    params?: Record<string, never> | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Dérivé généré (état ready) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Quota mensuel épuisé (remove.bg) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getMediaEnhancements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des dérivés */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    approveEnhancement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dérivé approuvé et publié */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getQuotas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Crédits utilisés et restants */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAdminServices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des forfaits */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Diagnostic Électronique Complet */
+                    title: string;
+                    /** @example Recherche de pannes calculateur et capteurs */
+                    excerpt?: string;
+                    /** @example Passage à la valise constructeur... */
+                    description?: string;
+                    /** @example cpu */
+                    icon?: string;
+                    /** @example 25000 */
+                    price_from_xaf?: number;
+                    /** @default 0 */
+                    position?: number;
+                    /** @default true */
+                    is_active?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Prestation créée */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    excerpt?: string;
+                    description?: string;
+                    icon?: string;
+                    price_from_xaf?: number;
+                    position?: number;
+                    is_active?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Prestation mise à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAdminPosts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Liste des articles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Comment entretenir sa boîte automatique en climat tropical */
+                    title: string;
+                    excerpt?: string;
+                    /** @description Texte brut structuré (zéro HTML) */
+                    body: string;
+                    service_id?: number | null;
+                    /**
+                     * @default draft
+                     * @enum {string}
+                     */
+                    status?: "draft" | "published";
+                };
+            };
+        };
+        responses: {
+            /** @description Article créé */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAdminPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Article complet */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updatePost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title?: string;
+                    excerpt?: string;
+                    body?: string;
+                    service_id?: number | null;
+                    /** @enum {string} */
+                    status?: "draft" | "published";
+                };
+            };
+        };
+        responses: {
+            /** @description Article mis à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAdminSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réglages du garage */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateAdminSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @example {
+                     *       "garage_name": "Garage Mékano Yaoundé",
+                     *       "whatsapp_number": "+237699000000",
+                     *       "address": "Bastos, Yaoundé",
+                     *       "email": "contact@mekano.cm"
+                     *     }
+                     */
+                    settings: Record<string, never>;
+                };
+            };
+        };
+        responses: {
+            /** @description Réglages enregistrés */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
 }
