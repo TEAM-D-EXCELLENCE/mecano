@@ -36,7 +36,7 @@ Corollaire important : **M0 seul ne vaut rien pour le client.** Il ne doit donc 
 | Dépôt | Monorepo, CODEOWNERS, gabarit de PR, `.editorconfig` |
 | CI | Format des commits, Pint, Larastan 6, ESLint, Prettier, `tsc --noEmit` |
 | Contrat | `openapi.yaml` avec santé et authentification |
-| API | Laravel initialisé, MySQL, Sanctum, `users`, migration initiale, `/health`, `/auth/*` |
+| API | Laravel initialisé, PostgreSQL, Sanctum, `users`, migration initiale, `/health`, `/auth/*` |
 | `apps/web` | Next initialisé, coquille, jetons Tailwind, shadcn/ui, déployé sur `garage.com` |
 | `apps/admin` | Next initialisé, BFF, page de connexion, garde serveur, `noindex`, déployé sur `admin.garage.com` |
 | Infra | Domaine branché sur Vercel, serveur préparé, TLS, comptes Cloudinary et R2 créés |

@@ -66,9 +66,12 @@ final class VerifyIntegrationsCommand extends Command
         // 2. VÉRIFICATION CLOUDINARY
         // ---------------------------------------------------------------------
         $this->comment("2. Test de l'API Cloudinary...");
-        $cloudName = env('CLOUDINARY_CLOUD_NAME');
-        $apiKey = env('CLOUDINARY_API_KEY');
-        $apiSecret = env('CLOUDINARY_API_SECRET');
+        // `config()` et non `env()` : dès que la configuration est mise en cache
+        // — ce que fait l'entrypoint Docker au démarrage — `env()` renvoie null
+        // et la commande annoncerait des identifiants manquants à tort.
+        $cloudName = (string) config('media.cloudinary.cloud_name');
+        $apiKey = (string) config('media.cloudinary.api_key');
+        $apiSecret = (string) config('media.cloudinary.api_secret');
 
         if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
             $allOk = false;
@@ -90,7 +93,7 @@ final class VerifyIntegrationsCommand extends Command
 
                     // Test signature génération pour upload direct frontend
                     $timestamp = time();
-                    $folder = env('CLOUDINARY_FOLDER', 'mekano');
+                    $folder = (string) config('media.photos.upload_folder');
                     $toSign = "folder={$folder}&timestamp={$timestamp}".$apiSecret;
                     $signature = sha1($toSign);
 

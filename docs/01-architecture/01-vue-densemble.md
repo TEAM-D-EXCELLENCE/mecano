@@ -27,7 +27,7 @@ graph TB
     end
 
     CLD["☁️ Cloudinary<br/>photos + transformations + CDN"]
-    R2["☁️ Cloudflare R2<br/>vidéos"]
+    CLDV["☁️ Cloudinary<br/>vidéos"]
     RBG["☁️ remove.bg<br/>suppression de fond (quota)"]
     WA["💬 WhatsApp<br/>lien wa.me"]
     FB["📘 Facebook Page<br/>— V2 —"]
@@ -37,11 +37,11 @@ graph TB
     WEB --> API
     ADM --> API
     API --> CLD
-    API --> R2
+    API --> CLDV
     API --> RBG
     API -.->|"webhook de revalidation"| WEB
     ADM -->|"upload direct signé"| CLD
-    ADM -->|"upload direct signé"| R2
+    ADM -->|"upload direct signé"| CLDV
     WEB --> WA
     API -.->|V2| FB
 
@@ -51,7 +51,7 @@ graph TB
 
 Points à retenir sur ce schéma :
 
-- Les fichiers médias **ne traversent jamais l'API**. Le backoffice les envoie directement à Cloudinary et R2 avec une signature délivrée par Laravel.
+- Les fichiers médias **ne traversent jamais l'API**. Le backoffice les envoie directement à Cloudinary avec une signature délivrée par Laravel.
 - L'API **appelle** la vitrine (webhook de revalidation), et pas seulement l'inverse. C'est ce qui rend la publication instantanée.
 - Facebook est représenté en pointillés : hors V1.
 
@@ -59,10 +59,10 @@ Points à retenir sur ce schéma :
 
 | Conteneur | Technologie | Hébergement | Responsabilité |
 |---|---|---|---|
-| `apps/api` | Laravel 13, PHP 8.4, MySQL 8 | Serveur Excellence Team | Toute la logique métier, la persistance, l'authentification, les intégrations externes, l'orchestration du pipeline médias |
+| `apps/api` | Laravel 13, PHP 8.4, image Docker ([ADR 0011](adr/0011-api-conteneurisee.md)) | Serveur Excellence Team | Toute la logique métier, la persistance, l'authentification, les intégrations externes, l'orchestration du pipeline médias |
 | `apps/web` | Next.js (App Router), React, TypeScript, Tailwind, shadcn/ui | Vercel | Rendu serveur de la vitrine, SEO, cache ISR, PWA (M4) |
 | `apps/admin` | Next.js, React, TypeScript, Tailwind, shadcn/ui | Vercel | Interface de gestion, BFF détenant le jeton d'authentification |
-| MySQL | MySQL 8 | Serveur Excellence Team | Persistance |
+| Base de données | PostgreSQL managé, Supabase ([ADR 0010](adr/0010-postgresql-supabase.md)) | Supabase | Persistance |
 | File d'attente | Pilote `database` (Redis différé, R01) | Serveur Excellence Team | Traitement asynchrone des dérivés de médias |
 
 Les versions exactes sont figées par les fichiers de verrouillage (`composer.lock`, `package-lock.json`). Cette documentation ne les duplique pas.

@@ -9,7 +9,7 @@ use App\Services\Media\CloudinaryImageStorage;
 use App\Services\Media\FakeImageEnhancer;
 use App\Services\Media\FakeImageStorage;
 use App\Services\Media\FakeVideoStorage;
-use App\Services\Media\R2VideoStorage;
+use App\Services\Media\CloudinaryVideoStorage;
 use App\Support\Contracts\ImageEnhancer;
 use App\Support\Contracts\ImageStorage;
 use App\Support\Contracts\VideoStorage;
@@ -40,7 +40,7 @@ final class AppServiceProvider extends ServiceProvider
                 return new FakeVideoStorage;
             }
 
-            return R2VideoStorage::fromConfig();
+            return CloudinaryVideoStorage::fromConfig();
         });
 
         $this->app->singleton(ImageEnhancer::class, static function ($app): ImageEnhancer {

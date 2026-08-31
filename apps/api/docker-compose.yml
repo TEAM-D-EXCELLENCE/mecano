@@ -36,23 +36,19 @@ services:
       APP_FALLBACK_LOCALE: fr
       APP_FAKER_LOCALE: fr_FR
 
-      # === Frontend URLs (CORS + Sanctum) ===
-      APP_FRONTEND_URL: "${APP_FRONTEND_URL:-https://web-mu-three-85.vercel.app}"
-      APP_ADMIN_URL: "${APP_ADMIN_URL:-https://admin-nine-smoky-13.vercel.app}"
 
-      CORS_ALLOWED_ORIGINS: >-
-        https://admin-nine-smoky-13.vercel.app,
-        https://admin.garage.excellenceteam.site,
-        https://web-mu-three-85.vercel.app,
-        https://webgarage.excellenceteam.site
 
-      SANCTUM_STATEFUL_DOMAINS: >-
-        admin-nine-smoky-13.vercel.app,
-        admin.garage.excellenceteam.site,
-        web-mu-three-85.vercel.app,
-        webgarage.excellenceteam.site
+      # Sur une seule ligne : en YAML plié (`>-`), chaque saut de ligne devient
+      # une espace, et Laravel découpe sur la virgule sans la retirer — trois
+      # domaines sur quatre arrivaient précédés d'une espace, donc inertes.
+      SANCTUM_STATEFUL_DOMAINS: "admin-nine-smoky-13.vercel.app,admin.garage.excellenceteam.site,web-mu-three-85.vercel.app,webgarage.excellenceteam.site"
 
+      FRONTEND_REVALIDATE_URL: "${FRONTEND_REVALIDATE_URL}"
       REVALIDATION_SECRET: "${REVALIDATION_SECRET}"
+
+      # URL publique de la vitrine : elle compose les liens canoniques envoyés
+      # aux acheteurs dans le message WhatsApp.
+      APP_FRONTEND_URL: "${APP_FRONTEND_URL:-https://webgarage.excellenceteam.site}"
 
       # Logging
       LOG_CHANNEL: stack
@@ -80,14 +76,8 @@ services:
       CLOUDINARY_CLOUD_NAME: "${CLOUDINARY_CLOUD_NAME}"
       CLOUDINARY_API_KEY: "${CLOUDINARY_API_KEY}"
       CLOUDINARY_API_SECRET: "${CLOUDINARY_API_SECRET}"
-      CLOUDINARY_FOLDER: "${CLOUDINARY_FOLDER:-production}"
+      CLOUDINARY_UPLOAD_FOLDER: "${CLOUDINARY_UPLOAD_FOLDER:-mecano/cars}"
 
-      # Cloudflare R2
-      R2_ACCOUNT_ID: "${R2_ACCOUNT_ID}"
-      R2_ACCESS_KEY_ID: "${R2_ACCESS_KEY_ID}"
-      R2_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY}"
-      R2_BUCKET: "${R2_BUCKET}"
-      R2_PUBLIC_DOMAIN: "${R2_PUBLIC_DOMAIN}"
 
       # remove.bg
       REMOVE_BG_API_KEY: "${REMOVE_BG_API_KEY}"

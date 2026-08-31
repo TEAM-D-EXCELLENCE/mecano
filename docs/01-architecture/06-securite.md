@@ -100,16 +100,21 @@ Ce n'est pas une mesure de sécurité en soi — c'est une réduction de la surf
 L'API n'accepte que des origines connues, déclarées explicitement :
 
 ```php
-// config/cors.php
+// config/cors.php — la liste vit dans le code, pas dans l'environnement
 'allowed_origins' => [
-    env('APP_FRONTEND_URL'),   // https://garage.com
-    env('APP_ADMIN_URL'),      // https://admin.garage.com
+    'https://admin-nine-smoky-13.vercel.app',
+    'https://admin.garage.excellenceteam.site',
+    'https://web-mu-three-85.vercel.app',
+    'https://webgarage.excellenceteam.site',
 ],
 'allowed_methods' => ['GET','POST','PATCH','DELETE','OPTIONS'],
+'allowed_headers' => ['Content-Type','Authorization','Accept','X-Requested-With'],
 'supports_credentials' => false,   // Bearer, pas de cookie inter-domaines
 ```
 
-`supports_credentials` est à `false` : c'est le BFF qui porte le cookie, sur son propre domaine. L'API ne reçoit jamais de cookie, uniquement un en-tête `Authorization`. Aucun joker (`*`) n'est accepté, même en développement.
+`supports_credentials` est à `false` : c'est le BFF qui porte le cookie, sur son propre domaine. L'API ne reçoit jamais de cookie, uniquement un en-tête `Authorization`. Aucun joker (`*`) n'est accepté, même en développement — ni sur les origines, ni sur les méthodes, ni sur les en-têtes.
+
+**Les origines sont écrites dans le code, pas lues depuis l'environnement.** Une frontière de sécurité doit passer par une relecture : une variable d'environnement permettrait d'ajouter n'importe quelle origine sans que personne ne le voie. Les origines de développement (`localhost:3000`, `localhost:3001`) ne sont ajoutées que hors production.
 
 ---
 
@@ -183,7 +188,7 @@ Vérifié par des tests dédiés, pas seulement par relecture :
 
 Décision différée R03 — à figer avant la mise en production de M1.
 
-Proposition : `mysqldump` chiffré quotidien, rétention 30 jours, copie hors du serveur d'exécution. **Une restauration testée au moins une fois** — une sauvegarde jamais restaurée n'est pas une sauvegarde.
+Les sauvegardes sont assurées par Supabase ([ADR 0010](adr/0010-postgresql-supabase.md)), hors du serveur d'exécution par construction. **La restauration doit être testée au moins une fois** — une sauvegarde jamais restaurée n'est pas une sauvegarde, qu'elle soit managée ou non.
 
 Les médias ne sont pas sauvegardés par nous : Cloudinary et R2 sont durables. En revanche, une base perdue rend les médias inexploitables (les clés de stockage y vivent), ce qui fait de la sauvegarde de la base la seule chose réellement critique.
 

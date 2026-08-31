@@ -7,7 +7,7 @@
 | Vitrine | `localhost:3000` | `*.vercel.app` (par PR) | `garage.com` |
 | Backoffice | `localhost:3001` | `*.vercel.app` (par PR) | `admin.garage.com` |
 | API | `localhost:8000` | serveur, base `mecano_preview` | `api.garage.com` |
-| Base | MySQL local | `mecano_preview` | `mecano_prod` |
+| Base | SQLite en mémoire (tests) ou Supabase | Projet Supabase de préproduction | Projet Supabase de production |
 | Médias | Cloudinary `mecano/dev`, bucket R2 `mecano-videos-dev` | dossiers `preview` | dossiers `prod` |
 | `APP_DEBUG` | `true` | `true` | **`false`** — vérifié au déploiement |
 | Emails | `log` | `log` | `log` (aucun email en V1) |
@@ -25,7 +25,7 @@ Cet ordre n'est pas arbitraire : chaque étape conditionne la suivante.
 1. **Brancher le domaine sur Vercel.** Avant tout code. La configuration des cookies du BFF, les origines CORS et les URL canoniques du SEO en dépendent. Le faire en fin de projet impose de tout reconfigurer.
 2. Créer les deux projets Vercel (`mecano-web` → `apps/web`, `mecano-admin` → `apps/admin`), avec leurs domaines.
 3. Créer le compte Cloudinary, le bucket R2 et son domaine personnalisé (`media.garage.com`).
-4. Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor.
+4. Préparer le serveur : Docker et Docker Compose ([ADR 0011](adr/0011-api-conteneurisee.md)). PHP, Nginx et Supervisor vivent dans l'image, plus sur la machine.
 5. Créer le certificat TLS de `api.garage.com` (Let's Encrypt, renouvellement automatique).
 6. Renseigner les variables d'environnement des deux côtés.
 7. Premier déploiement de M0, et vérifier la connexion de bout en bout.
@@ -36,7 +36,9 @@ Cet ordre n'est pas arbitraire : chaque étape conditionne la suivante.
 
 ### Attendu
 
-PHP 8.4 (`bcmath`, `curl`, `fileinfo`, `gd` ou `imagick`, `intl`, `mbstring`, `pdo_mysql`, `zip`), MySQL 8, Nginx, Composer 2, Supervisor, `certbot`.
+Docker 24+, Docker Compose, et `certbot` pour le terminateur TLS placé devant le conteneur. Tout le reste — PHP 8.4 et ses extensions, Nginx, Composer, Supervisor — est décrit par `apps/api/Dockerfile` et n'est plus installé à la main.
+
+La base de données n'est plus sur cette machine : elle est chez Supabase ([ADR 0010](adr/0010-postgresql-supabase.md)).
 
 ### Arborescence
 
@@ -49,7 +51,7 @@ PHP 8.4 (`bcmath`, `curl`, `fileinfo`, `gd` ou `imagick`, `intl`, `mbstring`, `p
     └── storage/       journaux, cache, fichiers temporaires
 ```
 
-Racine Nginx sur `/var/www/mecano/current/apps/api/public`.
+Le terminateur TLS relaie vers le conteneur (`API_PORT`, 8000 par défaut). Il doit transmettre `X-Forwarded-For` et `X-Forwarded-Proto`, et le conteneur doit le déclarer dans `TRUSTED_PROXIES` — sans quoi toutes les limitations de débit deviennent globales au lieu d'être appliquées par visiteur.
 
 ### Séquence de déploiement
 
@@ -170,7 +172,7 @@ Décision différée R03, à figer avant la mise en production de M1. Propositio
 
 | Quoi | Fréquence | Rétention | Où |
 |---|---|---|---|
-| Base MySQL (`mysqldump` chiffré) | quotidienne, 3 h | 30 jours | Hors du serveur d'exécution |
+| Base PostgreSQL | assurée par Supabase | selon le plan Supabase | Hors du serveur d'exécution, par construction |
 | `shared/.env` | à chaque modification | — | Gestionnaire de secrets, hors dépôt |
 | Médias | — | — | Cloudinary et R2 sont durables, pas de sauvegarde de notre côté |
 
@@ -187,7 +189,7 @@ Point important : les médias vivent chez des tiers, mais les **clés de stockag
 | Régression front | Vercel, « Promote to production » sur le déploiement précédent. Immédiat |
 | Régression API sans migration | `current` repointé vers la release précédente, `php-fpm` rechargé, `queue:restart` |
 | Régression API avec migration | `php artisan migrate:rollback --step=1`, puis repointage. **À éviter** — d'où la règle des migrations rétrocompatibles |
-| Perte de base | Restauration du dernier `mysqldump`, puis vérification de cohérence des médias |
+| Perte de base | Restauration à un instant donné depuis Supabase, puis vérification de cohérence des médias |
 
 C'est précisément pour rendre le retour arrière possible que les migrations doivent être rétrocompatibles : une colonne ajoutée nullable permet de revenir en arrière sans toucher au schéma.
 

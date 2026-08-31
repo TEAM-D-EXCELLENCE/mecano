@@ -28,7 +28,7 @@ Le point le plus important de ce rôle : **CODEOWNERS sur `openapi.yaml` est ce 
 
 **Propriétaire de :** `apps/api/`.
 
-Laravel, MySQL, files d'attente, intégrations externes, tests d'API, déploiement de l'API.
+Laravel, PostgreSQL, files d'attente, intégrations externes, tests d'API, image Docker et déploiement de l'API.
 
 **Charge : environ 39,5 j.**
 

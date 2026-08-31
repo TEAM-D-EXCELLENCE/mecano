@@ -69,7 +69,7 @@ Légende des statuts : **V1** = livré dans le périmètre V1 · **V2** = report
 | Chargement < 3 s sur mobile | M1, vérifié à chaque jalon | ISR + CDN Vercel, images Cloudinary en WebP/AVIF, budget de performance en CI. Voir [07](../01-architecture/07-performance-seo-pwa.md) | V1 |
 | Backoffice protégé, mots de passe hachés | M0 | Sanctum, bcrypt, BFF cookie httpOnly, `noindex`, limitation de débit sur `/login`. Voir [06](../01-architecture/06-securite.md) | V1 |
 | Site responsive mobile / tablette / ordinateur | M1 | Tailwind, conception mobile d'abord | V1 |
-| Hébergement stable, sauvegardes régulières de la base | M1 | Serveur Excellence Team + sauvegardes `mysqldump` planifiées. Fréquence à arbitrer, décision R03 | V1 |
+| Hébergement stable, sauvegardes régulières de la base | M1 | API conteneurisée sur le serveur Excellence Team, base managée chez Supabase — sauvegardes assurées par le fournisseur ([ADR 0010](../01-architecture/adr/0010-postgresql-supabase.md)) | V1 |
 | Coût minimal, API gratuites ou à faible coût | Transverse | Vercel gratuit, Cloudinary gratuit, R2 égress gratuit, remove.bg gratuit plafonné. Voir [05](../01-architecture/05-integrations-externes.md) | V1 |
 | Structure HTML favorisant le SEO | M1, complété en M2 | SSR + ISR, `sitemap.xml`, JSON-LD `Vehicle`, balises Open Graph. Voir [07](../01-architecture/07-performance-seo-pwa.md) | **Écart E2** |
 

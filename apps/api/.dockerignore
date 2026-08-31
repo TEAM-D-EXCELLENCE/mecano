@@ -26,7 +26,12 @@ phpunit.xml
 .phpunit.result.cache
 .phpunit.cache/
 *.log
-*.lock
+
+# `*.lock` excluait composer.lock, que le Dockerfile copie explicitement :
+# le build échouait. On ne vise que les verrous Node, inutiles ici.
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Builds Next.js des frontends (si jamais dans le repo)
 apps/admin/

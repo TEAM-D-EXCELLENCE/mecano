@@ -143,7 +143,8 @@ final class AdminMediaConfirmTest extends TestCase
             'storage_key' => $storageKey,
             'role' => 'video_interior',
             'kind' => 'video',
-            'provider' => 'r2',
+            // Les vidéos sont passées sur Cloudinary comme les photos (ADR 0012).
+            'provider' => 'cloudinary',
         ]);
     }
 

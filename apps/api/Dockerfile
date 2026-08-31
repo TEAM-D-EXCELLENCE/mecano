@@ -8,17 +8,19 @@ WORKDIR /app
 # Copy composer files first for better layer caching
 COPY composer.json composer.lock ./
 
+# Pas d'--optimize-autoloader ici : le code applicatif n'est pas encore présent,
+# le classmap serait vide de toute classe App\. L'optimisation a lieu au stade
+# suivant, une fois les sources copiées.
 RUN composer install \
     --no-dev \
     --no-interaction \
     --no-scripts \
-    --prefer-dist \
-    --optimize-autoloader
+    --prefer-dist
 
 # ============================================================
 # Stage 2 – Production image
 # ============================================================
-FROM php:8.3-fpm-alpine AS production
+FROM php:8.4-fpm-alpine AS production
 
 LABEL maintainer="Excellence Team" \
       description="Mecano API – Laravel 13 backend" \
@@ -81,6 +83,9 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 # ------------------------------------------------------------------
 WORKDIR /var/www/html
 
+# Composer, pour régénérer l'autoloader une fois les sources en place
+COPY --from=vendor /usr/bin/composer /usr/bin/composer
+
 # Copy vendor from build stage
 COPY --from=vendor /app/vendor ./vendor
 
@@ -107,8 +112,9 @@ RUN mkdir -p \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Run post-autoload-dump manually (scripts were skipped above)
-RUN php artisan package:discover --ansi 2>/dev/null || true
+# Autoloader optimisé sur les sources réelles, puis découverte des paquets
+RUN composer dump-autoload --no-dev --optimize --no-scripts --no-interaction \
+    && php artisan package:discover --ansi 2>/dev/null || true
 
 # ------------------------------------------------------------------
 # Entrypoint

@@ -14,11 +14,11 @@ final readonly class WhatsAppUrlBuilder
      */
     public static function build(Car $car): string
     {
-        $rawPhone = (string) Setting::get('whatsapp_number', env('DEFAULT_WHATSAPP_NUMBER', '+237699001122'));
+        $rawPhone = (string) Setting::get('whatsapp_number', (string) config('media.default_whatsapp_number', '+237699001122'));
         // Clean phone number: keep only digits
         $cleanPhone = preg_replace('/\D+/', '', $rawPhone) ?: '237699001122';
 
-        $frontendUrl = rtrim((string) env('APP_FRONTEND_URL', 'http://localhost:3000'), '/');
+        $frontendUrl = rtrim((string) config('app.frontend_url'), '/');
         $carUrl = "{$frontendUrl}/voitures/{$car->slug}";
         $brandName = $car->brand?->name ?? '';
 

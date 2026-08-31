@@ -56,6 +56,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | URL publique de la vitrine
+    |--------------------------------------------------------------------------
+    |
+    | Sert à composer les liens canoniques envoyés aux acheteurs, notamment le
+    | message WhatsApp. Passe par la configuration et non par `env()` : dès que
+    | la configuration est mise en cache — ce que fait l'entrypoint Docker au
+    | démarrage — `env()` renvoie null, et chaque lien WhatsApp pointerait vers
+    | `localhost`.
+    |
+    */
+
+    'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:3000'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

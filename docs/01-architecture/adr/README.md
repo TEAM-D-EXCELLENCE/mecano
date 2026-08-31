@@ -21,10 +21,13 @@ Un ADR consigne une décision structurante : son contexte, les options examinée
 | [0003](0003-monorepo-trois-apps.md) | Monorepo de trois applications, sans paquet partagé | Accepté | 2026-08-25 |
 | [0004](0004-auth-bearer-bff.md) | Jeton Bearer détenu par un BFF Next en cookie httpOnly | Accepté | 2026-08-25 |
 | [0005](0005-openapi-source-de-verite.md) | `openapi.yaml` écrit à la main comme source de vérité | Accepté | 2026-08-25 |
-| [0006](0006-medias-cloudinary-r2.md) | Photos sur Cloudinary, vidéos sur Cloudflare R2 | Accepté | 2026-08-25 |
+| [0006](0006-medias-cloudinary-r2.md) | Photos sur Cloudinary, vidéos sur Cloudflare R2 | Partiellement remplacé par [0012](0012-videos-sur-cloudinary.md) | 2026-08-25 |
 | [0007](0007-upload-direct-signe.md) | Upload direct signé depuis le navigateur | Accepté | 2026-08-25 |
 | [0008](0008-facebook-video-hors-v1.md) | Facebook (Lot 6) et habillage vidéo (Lot 7) hors V1 | Accepté | 2026-08-25 |
 | [0009](0009-revalidation-isr-webhook.md) | Revalidation ISR par webhook signé | Accepté | 2026-08-25 |
+| [0010](0010-postgresql-supabase.md) | PostgreSQL managé (Supabase) plutôt que MySQL auto-hébergé | Accepté | 2026-08-31 |
+| [0011](0011-api-conteneurisee.md) | L'API est livrée sous forme d'image Docker | Accepté | 2026-08-31 |
+| [0012](0012-videos-sur-cloudinary.md) | Les vidéos passent sur Cloudinary | Accepté | 2026-08-31 |
 
 ## Gabarit
 

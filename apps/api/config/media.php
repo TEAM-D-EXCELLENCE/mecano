@@ -15,6 +15,9 @@ return [
 
     'driver' => env('MEDIA_IMAGE_DRIVER', 'cloudinary'),
 
+    /** Numéro de repli si aucun n'est enregistré dans les réglages du garage. */
+    'default_whatsapp_number' => env('DEFAULT_WHATSAPP_NUMBER', '+237699001122'),
+
     'photos' => [
         'max_size_bytes' => 15 * 1024 * 1024, // 15 MB
         'allowed_mimes' => [
@@ -44,13 +47,6 @@ return [
         'secure' => true,
     ],
 
-    'r2' => [
-        'account_id' => env('R2_ACCOUNT_ID', ''),
-        'access_key_id' => env('R2_ACCESS_KEY_ID', ''),
-        'secret_access_key' => env('R2_SECRET_ACCESS_KEY', ''),
-        'bucket' => env('R2_BUCKET', 'mecano-videos'),
-        'public_base_url' => env('R2_PUBLIC_BASE_URL', 'https://media.garage.com'),
-    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 # 0006 — Photos sur Cloudinary, vidéos sur Cloudflare R2
 
-- **Statut** : Accepté
+- **Statut** : Accepté — **partie vidéo remplacée par [ADR 0012](0012-videos-sur-cloudinary.md)** le 2026-08-31
 - **Date** : 2026-08-25
 - **Décideur** : responsable architecture
 - **Décision liée** : D06

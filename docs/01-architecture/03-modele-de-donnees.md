@@ -1,6 +1,8 @@
 # 03 — Modèle de données
 
-MySQL 8, moteur InnoDB, collation `utf8mb4_unicode_ci`.
+PostgreSQL managé chez Supabase ([ADR 0010](adr/0010-postgresql-supabase.md)), encodage UTF-8.
+
+> Les tests s'exécutent sur SQLite en mémoire : **aucun test ne touche le moteur de production**. Les différences de moteur — au premier rang desquelles la colonne générée `exclusive_role` ci-dessous — ne sont donc couvertes par rien.
 Ce document et les migrations doivent rester synchronisés : **toute PR touchant une migration met ce fichier à jour**.
 
 ## Vue d'ensemble
@@ -150,7 +152,7 @@ INDEX (confirmed_at)               -- purge des orphelins
 UNIQUE (car_id, role) WHERE role IN ('main','video_interior','video_exterior')
 ```
 
-MySQL 8 n'a pas d'index unique partiel. On l'implémente par une colonne générée :
+L'implémentation actuelle repose sur une colonne générée, héritée du choix MySQL initial :
 
 ```sql
 exclusive_role VARCHAR(30) GENERATED ALWAYS AS

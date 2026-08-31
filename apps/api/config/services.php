@@ -35,9 +35,20 @@ return [
         ],
     ],
 
+    /*
+    | Webhook de revalidation de la vitrine.
+    |
+    | Les deux clés portent le nom que l'environnement fournit réellement. Elles
+    | en portaient un autre : l'URL retombait sur `localhost` — le conteneur se
+    | parlait à lui-même — et la signature était calculée avec un secret par
+    | défaut inscrit dans le dépôt, donc connu de tous.
+    |
+    | Plus de valeur de repli pour le secret : mieux vaut un échec explicite
+    | qu'une signature que la vitrine rejettera sans que personne ne le voie.
+    */
     'frontend' => [
-        'revalidate_url' => env('FRONTEND_REVALIDATE_URL', 'http://localhost:3000/api/revalidate'),
-        'revalidate_secret' => env('REVALIDATE_SECRET', 'test-revalidate-secret'),
+        'revalidate_url' => env('FRONTEND_REVALIDATE_URL'),
+        'revalidate_secret' => env('REVALIDATION_SECRET'),
     ],
 
 ];

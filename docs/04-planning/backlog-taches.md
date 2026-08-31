@@ -13,7 +13,7 @@ Les identifiants sont **stables** : ils sont référencés par la [matrice de tr
 | # | Tâche | Qui | Est. | Dépend de |
 |---|---|---|---|---|
 | OPS-01 | **Brancher le domaine sur Vercel**, créer les projets `mecano-web` et `mecano-admin` | Archi | 0,5 j | — |
-| OPS-02 | Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor | BE | 1 j | — |
+| OPS-02 | Préparer le serveur : Docker, Docker Compose, terminateur TLS | BE | 1 j | — |
 | OPS-03 | TLS `api.garage.com` + renouvellement automatique | BE | 0,5 j | OPS-02 |
 | OPS-04 | Compte Cloudinary, dossiers `dev` / `preview` / `prod` | Archi | 0,5 j | — |
 | OPS-05 | Bucket R2 + domaine `media.garage.com` | Archi | 0,5 j | OPS-01 |
@@ -32,7 +32,7 @@ Les identifiants sont **stables** : ils sont référencés par la [matrice de tr
 | OPS-12 | CI : Pint + Larastan 6 sur `apps/api`, déclenchée par chemin | Archi | 0,5 j | OPS-10 |
 | OPS-13 | CI : ESLint + Prettier + `tsc --noEmit` sur les apps Next | Archi | 0,5 j | OPS-10 |
 | **CTR-01** | **Contrat : `/health`, `/auth/login`, `/auth/logout`, `/auth/me`** | Archi | 1 j | OPS-10 |
-| BE-01 | Initialiser Laravel 13, MySQL, `.env.example`, structure des dossiers | BE | 1 j | OPS-10 |
+| BE-01 | Initialiser Laravel 13, PostgreSQL, `.env.example`, structure des dossiers | BE | 1 j | OPS-10 |
 | BE-02 | Migration `users` + seeder du compte mécanicien | BE | 0,5 j | BE-01 |
 | BE-03 | `GET /health` : base, file d'attente, fournisseurs | BE | 0,5 j | BE-01 |
 | BE-04 | Sanctum : `/auth/login` avec limitation de débit double, jeton unique actif | BE | 1,5 j | BE-02, CTR-01 |

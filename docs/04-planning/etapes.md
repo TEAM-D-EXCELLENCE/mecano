@@ -73,7 +73,7 @@ Ensuite, **le contrat est sur le chemin critique deux fois**. C'est la contrepar
 | # | Tâche | Qui | Bloque |
 |---|---|---|---|
 | OPS-01 | **Brancher le domaine sur Vercel**, créer les deux projets | Architecture | **tout** |
-| OPS-02 | Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor | Backend | l'API |
+| OPS-02 | Préparer le serveur : Docker, Docker Compose, terminateur TLS | Backend | l'API |
 | OPS-03 | TLS de `api.garage.com` (Let's Encrypt, renouvellement auto) | Backend | l'API en ligne |
 | OPS-04 | Créer le compte Cloudinary, les dossiers par environnement | Architecture | les médias (M1) |
 | OPS-05 | Créer le bucket R2 et le domaine `media.garage.com` | Architecture | les vidéos (M3) |
@@ -94,7 +94,7 @@ Ensuite, **le contrat est sur le chemin critique deux fois**. C'est la contrepar
 | 1 | Squelette du monorepo, CODEOWNERS, gabarit de PR | 0,5 j | — |
 | 2 | CI : commits, Pint, Larastan, ESLint, `tsc` | 1,5 j | 1 |
 | 3 | **Contrat : `/health`, `/auth/*`** | 1 j | — |
-| 4 | Laravel, MySQL, Sanctum, `users`, `/health`, `/auth/*` | 3 j | 3 |
+| 4 | Laravel, PostgreSQL, Sanctum, `users`, `/health`, `/auth/*` | 3 j | 3 |
 | 5 | `apps/web` : coquille, jetons Tailwind, shadcn, déploiement | 1,5 j | 1 |
 | 6 | `apps/admin` : BFF, connexion, garde serveur, `noindex` | 2,5 j | 3 |
 | 7 | Vérification de bout en bout, revue de sécurité M0 | 0,5 j | 4, 6 |

@@ -50,8 +50,22 @@ final class RevalidateFrontend implements ShouldQueue
             return;
         }
 
-        $url = (string) config('services.frontend.revalidate_url', 'http://localhost:3000/api/revalidate');
+        $url = (string) config('services.frontend.revalidate_url', '');
         $secret = (string) config('services.frontend.revalidate_secret', '');
+
+        // Sans adresse ni secret, la revalidation ne peut pas aboutir. On le dit
+        // une fois, plutôt que de signer avec une chaîne vide et de laisser la
+        // vitrine rejeter silencieusement chaque appel : une page périmée est un
+        // bug invisible, c'est justement ce qu'il faut éviter.
+        if ($url === '' || $secret === '') {
+            Log::alert('Revalidation non configurée : FRONTEND_REVALIDATE_URL ou REVALIDATION_SECRET manquante.', [
+                'tags' => $tags,
+                'url_defini' => $url !== '',
+                'secret_defini' => $secret !== '',
+            ]);
+
+            return;
+        }
 
         $payload = [
             'tags' => $tags,

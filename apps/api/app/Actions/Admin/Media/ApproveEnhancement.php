@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Actions\Admin\Media;
 
 use App\Enums\EnhancementStatus;
+use App\Exceptions\EnhancementNotApprovableException;
 use App\Models\Media;
 use App\Models\MediaEnhancement;
 use App\Support\Contracts\FrontendRevalidator;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 final readonly class ApproveEnhancement
 {
@@ -26,13 +25,15 @@ final readonly class ApproveEnhancement
     public function handle(MediaEnhancement $enhancement): MediaEnhancement
     {
         if ($enhancement->status !== EnhancementStatus::Ready) {
-            throw new UnprocessableEntityHttpException(
+            throw new EnhancementNotApprovableException(
                 'Seul un dérivé prêt (ready) peut être approuvé.'
             );
         }
 
         if ($enhancement->result_url === null) {
-            throw new ConflictHttpException('L\'URL du dérivé est manquante, impossible d\'approuver.');
+            throw new EnhancementNotApprovableException(
+                'L\'URL du dérivé est manquante, impossible d\'approuver.'
+            );
         }
 
         DB::transaction(function () use ($enhancement): void {

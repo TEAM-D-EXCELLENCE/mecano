@@ -6,6 +6,17 @@ echo "  Mecano API – Boot sequence  "
 echo "=============================="
 
 # ------------------------------------------------------------------
+# 0. Refuser de démarrer sans clé d'application
+# ------------------------------------------------------------------
+# Sans APP_KEY, Laravel démarre puis échoue au premier chiffrement, avec une
+# erreur qui ne dit pas d'où vient le problème. Mieux vaut s'arrêter ici.
+if [ -z "$APP_KEY" ]; then
+    echo "[boot] ERREUR : APP_KEY est vide."
+    echo "[boot] Générez-la avec : php artisan key:generate --show"
+    exit 1
+fi
+
+# ------------------------------------------------------------------
 # 1. Wait for the database to be reachable (optional, graceful)
 # ------------------------------------------------------------------
 if [ -n "$DB_HOST" ]; then
@@ -36,8 +47,15 @@ php artisan view:cache
 # ------------------------------------------------------------------
 # 3. Run migrations (safe – uses --force in production)
 # ------------------------------------------------------------------
-echo "[boot] Running migrations..."
-php artisan migrate --force --no-interaction
+# `--isolated` prend un verrou applicatif : si plusieurs conteneurs démarrent
+# ensemble, un seul migre et les autres passent leur tour au lieu d'appliquer
+# les mêmes migrations en concurrence.
+if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
+    echo "[boot] Running migrations..."
+    php artisan migrate --force --isolated --no-interaction
+else
+    echo "[boot] Migrations désactivées (RUN_MIGRATIONS=false)."
+fi
 
 # ------------------------------------------------------------------
 # 4. Create symlink for storage (if not already done)

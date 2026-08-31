@@ -8,14 +8,14 @@ use App\Enums\EnhancementStatus;
 use App\Enums\EnhancementType;
 use App\Enums\MediaKind;
 use App\Enums\MediaProvider;
+use App\Exceptions\MediaNotEnhanceableException;
+use App\Exceptions\QuotaExceededException;
 use App\Http\Requests\Admin\Media\RequestEnhancementRequest;
 use App\Models\IntegrationQuota;
 use App\Models\Media;
 use App\Models\MediaEnhancement;
 use App\Support\Contracts\ImageEnhancer;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Throwable;
 
 final readonly class RequestMediaEnhancement
@@ -27,7 +27,7 @@ final readonly class RequestMediaEnhancement
     public function handle(Media $media, RequestEnhancementRequest $request): MediaEnhancement
     {
         if ($media->kind !== MediaKind::Photo) {
-            throw new UnprocessableEntityHttpException('Seules les photos peuvent être améliorées.');
+            throw new MediaNotEnhanceableException;
         }
 
         $type = EnhancementType::from((string) $request->validated('type'));
@@ -47,13 +47,12 @@ final readonly class RequestMediaEnhancement
     {
         $period = now()->format('Y-m');
 
-        if (! IntegrationQuota::hasAvailable('removebg', $period, 1)) {
-            throw new ConflictHttpException('Quota mensuel atteint (50/50), disponible le 1er du mois.');
-        }
-
         /** @var MediaEnhancement $enhancement */
         $enhancement = DB::transaction(function () use ($media, $type, $provider, $period) {
-            IntegrationQuota::consume('removebg', $period, 1);
+            // Le contrôle et la consommation vivent dans la même transaction, sur
+            // une ligne verrouillée : sans cela deux requêtes simultanées passent
+            // toutes deux le contrôle et le quota est franchi.
+            IntegrationQuota::consumeOrFail('removebg', $period, 1);
 
             return MediaEnhancement::query()->create([
                 'media_id' => $media->id,
@@ -100,7 +99,7 @@ final readonly class RequestMediaEnhancement
             $result = match ($type) {
                 EnhancementType::AutoImprove => $this->enhancer->autoImprove($media),
                 EnhancementType::SmartCrop => $this->enhancer->smartCrop($media),
-                default => throw new UnprocessableEntityHttpException('Type non supporté'),
+                default => throw new MediaNotEnhanceableException('Type d\'amélioration non supporté.'),
             };
 
             $enhancement->update([

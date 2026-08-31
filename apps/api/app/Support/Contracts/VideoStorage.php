@@ -11,7 +11,7 @@ use App\Data\Media\UploadConstraints;
 interface VideoStorage
 {
     /**
-     * Generate a presigned PUT URL for direct client upload to Cloudflare R2 / S3.
+     * Paramètres signés pour un envoi direct depuis le navigateur.
      */
     public function presignedPutUrl(string $key, UploadConstraints $constraints): SignedUpload;
 

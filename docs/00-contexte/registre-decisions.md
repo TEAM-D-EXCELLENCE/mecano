@@ -38,7 +38,7 @@ Arbitre : responsable architecture (b.brun@ongsenam.com). Date de la session d'a
 |---|---|---|---|
 | R01 | Pilote de file d'attente : `database` ou Redis | Quand le volume de médias le justifie. `database` en M0/M1 | Architecture |
 | R02 | Préproduction : sous-domaine dédié ou aperçus Vercel seuls | Avant le premier déploiement de M1 | Architecture |
-| R03 | Sauvegardes MySQL : fréquence et rétention | Avant la mise en production de M1 | Architecture + client |
+| R03 | Sauvegardes : fréquence et rétention | Tranché — assuré par Supabase ([ADR 0010](../01-architecture/adr/0010-postgresql-supabase.md)) | Architecture |
 | R04 | Add-on payant Cloudinary pour la suppression de fond illimitée | Si le quota remove.bg de 50/mois devient bloquant | Client (coût récurrent) |
 | R05 | Habillage vidéo réencodé : worker ffmpeg dédié ou crédits Cloudinary | Au démarrage du Lot 7 en V2 | Architecture + client |
 | R06 | Multi-utilisateur du backoffice (employés du garage) | Si le garage grandit | Client |
