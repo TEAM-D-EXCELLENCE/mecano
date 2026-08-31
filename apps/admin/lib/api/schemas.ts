@@ -36,3 +36,13 @@ export type PaginationLinks = Schemas["PaginationLinks"];
 
 /** Statuts d'annonce, tels que le contrat les déclare. */
 export type CarStatus = "draft" | "available" | "reserved" | "sold";
+
+export type AdminService = Schemas["AdminService"];
+export type AdminPost = Schemas["AdminPost"];
+export type AdminSettings = Schemas["AdminSettings"];
+export type PostStatus = "draft" | "published";
+
+export type SignedUpload = Schemas["SignedUpload"];
+
+/** Rôles de média. `main`, `video_interior` et `video_exterior` sont exclusifs par annonce. */
+export type MediaRole = "main" | "gallery" | "video_interior" | "video_exterior";

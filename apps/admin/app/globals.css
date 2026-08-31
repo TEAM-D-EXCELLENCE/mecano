@@ -1,7 +1,33 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* Le thème sombre a trois états, pas deux : classe `.dark` explicite, classe
+   `.light` explicite, et — le cas le plus courant — aucune classe du tout, où
+   seule la préférence système tranche. Le variant doit couvrir les trois,
+   sans quoi toute utilitaire `dark:` reste lettre morte chez la majorité des
+   visiteurs, alors même que les jetons, eux, basculent. */
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not(.light *)) {
+      @slot;
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Identité — rouge Japon, noir, blanc.
+
+   Un seul accent : le rouge hinomaru (#BC002D). Il ne sert qu'à ce qui engage
+   une action ou signale l'essentiel. Tout le reste est noir sur blanc.
+   Les gris sont légèrement tirés vers le rouge plutôt que neutres : posés à
+   côté de l'accent, ils appartiennent à la même famille.
+
+   Les rayons sont courts (4 px) : les angles francs tiennent l'esprit
+   industriel, là où des coins très arrondis l'adouciraient.
+----------------------------------------------------------------------------- */
 
 @theme inline {
   --color-background: var(--background);
@@ -20,6 +46,10 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -33,71 +63,132 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.25rem;
+
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.1647 0.0042 286);
+
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.1647 0.0042 286);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.1647 0.0042 286);
+
+  /* Rouge hinomaru. Blanc dessus : contraste 8,4:1. */
+  --primary: oklch(0.5028 0.2021 20.72);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.9734 0.0035 20);
+  --secondary-foreground: oklch(0.1647 0.0042 286);
+  --muted: oklch(0.9734 0.0035 20);
+  --muted-foreground: oklch(0.5295 0.0125 20);
+  --accent: oklch(0.9734 0.0035 20);
+  --accent-foreground: oklch(0.1647 0.0042 286);
+
+  /* Le rouge étant déjà l'accent, la destruction est un carmin nettement plus
+     sombre : les deux ne peuvent pas être confondus au premier coup d'oeil. */
+  --destructive: oklch(0.3902 0.1402 22);
+  --destructive-foreground: oklch(1 0 0);
+
+  --success: oklch(0.5498 0.1268 152);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.6802 0.1502 62);
+  --warning-foreground: oklch(0.1647 0.0042 286);
+
+  --border: oklch(0.9164 0.0045 20);
+  --input: oklch(0.9164 0.0045 20);
+  --ring: oklch(0.5028 0.2021 20.72);
+
+  /* Barre latérale noire dans les deux thèmes : c'est le poste de pilotage,
+     il reste identique quel que soit le réglage du système. */
+  --sidebar: oklch(0.1647 0.0042 286);
+  --sidebar-foreground: oklch(0.9734 0.0013 286);
+  --sidebar-primary: oklch(0.5779 0.2329 27.65);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.2603 0.0055 286);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.2603 0.0055 286);
+  --sidebar-ring: oklch(0.5779 0.2329 27.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: oklch(0.1451 0.004 286);
+    --foreground: oklch(0.9734 0.0013 286);
+
+    --card: oklch(0.1831 0.004 286);
+    --card-foreground: oklch(0.9734 0.0013 286);
+    --popover: oklch(0.1831 0.004 286);
+    --popover-foreground: oklch(0.9734 0.0013 286);
+
+    /* Le rouge est éclairci sur fond noir : à 0,50 de clarté il perdait sa
+       lisibilité, à 0,62 il tient largement le contraste avec du blanc. */
+    --primary: oklch(0.6242 0.2221 25);
+    --primary-foreground: oklch(1 0 0);
+
+    --secondary: oklch(0.2603 0.0055 286);
+    --secondary-foreground: oklch(0.9734 0.0013 286);
+    --muted: oklch(0.2603 0.0055 286);
+    --muted-foreground: oklch(0.7102 0.0125 20);
+    --accent: oklch(0.2603 0.0055 286);
+    --accent-foreground: oklch(0.9734 0.0013 286);
+
+    --destructive: oklch(0.5502 0.1902 24);
+    --destructive-foreground: oklch(1 0 0);
+
+    --success: oklch(0.6698 0.1368 152);
+    --success-foreground: oklch(0.1451 0.004 286);
+    --warning: oklch(0.7802 0.1502 68);
+    --warning-foreground: oklch(0.1451 0.004 286);
+
+    --border: oklch(1 0 0 / 12%);
+    --input: oklch(1 0 0 / 16%);
+    --ring: oklch(0.6242 0.2221 25);
+
+    --sidebar: oklch(0.1114 0.004 286);
+    --sidebar-border: oklch(1 0 0 / 10%);
+  }
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.1451 0.004 286);
+  --foreground: oklch(0.9734 0.0013 286);
+
+  --card: oklch(0.1831 0.004 286);
+  --card-foreground: oklch(0.9734 0.0013 286);
+  --popover: oklch(0.1831 0.004 286);
+  --popover-foreground: oklch(0.9734 0.0013 286);
+
+  --primary: oklch(0.6242 0.2221 25);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.2603 0.0055 286);
+  --secondary-foreground: oklch(0.9734 0.0013 286);
+  --muted: oklch(0.2603 0.0055 286);
+  --muted-foreground: oklch(0.7102 0.0125 20);
+  --accent: oklch(0.2603 0.0055 286);
+  --accent-foreground: oklch(0.9734 0.0013 286);
+
+  --destructive: oklch(0.5502 0.1902 24);
+  --destructive-foreground: oklch(1 0 0);
+
+  --success: oklch(0.6698 0.1368 152);
+  --success-foreground: oklch(0.1451 0.004 286);
+  --warning: oklch(0.7802 0.1502 68);
+  --warning-foreground: oklch(0.1451 0.004 286);
+
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.6242 0.2221 25);
+
+  --sidebar: oklch(0.1114 0.004 286);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -107,5 +198,11 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Les chiffres d'un tableau se lisent en colonne : ils doivent s'aligner. */
+  th,
+  td {
+    font-variant-numeric: tabular-nums;
   }
 }

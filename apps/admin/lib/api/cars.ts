@@ -1,7 +1,7 @@
 import "server-only";
 
 import { apiRequest } from "./server";
-import type { AdminBrand, AdminCar, Envelope, Paginated } from "./schemas";
+import type { AdminBrand, AdminCar, AdminMedia, Envelope, Paginated } from "./schemas";
 
 /**
  * Lectures serveur du domaine véhicules.
@@ -31,5 +31,10 @@ export async function getCar(id: number): Promise<AdminCar> {
 
 export async function listBrands(): Promise<AdminBrand[]> {
   const { data } = await apiRequest<{ data: AdminBrand[] }>("admin/brands");
+  return data;
+}
+
+export async function listCarMedia(carId: number): Promise<AdminMedia[]> {
+  const { data } = await apiRequest<{ data: AdminMedia[] }>(`admin/cars/${carId}/media`);
   return data;
 }

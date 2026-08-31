@@ -7,18 +7,23 @@ import { DeleteCarButton } from "@/components/cars/DeleteCarButton";
 import { StatusActions } from "@/components/cars/StatusActions";
 import { StatusBadge } from "@/components/cars/StatusBadge";
 import { CarForm } from "@/components/forms/CarForm";
+import { MediaGrid } from "@/components/media/MediaGrid";
+import { MediaUploader } from "@/components/media/MediaUploader";
 import { ApiError } from "@/lib/api/errors";
-import { getCar, listBrands } from "@/lib/api/cars";
-import type { AdminCar } from "@/lib/api/schemas";
+import { getCar, listBrands, listCarMedia } from "@/lib/api/cars";
 import { formatDate } from "@/lib/format";
 
-async function load(rawId: string): Promise<{ car: AdminCar; brands: Awaited<ReturnType<typeof listBrands>> }> {
+async function load(rawId: string) {
   const id = Number(rawId);
   if (!Number.isInteger(id) || id <= 0) notFound();
 
   try {
-    const [car, brands] = await Promise.all([getCar(id), listBrands()]);
-    return { car, brands };
+    const [car, brands, media] = await Promise.all([
+      getCar(id),
+      listBrands(),
+      listCarMedia(id),
+    ]);
+    return { car, brands, media };
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) notFound();
     throw error;
@@ -37,7 +42,8 @@ export async function generateMetadata({ params }: PageProps<"/vehicules/[id]">)
 
 export default async function CarDetailPage({ params }: PageProps<"/vehicules/[id]">) {
   const { id } = await params;
-  const { car, brands } = await load(id);
+  const { car, brands, media } = await load(id);
+  const photos = media.filter((item) => item.kind?.value === "photo");
 
   const title = `${car.brand?.name ? `${car.brand.name} ` : ""}${car.model}`;
 
@@ -76,6 +82,22 @@ export default async function CarDetailPage({ params }: PageProps<"/vehicules/[i
           Statut de l&apos;annonce
         </h2>
         <StatusActions car={car} />
+      </section>
+
+      <section aria-labelledby="photos" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 id="photos" className="text-sm font-medium">
+            Photos
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            {photos.length === 0
+              ? "Une annonce ne peut pas être publiée sans photo principale."
+              : `${photos.length} photo${photos.length > 1 ? "s" : ""} — la première est celle que voient les acheteurs dans le catalogue.`}
+          </p>
+        </div>
+
+        <MediaUploader carId={car.id!} hasMainPhoto={photos.some((p) => p.role?.value === "main")} />
+        <MediaGrid carId={car.id!} media={media} carStatus={car.status?.value} />
       </section>
 
       <section aria-labelledby="infos" className="flex flex-col gap-4">
