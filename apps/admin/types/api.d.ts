@@ -1077,6 +1077,32 @@ export interface components {
             /** @example 38 */
             available: number;
         };
+        /**
+         * @description Paramètres d'un upload direct. Le fichier ne traverse jamais l'API : le
+         *     backoffice l'envoie lui-même à l'hébergeur avec ces paramètres, puis
+         *     confirme l'envoi.
+         */
+        SignedUpload: {
+            /**
+             * @description Point d'entrée de l'hébergeur.
+             * @example https://api.cloudinary.com/v1_1/demo/image/upload
+             */
+            upload_url: string;
+            /** @description Champs à joindre au formulaire d'envoi, tels quels. */
+            fields: {
+                [key: string]: unknown;
+            };
+            /**
+             * @description Clé de l'objet chez l'hébergeur. À renvoyer à la confirmation.
+             * @example mecano/cars/3/9f1c2e40-1a7b-4c11-9c33-2b7d0a5e77aa
+             */
+            storage_key: string;
+            /**
+             * Format: date-time
+             * @description Au-delà, la signature est refusée par l'hébergeur.
+             */
+            expires_at: string;
+        };
         /** @description URL de navigation renvoyées avec toute collection paginée. */
         PaginationLinks: {
             first?: string | null;
@@ -1724,10 +1750,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @example cloudinary */
-                        provider?: string;
-                        upload_url?: string;
-                        params?: Record<string, never>;
+                        data?: components["schemas"]["SignedUpload"];
                     };
                 };
             };
@@ -1769,14 +1792,13 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @enum {string} */
-                    kind: "photo" | "video";
+                    /** @description Clé renvoyée par la signature d'upload. */
+                    storage_key: string;
                     /** @enum {string} */
                     role: "main" | "gallery" | "video_interior" | "video_exterior";
-                    storage_key: string;
-                    url: string;
-                    mime: string;
-                    bytes: number;
+                    /** @description Facultatif : à défaut, l'API retient le type constaté chez l'hébergeur. */
+                    mime?: string | null;
+                    bytes?: number | null;
                     width?: number | null;
                     height?: number | null;
                     alt?: string | null;
