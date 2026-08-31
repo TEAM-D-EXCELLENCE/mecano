@@ -1,6 +1,52 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ServiceCard } from "@/components/content/ServiceCard";
-import { services } from "@/lib/mock-data";
-export const metadata: Metadata = { title: "Services atelier", description: "Diagnostic, entretien, climatisation et carrosserie chez Mecano." };
-export default function ServicesPage() { return <><section className="bg-emerald-50 px-5 py-16"><div className="mx-auto max-w-7xl lg:px-8"><p className="text-sm font-bold uppercase tracking-[.2em] text-emerald-700">L&apos;atelier</p><h1 className="mt-3 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-6xl">Le bon geste, au bon moment.</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">Nous entretenons votre véhicule avec méthode, transparence et le souci de vous faire repartir tranquille.</p></div></section><main className="mx-auto max-w-7xl px-5 py-16 lg:px-8"><section><div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">{services.map((service) => <ServiceCard key={service.slug} service={service} />)}</div></section><section className="mt-20 grid gap-10 rounded-3xl bg-slate-950 p-8 text-white lg:grid-cols-2 lg:p-12"><div><p className="text-sm font-bold uppercase tracking-[.2em] text-emerald-300">Notre méthode</p><h2 className="mt-3 text-3xl font-black tracking-tight">Pas de surprise au moment de passer à la caisse.</h2></div><ol className="space-y-5"><li className="flex gap-4"><span className="font-black text-emerald-300">01</span><p><b>Nous écoutons.</b> Vous décrivez le besoin, nous posons les bonnes questions.</p></li><li className="flex gap-4"><span className="font-black text-emerald-300">02</span><p><b>Nous expliquons.</b> Le diagnostic et les options vous sont présentés clairement.</p></li><li className="flex gap-4"><span className="font-black text-emerald-300">03</span><p><b>Nous intervenons.</b> Après votre accord, avec le soin attendu.</p></li></ol></section><section className="mt-16 text-center"><h2 className="text-3xl font-black tracking-tight text-slate-950">Un voyant, un bruit, une question ?</h2><p className="mx-auto mt-4 max-w-xl text-slate-600">Envoyez-nous un message : nous vous orienterons vers le bon service.</p><Link href="/contact" className="mt-6 inline-block rounded-full bg-emerald-700 px-6 py-3 font-bold text-white">Prendre contact →</Link></section></main></> ; }
+import ServiceCard from "@/features/services/ServiceCard";
+import { services } from "@/features/services/ServicesData";
+
+export const metadata: Metadata = {
+  title: "Services atelier",
+  description: "Les services d'entretien et de réparation proposés par Mecano.",
+};
+
+export default function ServicesPage() {
+  return (
+    <main>
+      <section className="bg-slate-950 px-5 py-16 text-white sm:py-20">
+        <div className="mx-auto max-w-7xl sm:px-3 lg:px-8">
+          <p className="text-sm font-bold uppercase tracking-[.2em] text-emerald-300">
+            L&apos;atelier Mecano
+          </p>
+          <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight sm:text-6xl">
+            Le bon service, au bon moment.
+          </h1>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+            Entretien, diagnostic et réparations : découvrez nos interventions
+            et leurs détails.
+          </p>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {services.map((service) => (
+            <ServiceCard key={service.slug} service={service} />
+          ))}
+        </div>
+        <div className="mt-14 rounded-3xl bg-emerald-50 p-7 sm:p-10">
+          <h2 className="text-2xl font-black text-slate-950">
+            Vous ne savez pas quel service choisir ?
+          </h2>
+          <p className="mt-3 max-w-2xl leading-7 text-slate-600">
+            Décrivez-nous votre besoin, nous vous orienterons vers la bonne
+            intervention.
+          </p>
+          <Link
+            href="/contact"
+            className="mt-6 inline-flex rounded-full bg-[#006633] px-5 py-3 font-bold text-white transition hover:bg-emerald-800"
+          >
+            Nous contacter
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
+}
