@@ -1111,15 +1111,8 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "provider": {
-                      "type": "string",
-                      "example": "cloudinary"
-                    },
-                    "upload_url": {
-                      "type": "string"
-                    },
-                    "params": {
-                      "type": "object"
+                    "data": {
+                      "$ref": "#/components/schemas/SignedUpload"
                     }
                   }
                 }
@@ -1201,12 +1194,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "kind": {
+                  "storage_key": {
                     "type": "string",
-                    "enum": [
-                      "photo",
-                      "video"
-                    ]
+                    "description": "Clé renvoyée par la signature d'upload."
                   },
                   "role": {
                     "type": "string",
@@ -1217,17 +1207,14 @@
                       "video_exterior"
                     ]
                   },
-                  "storage_key": {
-                    "type": "string"
-                  },
-                  "url": {
-                    "type": "string"
-                  },
                   "mime": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Facultatif : à défaut, l'API retient le type constaté chez l'hébergeur."
                   },
                   "bytes": {
-                    "type": "integer"
+                    "type": "integer",
+                    "nullable": true
                   },
                   "width": {
                     "type": "integer",
@@ -1243,12 +1230,8 @@
                   }
                 },
                 "required": [
-                  "kind",
-                  "role",
                   "storage_key",
-                  "url",
-                  "mime",
-                  "bytes"
+                  "role"
                 ]
               }
             }
@@ -3275,6 +3258,38 @@
           "used",
           "limit",
           "available"
+        ]
+      },
+      "SignedUpload": {
+        "type": "object",
+        "description": "Paramètres d'un upload direct. Le fichier ne traverse jamais l'API : le\nbackoffice l'envoie lui-même à l'hébergeur avec ces paramètres, puis\nconfirme l'envoi.\n",
+        "properties": {
+          "upload_url": {
+            "type": "string",
+            "description": "Point d'entrée de l'hébergeur.",
+            "example": "https://api.cloudinary.com/v1_1/demo/image/upload"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Champs à joindre au formulaire d'envoi, tels quels."
+          },
+          "storage_key": {
+            "type": "string",
+            "description": "Clé de l'objet chez l'hébergeur. À renvoyer à la confirmation.",
+            "example": "mecano/cars/3/9f1c2e40-1a7b-4c11-9c33-2b7d0a5e77aa"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Au-delà, la signature est refusée par l'hébergeur."
+          }
+        },
+        "required": [
+          "upload_url",
+          "fields",
+          "storage_key",
+          "expires_at"
         ]
       },
       "PaginationLinks": {
