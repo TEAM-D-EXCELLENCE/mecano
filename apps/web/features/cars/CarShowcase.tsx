@@ -6,9 +6,9 @@ import { BrandTitle, CarVisual, CarInfoOverlay } from './CarLayers';
 
 const ACCENT = '#f4c744';
 
-// Distance, as a percentage of the stage width, between consecutive cars.
-// Values below 100 keep the adjacent cars visible at the edges.
-const CAR_SPACING = 68;
+// On phones, a full card-width gap prevents the neighbouring cars from visually
+// merging. Larger screens retain a subtle preview at the edges.
+const getCarSpacing = () => (window.matchMedia("(max-width: 639px)").matches ? 112 : 76);
 
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const smoothstep = (edge0: number, edge1: number, x: number) => {
@@ -56,8 +56,7 @@ export default function CarShowcase() {
         const delta = i - p;
         const abs = Math.abs(delta);
 
-        // Compact spacing keeps the adjacent car visible at the edge.
-        const carX = delta * CAR_SPACING;
+        const carX = delta * getCarSpacing();
         const carScale = 1 - Math.min(abs, 1) * 0.06;
         carEl.style.transform = `translate3d(${carX}%, 0, 0) scale(${carScale})`;
         carEl.style.filter = `brightness(${clamp(1 - abs * 0.5, 0.45, 1)})`;

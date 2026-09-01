@@ -45,7 +45,7 @@ body {
   width: 88px;
   height: 16px;
   border-radius: 999px;
-  background-image: url('/hero.jpg');
+  background-image: url('/intro.jpg');
   background-position: 50% 50%;
   transform: translate(-50%, -50%);
   animation: intro-pill-expand 1.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;

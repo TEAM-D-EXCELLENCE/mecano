@@ -24,12 +24,12 @@ const showcaseMeta = [
   { category: "CITADINE", speed: "180" },
 ];
 
-// Reuse the catalogue entries so every CTA resolves to /voitures/[slug].
-export const cars: CarShowcaseItem[] = catalogueCars.slice(0, 4).map(
+// Reuse every catalogue entry so each vehicle can be discovered from the home-page showcase.
+export const cars: CarShowcaseItem[] = catalogueCars.map(
   (car, index) => ({
     id: `car-${index + 1}`,
     slug: car.slug,
-    category: showcaseMeta[index].category,
+    category: showcaseMeta[index % showcaseMeta.length].category,
     brand: car.brand,
     model: car.model,
     description: car.description,
@@ -40,7 +40,11 @@ export const cars: CarShowcaseItem[] = catalogueCars.slice(0, 4).map(
         value: new Intl.NumberFormat("fr-FR").format(car.mileageKm),
         label: "KM",
       },
-      { icon: "speed", value: showcaseMeta[index].speed, label: "KM/H" },
+      {
+        icon: "speed",
+        value: showcaseMeta[index % showcaseMeta.length].speed,
+        label: "KM/H",
+      },
       { icon: "calendar", value: String(car.year), label: "ANNÉE" },
     ],
   }),
