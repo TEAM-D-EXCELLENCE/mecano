@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html::-webkit-scrollbar {
+  width: 4px;
+}
+
+html::-webkit-scrollbar-track {
+  background: white; 
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #2B7CAE; 
+  border-radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: #ffffff;
+  color: #0f172a;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
+.intro-reveal {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  overflow: hidden;
+  background: #f6f4ef;
+  animation: intro-reveal-exit 550ms cubic-bezier(0.76, 0, 0.24, 1) 1.55s forwards;
+}
+
+.intro-reveal__pill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 88px;
+  height: 16px;
+  border-radius: 999px;
+  background-image: url('/intro.jpg');
+  background-position: 50% 50%;
+  transform: translate(-50%, -50%);
+  animation: intro-pill-expand 1.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.intro-title-letter {
+  display: inline-block;
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(0.45em) scaleY(1.35);
+  animation: intro-letter-rebuild 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes intro-pill-expand {
+  0% {
+    width: 88px;
+    height: 16px;
+    border-radius: 999px;
+  }
+  38% {
+    width: min(48vw, 620px);
+    height: 16px;
+    border-radius: 999px;
+  }
+  72% {
+    width: min(90vw, 1440px);
+    height: 78svh;
+    border-radius: 56px;
+  }
+  100% {
+    width: 100vw;
+    height: 100svh;
+    border-radius: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes intro-reveal-exit {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-letter-rebuild {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.45em) scaleY(1.35);
+  }
+  45% {
+    opacity: 1;
+    clip-path: inset(38% 0 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-reveal {
+    display: none;
+  }
+
+  .intro-title-letter {
+    opacity: 1;
+    clip-path: none;
+    transform: none;
+    animation: none;
+  }
+}
+::selection {
+  background: #86efac;
+  color: #052e16;
+}
+a,
+button,
+select {
+  outline-offset: 3px;
+}
+a:focus-visible,
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid #059669;
 }
