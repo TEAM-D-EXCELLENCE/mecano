@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CarCard } from "@/components/car/CarCard";
 import { cars } from "@/lib/mock-data";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Véhicules d'occasion",
@@ -21,10 +22,14 @@ interface CarsPageProps {
 export default async function CarsPage({ searchParams }: CarsPageProps) {
   const filters = await searchParams;
 
+  const validCars = cars.filter(
+    (car): car is NonNullable<typeof car> => Boolean(car?.slug)
+  );
+
   const normalizedBrand = filters.marque?.toLowerCase();
   const showSold = filters.inclure_vendus === "1";
 
-  const filteredCars = cars.filter((car) => {
+  const filteredCars = validCars.filter((car) => {
     const matchesBrand =
       !normalizedBrand || car.brand.toLowerCase() === normalizedBrand;
 
@@ -36,36 +41,39 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
     return matchesBrand && matchesPrice && matchesStatus;
   });
 
-  const brands = [...new Set(cars.map((car) => car.brand))];
-
-  const filtersActive =
-    Boolean(filters.marque) ||
-    Boolean(filters.prix_max) ||
-    Boolean(filters.inclure_vendus === "1");
+  const brands = [...new Set(validCars.map((car) => car.brand))];
 
   return (
     <>
       <section className="relative overflow-hidden bg-[#07110c] px-5 py-20 text-white">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.22),transparent_32%),radial-gradient(circle_at_top_right,rgba(0,102,51,0.18),transparent_28%),linear-gradient(to_bottom,rgba(7,17,12,0.98),rgba(2,6,23,1))]" />
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8">
+        {/* Photo de fond : plein bord de la section, pas de la colonne centrée */}
+        <Image
+          src="/voituresHero.jpg"
+          alt="Voitures d'occasion Mecano"
+          fill
+          priority
+          className="absolute inset-0 -z-10 object-cover object-center"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#07110c] via-[#07110c]/70 to-[#07110c]/30" />
+
+        {/* Contenu : centré, au-dessus de la photo */}
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8">
           <div className="max-w-3xl">
             <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-6xl">
               Trouvez votre prochaine voiture.
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-              Chaque annonce présente un véhicule contrôlé, avec les informations utiles
-              avant votre appel.
+              Chaque annonce présente un véhicule contrôlé, avec les
+              informations utiles avant votre appel.
             </p>
-
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-white/5 p-5 backdrop-blur-xl shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+          <div className="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:mt-5">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <p className="mt-2 text-sm text-slate-300">
-                  Affinez votre recherche en quelques clics.
-                </p>
-            
+              <p className="mt-2 text-sm text-slate-300">
+                Affinez votre recherche en quelques clics.
+              </p>
             </div>
 
             <form className="mt-5 grid gap-4">
@@ -112,7 +120,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
                 Inclure les véhicules vendus
               </label>
 
-              <button className="inline-flex items-center justify-center cursor-pointer rounded-2xl bg-emerald-400 px-6 py-3.5 font-semibold text-[#07110c] transition hover:bg-emerald-300">
+              <button className="inline-flex cursor-pointer items-center justify-center rounded-2xl bg-emerald-400 px-6 py-3.5 font-semibold text-[#07110c] transition hover:bg-emerald-300">
                 Filtrer le catalogue
               </button>
             </form>
@@ -127,7 +135,8 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
               Résultats
             </p>
             <p className="mt-2 text-lg font-semibold text-slate-900">
-              {filteredCars.length} véhicule{filteredCars.length > 1 ? "s" : ""} trouvé{filteredCars.length > 1 ? "s" : ""}
+              {filteredCars.length} véhicule{filteredCars.length > 1 ? "s" : ""}{" "}
+              trouvé{filteredCars.length > 1 ? "s" : ""}
             </p>
           </div>
 
@@ -161,7 +170,8 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
                 Aucun véhicule pour ces critères.
               </h2>
               <p className="mt-3 text-slate-600">
-                Élargissez votre recherche ou échangez avec nous pour une recherche personnalisée.
+                Élargissez votre recherche ou échangez avec nous pour une
+                recherche personnalisée.
               </p>
               <Link
                 href="/voitures"

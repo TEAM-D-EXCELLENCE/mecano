@@ -2,6 +2,7 @@
 
 @theme inline {
   --font-sans: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    --font-corinthia: var(--font-corinthia), cursive;
 }
 
 html::-webkit-scrollbar {

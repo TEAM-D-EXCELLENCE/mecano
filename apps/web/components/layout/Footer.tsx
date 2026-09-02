@@ -157,7 +157,7 @@ export function Footer() {
         </div>
 
         {/* Grande signature visuelle */}
-        <div className="mt-12 select-none whitespace-nowrap text-[clamp(5rem,17vw,15rem)] font-black leading-[0.7] tracking-[-0.09em] text-white/[0.28]">
+        <div className="mt-12 select-none sm:flex justify-end whitespace-nowrap text-[clamp(5rem,17vw,15rem)] font-black leading-[0.7] tracking-[-0.09em] text-white/[0.28]">
           mecano.
         </div>
       </div>

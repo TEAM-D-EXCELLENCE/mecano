@@ -108,8 +108,7 @@ export function CarInfoOverlay({
 
         <Link
           href={`/voitures/${car.slug}`}
-          className="inline-flex items-center justify-center gap-2 self-stretch rounded-full px-5 py-2.5 text-sm font-bold text-black transition hover:brightness-95 sm:self-end sm:px-6 sm:py-3"
-          style={{ backgroundColor: accent }}
+          className="inline-flex items-center justify-center gap-2 self-stretch rounded-full px-5 py-2.5 text-sm font-bold bg-[#CFAC3E] text-black transition duration-300 hover:bg-black hover:text-[#CFAC3E] sm:self-end sm:px-6 sm:py-3"
         >
           Voir les détails
         </Link>

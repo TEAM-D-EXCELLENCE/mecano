@@ -15,14 +15,17 @@ const containerVariants: Variants = {
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 40, scale: 0.96, filter: "blur(6px)" },
+  hidden: {
+    opacity: 0,
+    y: 35,
+    scale: 0.96,
+  },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    filter: "blur(0px)",
     transition: {
-      duration: 0.75,
+      duration: 0.7,
       ease: [0.22, 1, 0.36, 1] as const,
     },
   },
@@ -30,102 +33,134 @@ const cardVariants: Variants = {
 
 export default function BlogSection({ posts }: { posts: Post[] }) {
   return (
-    <section className="relative overflow-hidden py-24">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.16),transparent_35%),linear-gradient(to_bottom,rgba(2,6,23,0.96),rgba(15,23,42,0.96))]" />
-
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+    <section className="relative overflow-hidden bg-[#f5f1e8] py-12 sm:py-16">
+      <div className="mx-auto max-w-[1450px] px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-          className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{
+            duration: 0.7,
+            ease: [0.22, 1, 0.36, 1] as const,
+          }}
+          className="relative min-h-[550px] overflow-hidden rounded-[28px] sm:min-h-[700px]"
         >
-          <div className="max-w-2xl">
-            <h2 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl">
-              Les bons réflexes, simplement.
-            </h2>
+            <Image
+              src="/reflexes/cover.png"
+              alt=""
+              fill
+              priority
+              className="object-cover object-center"
+            />
 
-            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
-              Des contenus clairs, utiles et pensés pour vous aider à avancer
-              plus vite avec les bonnes pratiques.
-            </p>
+          {/* Voiles de contraste */}
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/5 to-black/20" />
+
+          {/* Texte principal */}
+          <div className="relative z-10 max-w-3xl px-7 pt-10 sm:px-12 sm:pt-14 lg:px-16 lg:pt-16">
+            <h2 className="font-serif text-5xl font-normal leading-[0.95] tracking-[-0.04em] text-white drop-shadow-md sm:text-6xl lg:text-7xl">
+              Les bons réflexes,
+              <br />
+              <span className="font-corinthia text-6xl sm:text-9xl font-medium">simplement</span>
+            </h2>
           </div>
 
+          {/* Bouton */}
           <Link
             href="/blog"
-            className="group inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-white/80 backdrop-blur-md transition-all duration-300 hover:border-emerald-400/30 hover:bg-[#006633]/10 hover:text-white hover:shadow-[0_0_0_1px_rgba(16,185,129,0.15),0_20px_60px_rgba(16,185,129,0.12)]"
+            className="group absolute right-5 top-60 z-20 inline-flex items-center gap-3 rounded-full bg-[#A68E37] duration-300 px-6 py-3.5 text-sm font-medium tracking-wide text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-black hover:text-[#A68E37] sm:right-10 sm:top-90 sm:bottom-70 sm:px-8"
           >
-            Tous nos conseils
-            <span className="transition-transform duration-300 group-hover:translate-x-1">
-              →
-            </span>
+            Tout nos conseils
           </Link>
-        </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
-        >
-          {posts.map((post) => (
-            <motion.article
-              key={post.slug}
-              variants={cardVariants}
-              className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-4 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-emerald-400/20 hover:bg-white/8 hover:shadow-[0_24px_80px_rgba(0,0,0,0.35)]"
+          {/* Séparateur */}
+          <div className="absolute bottom-[235px] left-7 right-7 z-10 h-px bg-white/45 sm:bottom-[250px] sm:left-12 sm:right-12 lg:left-16 lg:right-16" />
+
+          {/* Articles en bas */}
+          {/* Conseils en scroll horizontal */}
+          <div className="absolute bottom-0 left-7 sm:left-10 right-0 z-10">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="
+      flex
+      snap-x
+      snap-mandatory
+      gap-4
+      overflow-x-auto
+      px-5
+      pb-5
+      sm:px-8
+      sm:pb-8
+      lg:px-10
+      lg:pb-10
+      [scrollbar-width:none]
+      [-ms-overflow-style:none]
+      [&::-webkit-scrollbar]:hidden
+    "
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/0 via-white/0 to-emerald-400/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              {posts.map((post) => (
+                <motion.article
+                  key={post.slug}
+                  variants={cardVariants}
+                  className="
+          group
+          w-[calc(100vw-40px)]
+          min-w-[calc(100vw-40px)]
+          shrink-0
+          snap-start
+          overflow-hidden
+          rounded-[22px]
+          bg-white/90
+          shadow-xl
+          backdrop-blur-sm
+          transition-all
+          duration-500
+          hover:-translate-y-2
+          sm:w-[420px]
+          sm:min-w-[420px]
+          lg:w-[390px]
+          lg:min-w-[390px]
+        "
+                >
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="grid min-h-[145px] grid-cols-[110px_1fr] items-stretch sm:grid-cols-[130px_1fr]"
+                  >
+                    <div className="relative overflow-hidden">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    </div>
 
-              <Link
-                href={`/blog/${post.slug}`}
-                className="relative block overflow-hidden rounded-[22px] bg-slate-900/60"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    fill
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-                  <div className="absolute left-4 top-4">
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90 backdrop-blur-md">
-                      Lecture
-                    </span>
-                  </div>
-                </div>
+                    <div className="flex flex-col justify-between p-4 sm:p-5">
+                      <div>
+                        <h3 className="line-clamp-3 text-base font-semibold leading-tight text-[#183b38] sm:text-lg">
+                          {post.title}
+                        </h3>
+                      </div>
 
-                <div className="space-y-4 p-5">
-                  <div className="flex items-center gap-3 text-xs text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#006633]" />
-                    <span>Conseil pratique</span>
-                    <span className="h-1 w-1 rounded-full bg-slate-600" />
-                    <span>5 min</span>
-                  </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs text-slate-500">
+                          Lire l’article
+                        </span>
 
-                  <h3 className="text-xl font-bold leading-tight text-white transition-colors duration-300 group-hover:text-emerald-300">
-                    {post.title}
-                  </h3>
-
-                  <p className="line-clamp-3 text-sm leading-6 text-slate-300">
-                    {post.excerpt}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="text-sm font-medium text-slate-400">
-                      Lire l’article
-                    </span>
-
-                    <span className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/5 text-white transition-all duration-300 group-hover:border-emerald-400/30 group-hover:bg-[#006633]/15 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </motion.article>
-          ))}
+                        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#183b38] text-white transition-transform duration-300 group-hover:translate-x-1">
+                          →
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.article>
+              ))}
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -326,7 +326,7 @@ export const posts: Post[] = [
     excerpt: "Les contrôles simples qui changent tout avant de vous engager.",
     category: "Conseils",
     publishedAt: "2026-08-12",
-    image : "/hero.jpg",
+    image : "/reflexes/3.jpg",
     body: [
       "Acheter un véhicule d'occasion est une décision importante. Prenez le temps de vérifier ses documents, son historique d'entretien et l'état général de la carrosserie.",
       "Un essai routier est indispensable. Écoutez le moteur, testez les freins et vérifiez que les équipements fonctionnent comme prévu.",
@@ -339,7 +339,7 @@ export const posts: Post[] = [
       "Pneus, visibilité, freinage : les points à ne pas remettre à demain.",
     category: "Entretien",
     publishedAt: "2026-07-28",
-    image : "/hero.jpg",
+    image : "/reflexes/2.jpg",
     body: [
       "La pluie révèle très vite les défauts d'entretien. Commencez par l'état de vos pneus et de vos essuie-glaces.",
       "Une révision des freins et des feux vous permet de rouler avec davantage de sérénité, même par mauvais temps.",
@@ -351,7 +351,7 @@ export const posts: Post[] = [
     excerpt: "Savoir distinguer une alerte à surveiller d'une urgence réelle.",
     category: "Diagnostic",
     publishedAt: "2026-06-18",
-    image : "/hero.jpg",
+    image : "/reflexes/1.jpg",
     body: [
       "Un voyant rouge demande généralement un arrêt dès que les conditions de sécurité le permettent. Un voyant orange mérite quant à lui un contrôle rapide.",
       "En cas de doute, un diagnostic évite de transformer un petit incident en panne coûteuse.",
@@ -363,7 +363,7 @@ export const posts: Post[] = [
     excerpt: "Savoir distinguer une alerte à surveiller d'une urgence réelle.",
     category: "Diagnostic",
     publishedAt: "2026-06-18",
-    image : "/hero.jpg",
+    image : "/reflexes/4.jpg",
     body: [
       "Un voyant rouge demande généralement un arrêt dès que les conditions de sécurité le permettent. Un voyant orange mérite quant à lui un contrôle rapide.",
       "En cas de doute, un diagnostic évite de transformer un petit incident en panne coûteuse.",

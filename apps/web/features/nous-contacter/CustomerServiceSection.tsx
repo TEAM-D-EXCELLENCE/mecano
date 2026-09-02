@@ -42,7 +42,7 @@ function useInView<T extends HTMLElement>(threshold = 0.25) {
           observer.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
 
     observer.observe(el);
@@ -53,12 +53,6 @@ function useInView<T extends HTMLElement>(threshold = 0.25) {
 }
 
 const headline = ["Décrivez votre besoin,", "on s'occupe du reste."];
-
-const ticket = [
-  { label: "Véhicule", value: "Peugeot 308 · 2019" },
-  { label: "Symptôme", value: "Bruit au freinage" },
-  { label: "Délai souhaité", value: "Cette semaine" },
-];
 
 const textVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -87,23 +81,18 @@ export default function ContactSection() {
       ref={ref}
       className={`${display.variable} ${body.variable} ${mono.variable} relative overflow-hidden bg-[#0A0D10] px-6 py-24 text-white sm:py-32`}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] bg-[#101010]" />
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+      <div className="relative flex flex-col mx-auto sm:grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+        {/* BLOC TEXTE : Passe en 2ème position sur mobile, reprend sa place (1ère) dès l'écran 'sm' */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           variants={textVariants}
+          className="order-2 sm:order-1 w-full"
         >
-          <h2 className="font-[family-name:var(--font-display)] text-4xl font-bold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+          <h2 className="font-corinthia text-5xl leading-[1.06] tracking-tight sm:text-6xl lg:text-8xl">
             {headline.map((line, i) => (
               <span key={line} className="block overflow-hidden">
                 <span
@@ -131,8 +120,8 @@ export default function ContactSection() {
                 opacity: active ? 1 : 0,
               }}
             >
-              Un modèle précis, un budget, une réparation à prévoir : commençons par une
-              conversation simple.
+              Un modèle précis, un budget, une réparation à prévoir : commençons
+              par une conversation simple.
             </p>
           </div>
 
@@ -152,24 +141,17 @@ export default function ContactSection() {
               >
                 Contacter Mecano
               </Link>
-
-              <span className="flex items-center gap-2 text-sm text-[#90999F]">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                </span>
-                Créneaux ouverts cette semaine
-              </span>
             </div>
           </div>
         </motion.div>
 
+        {/* BLOC IMAGE : Passe en 1ère position sur mobile, reprend sa place (2ème) dès l'écran 'sm' */}
         <motion.div
           variants={imageVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
-          className="relative"
+          className="relative order-1 sm:order-2 w-full"
         >
           <div className="absolute -inset-4 rounded-[32px] bg-emerald-400/10 blur-2xl" />
 
@@ -184,31 +166,6 @@ export default function ContactSection() {
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A0D10] via-[#0A0D10]/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                <div className="rounded-[22px] border border-white/10 bg-black/30 p-5 backdrop-blur-md">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-wide text-[#90999F]">
-                      Vue rapide
-                    </span>
-                    <span className="font-[family-name:var(--font-mono)] text-xs text-emerald-400">
-                      ● en ligne
-                    </span>
-                  </div>
-
-                  <dl className="mt-4 grid gap-4 sm:grid-cols-3">
-                    {ticket.map((row) => (
-                      <div key={row.label} className="flex flex-col gap-0.5">
-                        <dt className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wide text-[#5C666E]">
-                          {row.label}
-                        </dt>
-                        <dd className="font-[family-name:var(--font-body)] text-sm text-[#F3F5F7]">
-                          {row.value}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              </div>
             </div>
           </div>
         </motion.div>
