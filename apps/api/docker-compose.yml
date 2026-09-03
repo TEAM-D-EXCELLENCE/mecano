@@ -52,7 +52,10 @@ services:
         web-mu-three-85.vercel.app,
         webgarage.excellenceteam.site
 
-      REVALIDATION_SECRET: "${REVALIDATION_SECRET}"
+      # Noms attendus par config/services.php — un écart ici casse la
+      # revalidation ISR en silence : l'API signe, Next refuse.
+      REVALIDATE_SECRET: "${REVALIDATE_SECRET}"
+      FRONTEND_REVALIDATE_URL: "${FRONTEND_REVALIDATE_URL}"
 
       # Logging
       LOG_CHANNEL: stack
@@ -80,17 +83,18 @@ services:
       CLOUDINARY_CLOUD_NAME: "${CLOUDINARY_CLOUD_NAME}"
       CLOUDINARY_API_KEY: "${CLOUDINARY_API_KEY}"
       CLOUDINARY_API_SECRET: "${CLOUDINARY_API_SECRET}"
-      CLOUDINARY_FOLDER: "${CLOUDINARY_FOLDER:-production}"
+      CLOUDINARY_UPLOAD_FOLDER: "${CLOUDINARY_UPLOAD_FOLDER:-mecano/cars}"
 
       # Cloudflare R2
       R2_ACCOUNT_ID: "${R2_ACCOUNT_ID}"
       R2_ACCESS_KEY_ID: "${R2_ACCESS_KEY_ID}"
       R2_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY}"
       R2_BUCKET: "${R2_BUCKET}"
-      R2_PUBLIC_DOMAIN: "${R2_PUBLIC_DOMAIN}"
+      R2_PUBLIC_BASE_URL: "${R2_PUBLIC_BASE_URL}"
 
       # remove.bg
       REMOVE_BG_API_KEY: "${REMOVE_BG_API_KEY}"
+      REMOVE_BG_MONTHLY_QUOTA: "${REMOVE_BG_MONTHLY_QUOTA:-50}"
 
     # ---- Ports --------------------------------------------------------
     ports:
