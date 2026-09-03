@@ -1,0 +1,34 @@
+# ============================================================
+# docker-compose.override.yml – branchement sur le reverse proxy
+#
+# Chargé automatiquement par `docker compose up`.
+#
+# Le serveur héberge plusieurs projets derrière un unique Caddy
+# (`epitnet-caddy-1`), seul conteneur à tenir les ports 80 et 443.
+# Pour qu'il joigne l'API, les deux doivent partager un réseau :
+# Caddy l'appelle alors par son nom de conteneur, `mecano_api:80`.
+#
+# Sans cela, Caddy répond 502 : `reverse_proxy localhost:8001`
+# désignerait le conteneur Caddy lui-même, pas l'hôte.
+#
+# Bloc correspondant dans le Caddyfile :
+#
+#     mecano-api.duckdns.org {
+#         reverse_proxy mecano_api:80
+#     }
+#
+# Le réseau doit exister avant le démarrage (il appartient à la
+# pile Caddy, pas à celle-ci). Sur un autre serveur, surcharger
+# avec CADDY_NETWORK dans le .env.
+# ============================================================
+
+services:
+  api:
+    networks:
+      - mecano_network
+      - caddy
+
+networks:
+  caddy:
+    external: true
+    name: "${CADDY_NETWORK:-epitnet_internal}"
