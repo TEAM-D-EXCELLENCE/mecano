@@ -9,7 +9,7 @@ Le contrat lui-même est [`openapi.yaml`](../../openapi.yaml), à la racine du d
 ## Base et versionnement
 
 ```
-https://api.garage.com/api/v1
+https://mecano-api.duckdns.org/api/v1
 ```
 
 - La version est dans le chemin. Un changement cassant crée `/v2`, il ne modifie pas `/v1`.

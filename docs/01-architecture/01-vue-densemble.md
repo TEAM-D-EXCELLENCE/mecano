@@ -23,7 +23,7 @@ graph TB
     subgraph P["Plateforme Mecano"]
         WEB["apps/web<br/>Vitrine publique<br/>garage.com"]
         ADM["apps/admin<br/>Backoffice<br/>admin.garage.com"]
-        API["apps/api<br/>API JSON Laravel<br/>api.garage.com"]
+        API["apps/api<br/>API JSON Laravel<br/>mecano-api.duckdns.org"]
     end
 
     CLD["☁️ Cloudinary<br/>photos + transformations + CDN"]

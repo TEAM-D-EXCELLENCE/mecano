@@ -15,7 +15,7 @@
       "description": "Serveur de développement local"
     },
     {
-      "url": "https://api.garage.com/api/v1",
+      "url": "https://mecano-api.duckdns.org/api/v1",
       "description": "Serveur de production / recette"
     }
   ],
@@ -2776,7 +2776,7 @@
           },
           "path": {
             "type": "string",
-            "example": "https://api.garage.com/api/v1/cars"
+            "example": "https://mecano-api.duckdns.org/api/v1/cars"
           },
           "links": {
             "type": "array",

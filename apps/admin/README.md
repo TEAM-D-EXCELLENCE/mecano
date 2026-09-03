@@ -18,7 +18,7 @@ L'API Laravel doit tourner en parallèle (voir `apps/api`).
 
 | Variable | Obligatoire | Rôle |
 |---|---|---|
-| `API_BASE_URL` | **oui** | Racine de l'API Laravel, sans barre oblique finale. Ex. `https://api.garage.com/api/v1` |
+| `API_BASE_URL` | **oui** | Racine de l'API Laravel, sans barre oblique finale. Ex. `https://mecano-api.duckdns.org/api/v1` |
 | `COOKIE_NAME` | non | Nom du cookie de session du BFF. `mc_s` par défaut |
 
 Elles sont lues **à la requête**, jamais au chargement des modules : le build

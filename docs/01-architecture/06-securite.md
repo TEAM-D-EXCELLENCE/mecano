@@ -33,7 +33,7 @@ Le backoffice héberge un éditeur de contenu — c'est-à-dire un endroit où d
 D'où le BFF :
 
 ```
-Navigateur ──fetch('/bff/…')──▶ Route handler Next ──Authorization: Bearer──▶ api.garage.com
+Navigateur ──fetch('/bff/…')──▶ Route handler Next ──Authorization: Bearer──▶ mecano-api.duckdns.org
              cookie httpOnly                          jeton lu côté serveur
              invisible au JS                           uniquement
 ```
@@ -150,7 +150,7 @@ style-src 'self' 'unsafe-inline';
 frame-ancestors 'none';
 ```
 
-`connect-src` autorise Cloudinary et R2 parce que le navigateur y envoie les fichiers en direct. Il n'autorise **pas** `api.garage.com` : le backoffice ne parle qu'à son BFF.
+`connect-src` autorise Cloudinary et R2 parce que le navigateur y envoie les fichiers en direct. Il n'autorise **pas** `mecano-api.duckdns.org` : le backoffice ne parle qu'à son BFF.
 
 ---
 

@@ -9,7 +9,7 @@
 
 Un seul compte administre toute la plateforme : contenu, prix, médias, et **le numéro WhatsApp affiché aux clients**. La compromission de ce compte ne fait pas perdre des données — elle détourne tous les prospects du garage. C'est le scénario de sécurité qui compte.
 
-Le backoffice est hébergé sur `admin.garage.com` (Vercel), l'API sur `api.garage.com` (serveur Excellence Team). Ce sont **deux domaines distincts** : le mode cookie de session de Sanctum, qui exige un domaine racine commun, n'est pas applicable. L'authentification se fait donc par jeton Bearer.
+Le backoffice est hébergé sur `admin.garage.com` (Vercel), l'API sur `mecano-api.duckdns.org` (serveur Excellence Team). Ce sont **deux domaines distincts** : le mode cookie de session de Sanctum, qui exige un domaine racine commun, n'est pas applicable. L'authentification se fait donc par jeton Bearer.
 
 Reste la question qui compte : **où vit ce jeton dans le navigateur ?**
 
@@ -68,7 +68,7 @@ Le coût — un proxy et un saut réseau — est supporté par le backoffice, ut
 
 - Cookie `mc_s` : `httpOnly`, `secure`, `sameSite=lax`, `maxAge` 7 jours, nom non révélateur.
 - Jeton Sanctum expirant à 7 jours ; un seul jeton actif à la fois, une nouvelle connexion révoque le précédent.
-- CSP stricte sur le backoffice, avec `connect-src` autorisant Cloudinary et R2 (upload direct) mais **pas** `api.garage.com` — le backoffice ne parle qu'à son BFF.
+- CSP stricte sur le backoffice, avec `connect-src` autorisant Cloudinary et R2 (upload direct) mais **pas** `mecano-api.duckdns.org` — le backoffice ne parle qu'à son BFF.
 - Limitation de débit sur `/login` : 5/min par IP **et** 10/h par email.
 - `noindex` sur toutes les réponses du backoffice, y compris la page de connexion.
 

@@ -14,7 +14,7 @@ Les identifiants sont **stables** : ils sont référencés par la [matrice de tr
 |---|---|---|---|---|
 | OPS-01 | **Brancher le domaine sur Vercel**, créer les projets `mecano-web` et `mecano-admin` | Archi | 0,5 j | — |
 | OPS-02 | Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor | BE | 1 j | — |
-| OPS-03 | TLS `api.garage.com` + renouvellement automatique | BE | 0,5 j | OPS-02 |
+| OPS-03 | TLS `mecano-api.duckdns.org` + renouvellement automatique | BE | 0,5 j | OPS-02 |
 | OPS-04 | Compte Cloudinary, dossiers `dev` / `preview` / `prod` | Archi | 0,5 j | — |
 | OPS-05 | Bucket R2 + domaine `media.garage.com` | Archi | 0,5 j | OPS-01 |
 | OPS-06 | Compte remove.bg, **vérifier le plafond réel du plan gratuit** | Archi | 0,25 j | — |

@@ -74,7 +74,7 @@ Ensuite, **le contrat est sur le chemin critique deux fois**. C'est la contrepar
 |---|---|---|---|
 | OPS-01 | **Brancher le domaine sur Vercel**, créer les deux projets | Architecture | **tout** |
 | OPS-02 | Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor | Backend | l'API |
-| OPS-03 | TLS de `api.garage.com` (Let's Encrypt, renouvellement auto) | Backend | l'API en ligne |
+| OPS-03 | TLS de `mecano-api.duckdns.org` (Let's Encrypt, renouvellement auto) | Backend | l'API en ligne |
 | OPS-04 | Créer le compte Cloudinary, les dossiers par environnement | Architecture | les médias (M1) |
 | OPS-05 | Créer le bucket R2 et le domaine `media.garage.com` | Architecture | les vidéos (M3) |
 | OPS-06 | Compte remove.bg, relever le plafond réel du plan gratuit | Architecture | l'IA photo (M3) |

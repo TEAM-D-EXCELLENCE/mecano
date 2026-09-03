@@ -6,7 +6,7 @@
 |---|---|---|---|
 | Vitrine | `localhost:3000` | `*.vercel.app` (par PR) | `garage.com` |
 | Backoffice | `localhost:3001` | `*.vercel.app` (par PR) | `admin.garage.com` |
-| API | `localhost:8000` | serveur, base `mecano_preview` | `api.garage.com` |
+| API | `localhost:8000` | serveur, base `mecano_preview` | `mecano-api.duckdns.org` |
 | Base | MySQL local | `mecano_preview` | `mecano_prod` |
 | Médias | Cloudinary `mecano/dev`, bucket R2 `mecano-videos-dev` | dossiers `preview` | dossiers `prod` |
 | `APP_DEBUG` | `true` | `true` | **`false`** — vérifié au déploiement |
@@ -26,7 +26,7 @@ Cet ordre n'est pas arbitraire : chaque étape conditionne la suivante.
 2. Créer les deux projets Vercel (`mecano-web` → `apps/web`, `mecano-admin` → `apps/admin`), avec leurs domaines.
 3. Créer le compte Cloudinary, le bucket R2 et son domaine personnalisé (`media.garage.com`).
 4. Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor.
-5. Créer le certificat TLS de `api.garage.com` (Let's Encrypt, renouvellement automatique).
+5. Créer le certificat TLS de `mecano-api.duckdns.org` (Let's Encrypt, renouvellement automatique).
 6. Renseigner les variables d'environnement des deux côtés.
 7. Premier déploiement de M0, et vérifier la connexion de bout en bout.
 
@@ -101,7 +101,7 @@ Deux projets, un dépôt, un répertoire racine différent. Déploiement automat
 
 | Variable | Exemple | Exposée au navigateur |
 |---|---|---|
-| `API_BASE_URL` | `https://api.garage.com/api/v1` | non |
+| `API_BASE_URL` | `https://mecano-api.duckdns.org/api/v1` | non |
 | `NEXT_PUBLIC_SITE_URL` | `https://garage.com` | oui |
 | `REVALIDATE_SECRET` | *(secret)* | **non — jamais** |
 
@@ -109,7 +109,7 @@ Deux projets, un dépôt, un répertoire racine différent. Déploiement automat
 
 | Variable | Exemple | Exposée au navigateur |
 |---|---|---|
-| `API_BASE_URL` | `https://api.garage.com/api/v1` | non |
+| `API_BASE_URL` | `https://mecano-api.duckdns.org/api/v1` | non |
 | `COOKIE_NAME` | `mc_s` | non |
 | `COOKIE_DOMAIN` | `admin.garage.com` | non |
 
@@ -127,7 +127,7 @@ Les aperçus Vercel ont des URL dynamiques, qui ne peuvent pas être listées da
 APP_NAME=Mecano
 APP_ENV=production
 APP_DEBUG=false                 # jamais true en production
-APP_URL=https://api.garage.com
+APP_URL=https://mecano-api.duckdns.org
 APP_FRONTEND_URL=https://garage.com
 APP_ADMIN_URL=https://admin.garage.com
 
