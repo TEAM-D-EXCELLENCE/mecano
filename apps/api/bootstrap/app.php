@@ -24,6 +24,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // L'API tourne derrière un reverse proxy (Caddy) qui est le seul point
+        // d'entrée : le conteneur n'est pas joignable directement. Sans cela,
+        // Laravel voit l'IP du proxy pour tout le monde (les limiteurs de débit
+        // par IP deviennent globaux) et croit répondre en http.
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_FOR
+                | Request::HEADER_X_FORWARDED_HOST
+                | Request::HEADER_X_FORWARDED_PORT
+                | Request::HEADER_X_FORWARDED_PROTO,
+        );
+
         $middleware->append(SecureHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

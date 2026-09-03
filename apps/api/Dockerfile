@@ -18,7 +18,7 @@ RUN composer install \
 # ============================================================
 # Stage 2 – Production image
 # ============================================================
-FROM php:8.3-fpm-alpine AS production
+FROM php:8.4-fpm-alpine AS production
 
 LABEL maintainer="Excellence Team" \
       description="Mecano API – Laravel 13 backend" \

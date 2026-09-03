@@ -37,7 +37,17 @@ php artisan view:cache
 # 3. Run migrations (safe – uses --force in production)
 # ------------------------------------------------------------------
 echo "[boot] Running migrations..."
-php artisan migrate --force --no-interaction
+attempt=1
+until php artisan migrate --force --no-interaction; do
+    if [ "$attempt" -ge 3 ]; then
+        echo "[boot] WARNING: migrations failed after ${attempt} attempts - starting anyway."
+        echo "[boot] Relancez manuellement : docker compose exec api php artisan migrate --force"
+        break
+    fi
+    attempt=$((attempt + 1))
+    echo "[boot] Migration failed - retry ${attempt}/3 in 5s..."
+    sleep 5
+done
 
 # ------------------------------------------------------------------
 # 4. Create symlink for storage (if not already done)
