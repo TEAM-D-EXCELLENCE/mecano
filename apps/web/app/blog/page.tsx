@@ -31,7 +31,7 @@ export default function BlogPage() {
       <section className="relative isolate overflow-hidden h-auto sm:h-[80vh] border-b border-white/10 bg-[#ECFDF5] px-5 py-16 text-white sm:py-20">
         <Image
           src="/blogHero.jpg"
-          alt=""
+          alt="hero blog Mecano"
           fill
           priority
           className="absolute inset-0 -z-20 object-cover object-center"

@@ -45,8 +45,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[#07110c] px-5 py-20 text-white">
-        {/* Photo de fond : plein bord de la section, pas de la colonne centrée */}
+      <section className="relative overflow-hidden px-5 py-20 text-white">
         <Image
           src="/voituresHero.jpg"
           alt="Voitures d'occasion Mecano"
@@ -54,7 +53,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
           priority
           className="absolute inset-0 -z-10 object-cover object-center"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#07110c] via-[#07110c]/70 to-[#07110c]/30" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-transparent to-[#07110c]/30" />
 
         {/* Contenu : centré, au-dessus de la photo */}
         <div className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8">

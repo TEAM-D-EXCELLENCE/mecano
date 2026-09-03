@@ -140,7 +140,7 @@ export default function ScrollExpand({
         {title && (
           <h2
             aria-label={title}
-            className="pointer-events-none absolute w-68 sm:w-full max-w-5xl px-6 text-center text-[2.7rem] font-corinthia font- leading-none tracking-tight text-white drop-shadow-2xl sm:text-7xl"
+            className="pointer-events-none absolute w-68 sm:w-full px-6 text-center text-[2.7rem] font-corinthia leading-none tracking-tight text-white drop-shadow-2xl sm:text-7xl lg:text-[10rem]"
             style={{
               opacity: titleOpacity,
               transform: `translateY(${-28 * (1 - titleOpacity)}px)`,
