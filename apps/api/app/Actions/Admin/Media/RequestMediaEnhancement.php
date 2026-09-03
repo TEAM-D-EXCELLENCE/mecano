@@ -48,7 +48,9 @@ final readonly class RequestMediaEnhancement
         $period = now()->format('Y-m');
 
         if (! IntegrationQuota::hasAvailable('removebg', $period, 1)) {
-            throw new ConflictHttpException('Quota mensuel atteint (50/50), disponible le 1er du mois.');
+            $limit = (int) config('services.removebg.monthly_limit', 50);
+
+            throw new ConflictHttpException("Quota mensuel atteint ({$limit}/{$limit}), disponible le 1er du mois.");
         }
 
         /** @var MediaEnhancement $enhancement */

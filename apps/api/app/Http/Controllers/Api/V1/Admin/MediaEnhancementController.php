@@ -80,13 +80,19 @@ final class MediaEnhancementController extends Controller
             ->where('period', $period)
             ->first();
 
+        // Aucune ligne le 1er du mois : le compteur doit tout de même annoncer
+        // le plafond, sinon le backoffice afficherait « 0 / 0 » et désactiverait
+        // le bouton alors que les crédits sont intacts.
+        $limit = $quota?->limit ?? (int) config('services.removebg.monthly_limit', 50);
+        $used = $quota?->used ?? 0;
+
         return response()->json([
             'data' => [
                 'provider' => 'removebg',
                 'period' => $period,
-                'used' => $quota?->used ?? 0,
-                'limit' => $quota?->limit ?? 50,
-                'available' => max(0, ($quota?->limit ?? 50) - ($quota?->used ?? 0)),
+                'used' => $used,
+                'limit' => $limit,
+                'available' => max(0, $limit - $used),
             ],
         ]);
     }

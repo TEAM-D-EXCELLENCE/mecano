@@ -10,6 +10,10 @@ use App\Services\Media\FakeImageEnhancer;
 use App\Services\Media\FakeImageStorage;
 use App\Services\Media\FakeVideoStorage;
 use App\Services\Media\R2VideoStorage;
+use App\Services\Media\RemoveBgImageEnhancer;
+use App\Services\Revalidation\FakeFrontendRevalidator;
+use App\Services\Revalidation\NextRevalidator;
+use App\Support\Contracts\FrontendRevalidator;
 use App\Support\Contracts\ImageEnhancer;
 use App\Support\Contracts\ImageStorage;
 use App\Support\Contracts\VideoStorage;
@@ -48,17 +52,26 @@ final class AppServiceProvider extends ServiceProvider
                 return new FakeImageEnhancer;
             }
 
-            return new CloudinaryImageEnhancer(
+            $cloudinary = new CloudinaryImageEnhancer(
                 cloudName: (string) config('media.cloudinary.cloud_name', 'default')
             );
-        });
 
-        $this->app->singleton(\App\Support\Contracts\FrontendRevalidator::class, static function ($app): \App\Support\Contracts\FrontendRevalidator {
-            if ($app->environment('testing') || config('services.frontend.driver') === 'fake') {
-                return new \App\Services\Revalidation\FakeFrontendRevalidator;
+            // Sans clé remove.bg, on reste sur la transformation Cloudinary :
+            // le service doit rester démarrable même quand l'intégration
+            // payante n'est pas encore ouverte (écart E6).
+            if ((string) config('media.removebg.api_key', '') === '') {
+                return $cloudinary;
             }
 
-            return new \App\Services\Revalidation\NextRevalidator;
+            return RemoveBgImageEnhancer::fromConfig($cloudinary);
+        });
+
+        $this->app->singleton(FrontendRevalidator::class, static function ($app): FrontendRevalidator {
+            if ($app->environment('testing') || config('services.frontend.driver') === 'fake') {
+                return new FakeFrontendRevalidator;
+            }
+
+            return new NextRevalidator;
         });
     }
 

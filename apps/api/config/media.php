@@ -44,6 +44,12 @@ return [
         'secure' => true,
     ],
 
+    'removebg' => [
+        'api_key' => env('REMOVE_BG_API_KEY', ''),
+        'folder' => env('REMOVE_BG_FOLDER', 'mecano/enhanced'),
+        'timeout_seconds' => (int) env('REMOVE_BG_TIMEOUT', 60),
+    ],
+
     'r2' => [
         'account_id' => env('R2_ACCOUNT_ID', ''),
         'access_key_id' => env('R2_ACCESS_KEY_ID', ''),

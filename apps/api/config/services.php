@@ -40,4 +40,19 @@ return [
         'revalidate_secret' => env('REVALIDATE_SECRET', 'test-revalidate-secret'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | remove.bg
+    |--------------------------------------------------------------------------
+    |
+    | Plafond mensuel lu par IntegrationQuota. Le plan gratuit est limité à
+    | cinquante détourages ; le dépasser facture sans prévenir, d'où le
+    | comptage transactionnel côté application (CDC §3.2, écart E6).
+    |
+    */
+
+    'removebg' => [
+        'monthly_limit' => (int) env('REMOVE_BG_MONTHLY_QUOTA', 50),
+    ],
+
 ];
