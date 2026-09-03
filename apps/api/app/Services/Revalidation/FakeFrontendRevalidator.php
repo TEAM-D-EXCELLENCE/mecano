@@ -15,7 +15,7 @@ final class FakeFrontendRevalidator implements FrontendRevalidator
     private array $revalidatedTags = [];
 
     /**
-     * @param array<int, string> $tags
+     * @param  array<int, string>  $tags
      */
     public function revalidate(array $tags): void
     {
@@ -40,7 +40,7 @@ final class FakeFrontendRevalidator implements FrontendRevalidator
     }
 
     /**
-     * @param string|list<string> $tags
+     * @param  string|list<string>  $tags
      */
     public function assertRevalidated(string|array $tags): void
     {
@@ -49,7 +49,7 @@ final class FakeFrontendRevalidator implements FrontendRevalidator
         foreach ($tags as $tag) {
             Assert::assertTrue(
                 $this->hasRevalidated($tag),
-                "Expected tag [{$tag}] was not revalidated. Revalidated tags were: [" . implode(', ', $this->revalidatedTags) . '].'
+                "Expected tag [{$tag}] was not revalidated. Revalidated tags were: [".implode(', ', $this->revalidatedTags).'].'
             );
         }
     }
@@ -58,7 +58,7 @@ final class FakeFrontendRevalidator implements FrontendRevalidator
     {
         Assert::assertEmpty(
             $this->revalidatedTags,
-            'Expected no tags to be revalidated, but found: [' . implode(', ', $this->revalidatedTags) . '].'
+            'Expected no tags to be revalidated, but found: ['.implode(', ', $this->revalidatedTags).'].'
         );
     }
 

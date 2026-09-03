@@ -33,7 +33,7 @@ final class RevalidateFrontend implements ShouldQueue
     public array $backoff = [10, 30, 60, 120, 300];
 
     /**
-     * @param array<int, string> $tags
+     * @param  array<int, string>  $tags
      */
     public function __construct(
         public readonly array $tags,

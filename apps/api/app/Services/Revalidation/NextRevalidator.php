@@ -10,7 +10,7 @@ use App\Support\Contracts\FrontendRevalidator;
 final class NextRevalidator implements FrontendRevalidator
 {
     /**
-     * @param array<int, string> $tags
+     * @param  array<int, string>  $tags
      */
     public function revalidate(array $tags): void
     {

@@ -9,7 +9,7 @@ interface FrontendRevalidator
     /**
      * Revalidate cache for the given ISR tags.
      *
-     * @param array<int, string> $tags
+     * @param  array<int, string>  $tags
      */
     public function revalidate(array $tags): void;
 }

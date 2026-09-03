@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Revalidation;
 
 use App\Enums\CarStatus;
-use App\Enums\MediaRole;
 use App\Models\Brand;
 use App\Models\Car;
 use App\Models\Media;
-use App\Models\Post;
 use App\Models\Service;
 use App\Models\User;
 use App\Services\Revalidation\FakeFrontendRevalidator;

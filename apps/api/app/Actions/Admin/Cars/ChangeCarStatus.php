@@ -15,6 +15,7 @@ final readonly class ChangeCarStatus
     public function __construct(
         private FrontendRevalidator $revalidator,
     ) {}
+
     /**
      * Allowed status transition map.
      *
