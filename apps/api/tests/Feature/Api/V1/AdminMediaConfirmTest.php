@@ -143,7 +143,7 @@ final class AdminMediaConfirmTest extends TestCase
             'storage_key' => $storageKey,
             'role' => 'video_interior',
             'kind' => 'video',
-            'provider' => 'r2',
+            'provider' => 'cloudinary',
         ]);
     }
 

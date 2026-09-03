@@ -35,6 +35,7 @@ return [
             'video/quicktime',
         ],
         'signature_ttl_seconds' => 900, // 15 minutes
+        'upload_folder' => env('CLOUDINARY_UPLOAD_FOLDER', 'mecano/cars'),
     ],
 
     'cloudinary' => [
@@ -48,14 +49,6 @@ return [
         'api_key' => env('REMOVE_BG_API_KEY', ''),
         'folder' => env('REMOVE_BG_FOLDER', 'mecano/enhanced'),
         'timeout_seconds' => (int) env('REMOVE_BG_TIMEOUT', 60),
-    ],
-
-    'r2' => [
-        'account_id' => env('R2_ACCOUNT_ID', ''),
-        'access_key_id' => env('R2_ACCESS_KEY_ID', ''),
-        'secret_access_key' => env('R2_SECRET_ACCESS_KEY', ''),
-        'bucket' => env('R2_BUCKET', 'mecano-videos'),
-        'public_base_url' => env('R2_PUBLIC_BASE_URL', 'https://media.garage.com'),
     ],
 
     /*

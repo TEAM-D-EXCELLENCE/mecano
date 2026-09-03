@@ -27,13 +27,13 @@ final class VideoFactory extends Factory
     public function definition(): array
     {
         $uuid = Str::uuid()->toString();
-        $url = "https://media.garage.com/videos/{$uuid}.mp4";
+        $url = "https://res.cloudinary.com/demo/video/upload/mecano/cars/{$uuid}.mp4";
 
         return [
             'car_id' => Car::factory(),
             'kind' => MediaKind::Video,
             'role' => MediaRole::VideoInterior,
-            'provider' => MediaProvider::R2,
+            'provider' => MediaProvider::Cloudinary,
             'storage_key' => "videos/{$uuid}.mp4",
             'url' => $url,
             'published_url' => $url,

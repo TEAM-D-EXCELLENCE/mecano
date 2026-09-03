@@ -77,7 +77,10 @@ final class AdminMediaSignatureTest extends TestCase
                 ],
             ]);
 
-        $this->assertSame('PUT', $response->json('data.fields.method'));
+        // Les vidéos passent par le point d'entrée `video` de Cloudinary,
+        // avec la même signature restrictive que les photos.
+        $this->assertStringContainsString('/video/upload', (string) $response->json('data.upload_url'));
+        $this->assertNotNull($response->json('data.fields.signature'));
     }
 
     public function test_photo_upload_rejects_unsupported_mime_type(): void

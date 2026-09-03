@@ -38,7 +38,7 @@ final readonly class ConfirmMediaUpload
 
         $isPhoto = in_array($data->role, [MediaRole::Main, MediaRole::Gallery], true);
         $kind = $isPhoto ? MediaKind::Photo : MediaKind::Video;
-        $provider = $isPhoto ? MediaProvider::Cloudinary : MediaProvider::R2;
+        $provider = MediaProvider::Cloudinary;
 
         // Verify that the object actually exists in the external storage provider (CDC §4 Pipeline)
         $meta = $isPhoto

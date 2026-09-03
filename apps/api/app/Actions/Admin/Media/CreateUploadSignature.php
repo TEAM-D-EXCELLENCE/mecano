@@ -22,7 +22,7 @@ final readonly class CreateUploadSignature
     ) {}
 
     /**
-     * Generate signed upload parameters for direct upload to Cloudinary (photos) or R2 (videos).
+     * Generate signed upload parameters for direct upload to Cloudinary (photos and videos).
      *
      * @throws VideoLimitExceededException
      */
@@ -52,9 +52,11 @@ final readonly class CreateUploadSignature
             ttlSeconds: (int) config('media.videos.signature_ttl_seconds', 900),
         );
 
-        $ext = $data->mime === 'video/quicktime' ? 'mov' : 'mp4';
-        $key = "cars/{$car->id}/videos/".(string) Str::uuid().".{$ext}";
+        // Cloudinary identifie la ressource par son `public_id`, sans
+        // extension : c'est le point d'entrée `video` qui fixe le type.
+        $folder = config('media.videos.upload_folder', 'mecano/cars');
+        $key = "{$folder}/{$car->id}/videos/".(string) Str::uuid();
 
-        return $this->videoStorage->presignedPutUrl($key, $constraints);
+        return $this->videoStorage->signedUploadParams($key, $constraints);
     }
 }

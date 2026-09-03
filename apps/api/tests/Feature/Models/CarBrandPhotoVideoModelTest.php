@@ -49,9 +49,9 @@ final class CarBrandPhotoVideoModelTest extends TestCase
         $video = Video::query()->create([
             'car_id' => $car->id,
             'role' => MediaRole::VideoInterior,
-            'provider' => MediaProvider::R2,
+            'provider' => MediaProvider::Cloudinary,
             'storage_key' => 'videos/sample-video.mp4',
-            'url' => 'https://media.garage.com/sample.mp4',
+            'url' => 'https://res.cloudinary.com/demo/video/upload/sample.mp4',
             'mime' => 'video/mp4',
             'bytes' => 15000000,
             'duration_s' => 30,

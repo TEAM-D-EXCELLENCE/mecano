@@ -23,7 +23,7 @@ final class PurgeOrphanUploadsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Purge unconfirmed orphan media uploads from database and external storage providers (Cloudinary / R2).';
+    protected $description = 'Purge unconfirmed orphan media uploads from database and Cloudinary.';
 
     /**
      * Execute the console command.

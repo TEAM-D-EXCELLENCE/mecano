@@ -82,12 +82,12 @@ final class MediaFactory extends Factory
     public function interiorVideo(): static
     {
         $uuid = Str::uuid()->toString();
-        $url = "https://media.garage.com/videos/{$uuid}.mp4";
+        $url = "https://res.cloudinary.com/demo/video/upload/mecano/cars/{$uuid}.mp4";
 
         return $this->state(fn (array $attributes) => [
             'kind' => MediaKind::Video,
             'role' => MediaRole::VideoInterior,
-            'provider' => MediaProvider::R2,
+            'provider' => MediaProvider::Cloudinary,
             'storage_key' => "videos/{$uuid}.mp4",
             'url' => $url,
             'published_url' => $url,
@@ -107,12 +107,12 @@ final class MediaFactory extends Factory
     public function exteriorVideo(): static
     {
         $uuid = Str::uuid()->toString();
-        $url = "https://media.garage.com/videos/{$uuid}.mp4";
+        $url = "https://res.cloudinary.com/demo/video/upload/mecano/cars/{$uuid}.mp4";
 
         return $this->state(fn (array $attributes) => [
             'kind' => MediaKind::Video,
             'role' => MediaRole::VideoExterior,
-            'provider' => MediaProvider::R2,
+            'provider' => MediaProvider::Cloudinary,
             'storage_key' => "videos/{$uuid}.mp4",
             'url' => $url,
             'published_url' => $url,

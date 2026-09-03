@@ -7,14 +7,12 @@ namespace App\Enums;
 enum MediaProvider: string
 {
     case Cloudinary = 'cloudinary';
-    case R2 = 'r2';
     case RemoveBg = 'removebg';
 
     public function label(): string
     {
         return match ($this) {
             self::Cloudinary => 'Cloudinary',
-            self::R2 => 'Cloudflare R2',
             self::RemoveBg => 'remove.bg',
         };
     }

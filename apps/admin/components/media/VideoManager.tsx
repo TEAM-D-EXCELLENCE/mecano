@@ -17,7 +17,7 @@ import { formatBytes } from "@/lib/format";
  *
  * Deux emplacements seulement, extérieur et intérieur : l'API remplace la
  * précédente quand on réenvoie le même rôle. Le fichier part directement chez
- * l'hébergeur en PUT présigné, jamais à travers l'API.
+ * Cloudinary avec une signature à durée limitée, jamais à travers l'API.
  *
  * La reprise après coupure n'est pas offerte : elle suppose un envoi en
  * plusieurs morceaux que la signature actuelle ne couvre pas. Un transfert

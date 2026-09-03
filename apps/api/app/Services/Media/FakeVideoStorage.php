@@ -23,17 +23,22 @@ final class FakeVideoStorage implements VideoStorage
     private array $deletedKeys = [];
 
     public function __construct(
-        private readonly string $publicBaseUrl = 'https://media.garage.com',
+        private readonly string $publicBaseUrl = 'https://res.cloudinary.com/fake/video/upload',
     ) {}
 
-    public function presignedPutUrl(string $key, UploadConstraints $constraints): SignedUpload
+    public function signedUploadParams(string $key, UploadConstraints $constraints): SignedUpload
     {
         $trimmedKey = ltrim($key, '/');
         $expiresAt = now()->addSeconds($constraints->ttlSeconds);
 
         return new SignedUpload(
-            uploadUrl: "{$this->publicBaseUrl}/fake-put/{$trimmedKey}?sig=".Str::random(16),
-            fields: ['method' => 'PUT'],
+            uploadUrl: 'https://api.cloudinary.com/v1_1/fake/video/upload',
+            fields: [
+                'api_key' => 'fake-key',
+                'timestamp' => (string) now()->timestamp,
+                'public_id' => $trimmedKey,
+                'signature' => Str::random(40),
+            ],
             storageKey: $trimmedKey,
             expiresAt: $expiresAt->toIso8601String(),
         );
