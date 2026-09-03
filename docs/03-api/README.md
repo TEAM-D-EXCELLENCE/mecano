@@ -136,7 +136,7 @@ Ces règles font partie du contrat et sont vérifiées par le test de conformit�
 | `QUOTA_EXCEEDED` | 409 | Quota mensuel du fournisseur atteint |
 | `ENHANCEMENT_IN_PROGRESS` | 409 | Amélioration identique déjà en cours |
 | `UPLOAD_NOT_FOUND` | 409 | Confirmation d'un fichier absent chez le fournisseur |
-| `PROVIDER_UNAVAILABLE` | 503 | Cloudinary, R2 ou remove.bg injoignable |
+| `PROVIDER_UNAVAILABLE` | 503 | Cloudinary ou remove.bg injoignable |
 | `RATE_LIMITED` | 429 | Trop de requêtes |
 
 Cette liste est exhaustive : le front peut la traiter en entier. Tout nouveau code s'y ajoute dans la même PR que son implémentation.

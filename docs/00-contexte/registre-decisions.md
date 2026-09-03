@@ -14,7 +14,7 @@ Arbitre : responsable architecture (b.brun@ongsenam.com). Date de la session d'a
 | D03 | **Monorepo** `apps/api` + `apps/web` + `apps/admin`, **rien de partagé** entre les apps | Arbitrée | [0003](../01-architecture/adr/0003-monorepo-trois-apps.md) |
 | D04 | Auth **Sanctum Bearer**, jeton détenu par un **BFF Next** en cookie httpOnly. Backoffice sur hôte séparé et `noindex` | Arbitrée | [0004](../01-architecture/adr/0004-auth-bearer-bff.md) |
 | D05 | `openapi.yaml` **écrit à la main** = source de vérité. Types TS générés dans chaque app | Arbitrée | [0005](../01-architecture/adr/0005-openapi-source-de-verite.md) |
-| D06 | Photos sur **Cloudinary**, vidéos sur **Cloudflare R2**. Rien de lourd sur le serveur | Arbitrée | [0006](../01-architecture/adr/0006-medias-cloudinary-r2.md) |
+| D06 | Photos sur **Cloudinary**, vidéos sur **Cloudflare R2**. Rien de lourd sur le serveur | Révisée par D23 | [0006](../01-architecture/adr/0006-medias-cloudinary-r2.md) |
 | D07 | **Upload direct signé** depuis le navigateur, puis confirmation à l'API | Arbitrée | [0007](../01-architecture/adr/0007-upload-direct-signe.md) |
 | D08 | **Lot 6 (Facebook) et Lot 7 (habillage vidéo) hors V1** | Arbitrée | [0008](../01-architecture/adr/0008-facebook-video-hors-v1.md) |
 | D09 | Revalidation ISR par **webhook signé** Laravel → Next | Arbitrée | [0009](../01-architecture/adr/0009-revalidation-isr-webhook.md) |
@@ -31,6 +31,7 @@ Arbitre : responsable architecture (b.brun@ongsenam.com). Date de la session d'a
 | D20 | Quatre garde-fous CI, échelonnés M0 puis M1 | Arbitrée | — |
 | D21 | Équipe : **2 devs**, 1 backend + 1 frontend | Arbitrée | — voir [répartition](../04-planning/repartition-equipe.md) |
 | D22 | **Pas de deadline.** Découpage par valeur métier décroissante | Arbitrée | — |
+| D23 | **Vidéos sur Cloudinary**, R2 retiré du projet. Un seul hébergeur de médias | Arbitrée | [0010](../01-architecture/adr/0010-videos-sur-cloudinary.md) |
 
 ## Décisions différées
 

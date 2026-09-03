@@ -353,7 +353,7 @@ export interface paths {
         put?: never;
         /**
          * Génération de signature d'upload direct
-         * @description Émet les paramètres signés sécurisés pour uploader directement vers Cloudinary (photos) ou Cloudflare R2 (vidéos).
+         * @description Émet les paramètres signés sécurisés pour uploader directement vers Cloudinary (photos et vidéos).
          */
         post: operations["getUploadSignature"];
         delete?: never;

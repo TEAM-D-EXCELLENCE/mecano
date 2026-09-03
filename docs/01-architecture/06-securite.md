@@ -121,7 +121,7 @@ Le fichier ne traverse pas l'API (D07), donc la validation est déplacée. Déta
 - La signature d'upload est **contraignante** : le fournisseur refuse lui-même un fichier hors format ou hors taille.
 - Vérification par `HEAD` à la confirmation : on ne croit pas ce que le client déclare.
 - Aucun nom de fichier fourni par le client n'est réutilisé. La clé de stockage est générée côté serveur (UUID).
-- Les fichiers ne sont jamais servis depuis notre domaine : Cloudinary et R2 les servent depuis les leurs. Une éventuelle charge active dans un fichier ne s'exécute donc pas dans notre origine.
+- Les fichiers ne sont jamais servis depuis notre domaine : Cloudinary les sert depuis le sien. Une éventuelle charge active dans un fichier ne s'exécute donc pas dans notre origine.
 
 ---
 
@@ -150,7 +150,7 @@ style-src 'self' 'unsafe-inline';
 frame-ancestors 'none';
 ```
 
-`connect-src` autorise Cloudinary et R2 parce que le navigateur y envoie les fichiers en direct. Il n'autorise **pas** `mecano-api.duckdns.org` : le backoffice ne parle qu'à son BFF.
+`connect-src` autorise Cloudinary parce que le navigateur y envoie les fichiers en direct. Il n'autorise **pas** `mecano-api.duckdns.org` : le backoffice ne parle qu'à son BFF.
 
 ---
 
@@ -185,7 +185,7 @@ Décision différée R03 — à figer avant la mise en production de M1.
 
 Proposition : `mysqldump` chiffré quotidien, rétention 30 jours, copie hors du serveur d'exécution. **Une restauration testée au moins une fois** — une sauvegarde jamais restaurée n'est pas une sauvegarde.
 
-Les médias ne sont pas sauvegardés par nous : Cloudinary et R2 sont durables. En revanche, une base perdue rend les médias inexploitables (les clés de stockage y vivent), ce qui fait de la sauvegarde de la base la seule chose réellement critique.
+Les médias ne sont pas sauvegardés par nous : Cloudinary est durable. En revanche, une base perdue rend les médias inexploitables (les clés de stockage y vivent), ce qui fait de la sauvegarde de la base la seule chose réellement critique.
 
 ---
 

@@ -16,7 +16,6 @@ Les identifiants sont **stables** : ils sont référencés par la [matrice de tr
 | OPS-02 | Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor | BE | 1 j | — |
 | OPS-03 | TLS `mecano-api.duckdns.org` + renouvellement automatique | BE | 0,5 j | OPS-02 |
 | OPS-04 | Compte Cloudinary, dossiers `dev` / `preview` / `prod` | Archi | 0,5 j | — |
-| OPS-05 | Bucket R2 + domaine `media.garage.com` | Archi | 0,5 j | OPS-01 |
 | OPS-06 | Compte remove.bg, **vérifier le plafond réel du plan gratuit** | Archi | 0,25 j | — |
 | DEC-01 | **Faire valider les écarts E1 à E7 par le client, par écrit** | Archi | 0,5 j | — |
 | DEC-02 | Arbitrer avec le client : démarche Meta lancée maintenant pour la V2 ? | Archi | 0,25 j | DEC-01 |
@@ -144,7 +143,7 @@ Les identifiants sont **stables** : ils sont référencés par la [matrice de tr
 |---|---|---|---|
 | **CTR-04** | Contrat M3 : améliorations, quotas, vidéos | Archi | 1 j |
 | BE-31 | Migrations `media_enhancements`, `integration_quotas` | BE | 0,5 j |
-| BE-32 | `R2VideoStorage` : PUT présigné, confirmation, diffusion | BE | 2 j |
+| BE-32 | `CloudinaryVideoStorage` : upload signé, confirmation, diffusion | BE | 2 j |
 | BE-33 | `POST /admin/media/{id}/enhance` — amélioration auto et recadrage Cloudinary | BE | 2 j |
 | BE-34 | **`RemoveBgBackgroundRemover` : comptage transactionnel, remboursement sur échec** | BE | 2,5 j |
 | BE-35 | `POST /admin/enhancements/{id}/approve` : bascule de `published_url` | BE | 1 j |

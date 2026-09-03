@@ -1,6 +1,12 @@
 # 0006 — Photos sur Cloudinary, vidéos sur Cloudflare R2
 
-- **Statut** : Accepté
+> **Partiellement remplacé par l'[ADR 0010](0010-videos-sur-cloudinary.md)**
+> (2026-09-04) : les vidéos sont passées sur Cloudinary et R2 a été retiré du
+> projet. Le raisonnement ci-dessous reste consigné tel qu'il a été tenu — il
+> explique pourquoi R2 avait été choisi, et 0010 explique pourquoi ce choix n'a
+> pas tenu à l'usage. La partie photos de cet ADR est toujours en vigueur.
+
+- **Statut** : Partiellement remplacé
 - **Date** : 2026-08-25
 - **Décideur** : responsable architecture
 - **Décision liée** : D06

@@ -130,7 +130,7 @@ Table unique, modèles métier distincts (D10). Voir [02 — Architecture applic
 | `kind` | enum | index | `photo`, `video` |
 | `role` | enum | | `main`, `gallery`, `video_interior`, `video_exterior` |
 | `provider` | enum | | `cloudinary` (photos), `r2` (vidéos) |
-| `storage_key` | varchar(255) | | `public_id` Cloudinary, ou clé d'objet R2 |
+| `storage_key` | varchar(255) | | `public_id` Cloudinary, photo comme vidéo |
 | `url` | varchar(500) | | URL de diffusion de l'original |
 | `published_url` | varchar(500) | nullable | La version réellement servie au public : l'original, ou un dérivé approuvé |
 | `mime` | varchar(60) | | |

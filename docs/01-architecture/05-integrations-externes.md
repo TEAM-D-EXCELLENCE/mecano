@@ -7,7 +7,6 @@ Le CDC §4 impose « priorité aux outils et API gratuits ou à faible coût ».
 | Service | Rôle | Plan | Plafond | Si dépassé |
 |---|---|---|---|---|
 | **Cloudinary** | Stockage et transformation des photos, CDN | Gratuit | ~25 crédits/mois (stockage + transformations + bande passante) | Transformations bridées. Voir mitigation ci-dessous |
-| **Cloudflare R2** | Stockage des vidéos | Gratuit puis à l'usage | 10 Go de stockage gratuit, **égress toujours gratuit** | Quelques centimes par Go supplémentaire |
 | **remove.bg** | Suppression de fond | Gratuit | ~50 appels/mois, résolution réduite | Refus en `409` avant appel. Quota compté (D13) |
 | **wa.me** | Contact WhatsApp | Gratuit | aucun | — |
 | **Vercel** | Hébergement des deux apps Next | Hobby | 100 Go de bande passante/mois | Passage au plan payant, ou CDN devant |
@@ -77,31 +76,38 @@ Surveillance : le tableau de bord Cloudinary une fois par mois, tant que le volu
 
 ---
 
-## Cloudflare R2 — vidéos
+## Cloudinary — vidéos
+
+Aucune variable supplémentaire : les vidéos utilisent le même compte et les
+mêmes identifiants que les photos, sur le point d'entrée `video` de Cloudinary.
 
 ```
-R2_ACCOUNT_ID=
-R2_ACCESS_KEY_ID=
-R2_SECRET_ACCESS_KEY=
-R2_BUCKET=mecano-videos
-R2_PUBLIC_BASE_URL=https://media.garage.com     # domaine personnalisé devant le bucket
+# le dossier d'envoi est partagé avec les photos
+CLOUDINARY_UPLOAD_FOLDER=mecano/cars
 ```
 
-R2 est compatible S3 : on utilise le pilote `s3` de Laravel avec un point de terminaison personnalisé, pas de SDK spécifique.
+Upload direct signé, signature valable 15 minutes, comme pour les photos. La
+diffusion passe par `f_auto,q_auto` : Cloudinary choisit le conteneur et le
+débit selon le lecteur, ce qui évite de servir le fichier d'origine à un
+téléphone sur réseau mobile.
 
-**Pourquoi R2 et pas Cloudinary pour la vidéo.** L'égress est gratuit chez R2. Une vidéo de 80 Mo vue 200 fois représente 16 Go de bande passante — ce qui épuiserait à lui seul le plan gratuit Cloudinary, alors que R2 ne facture rien.
+**Un seul hébergeur plutôt que deux** ([ADR 0010](adr/0010-videos-sur-cloudinary.md)).
+Cloudflare R2 avait été retenu pour son égress gratuit, mais faire vivre un
+second fournisseur — deuxième jeu de clés, deuxième domaine, deuxième pilote,
+deuxième panne possible — coûtait plus cher en complexité que la bande
+passante économisée sur deux vidéos par annonce.
 
-Un domaine personnalisé (`media.garage.com`) est indispensable : il place le CDN Cloudflare devant le bucket et évite d'exposer une URL R2 brute.
-
-Upload par PUT présigné, valable 15 minutes. Le bucket est **privé en écriture, public en lecture** via le domaine personnalisé.
+**Ce qu'il faut surveiller.** La bande passante Cloudinary est comptée dans les
+crédits du plan gratuit. Deux vidéos par annonce très regardées peuvent y peser
+lourd : le poids servi est à relire à la fin de M3.
 
 ---
 
 ## remove.bg — suppression de fond
 
 ```
-REMOVEBG_API_KEY=
-REMOVEBG_MONTHLY_LIMIT=50      # recopié dans integration_quotas pour garder l'historique
+REMOVE_BG_API_KEY=
+REMOVE_BG_MONTHLY_QUOTA=50      # recopié dans integration_quotas pour garder l'historique
 ```
 
 Appel serveur à serveur : Laravel envoie l'URL de la photo Cloudinary, reçoit un PNG détouré, le renvoie vers Cloudinary comme dérivé, puis compose un fond studio uniforme.
@@ -170,8 +176,7 @@ Reporté en V2, écart E4. Rien n'est développé, aucune table n'est créée.
 | Secret | Où il vit | Où il ne doit **jamais** apparaître |
 |---|---|---|
 | `CLOUDINARY_API_SECRET` | `.env` du serveur | dépôt, front, réponse d'API |
-| `R2_SECRET_ACCESS_KEY` | `.env` du serveur | idem |
-| `REMOVEBG_API_KEY` | `.env` du serveur | idem |
+| `REMOVE_BG_API_KEY` | `.env` du serveur | idem |
 | `REVALIDATE_SECRET` | `.env` du serveur **et** variables Vercel de `apps/web` | dépôt |
 | `API_TOKEN` du mécanicien | cookie httpOnly du BFF | `localStorage`, code React, journaux |
 | `APP_KEY` | `.env` du serveur | dépôt |

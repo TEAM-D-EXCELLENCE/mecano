@@ -76,7 +76,6 @@ Ensuite, **le contrat est sur le chemin critique deux fois**. C'est la contrepar
 | OPS-02 | Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor | Backend | l'API |
 | OPS-03 | TLS de `mecano-api.duckdns.org` (Let's Encrypt, renouvellement auto) | Backend | l'API en ligne |
 | OPS-04 | Créer le compte Cloudinary, les dossiers par environnement | Architecture | les médias (M1) |
-| OPS-05 | Créer le bucket R2 et le domaine `media.garage.com` | Architecture | les vidéos (M3) |
 | OPS-06 | Compte remove.bg, relever le plafond réel du plan gratuit | Architecture | l'IA photo (M3) |
 | DEC-01 | **Faire valider les écarts E1 à E7 par le client, par écrit** | Architecture | rien techniquement, **tout contractuellement** |
 | DEC-02 | Décider avec le client : lance-t-on la démarche Meta maintenant pour la V2 ? | Architecture | le Lot 6 en V2 |
@@ -177,7 +176,7 @@ La tâche 12 est un livrable contractuel, pas une option. Elle est plus facile �
 |---|---|---|
 | 1 | Contrat M3 : améliorations, quotas, vidéos | 1 j |
 | 2 | Migrations `media_enhancements`, `integration_quotas` | 0,5 j |
-| 3 | Intégration R2 : PUT présigné, confirmation, diffusion | 2 j |
+| 3 | Intégration vidéo Cloudinary : upload signé, confirmation, diffusion | 2 j |
 | 4 | Améliorations Cloudinary : amélioration auto, recadrage intelligent | 2 j |
 | 5 | Intégration remove.bg **avec comptage transactionnel et remboursement** | 2,5 j |
 | 6 | Approbation d'un dérivé, bascule de `published_url` | 1 j |

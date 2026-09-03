@@ -38,7 +38,7 @@ tags:
   - name: "Admin — Véhicules & Marques"
     description: "Gestion du stock et machine à états"
   - name: "Admin — Médias & Traitement IA"
-    description: "Upload direct Cloudinary/R2, recadrage et détourage"
+    description: "Upload direct Cloudinary, recadrage et détourage"
   - name: "Admin — Prestations Atelier"
     description: "Administration des forfaits"
   - name: "Admin — Blog"
@@ -675,7 +675,7 @@ paths:
   /admin/media/upload-signature:
     post:
       summary: "Génération de signature d'upload direct"
-      description: "Émet les paramètres signés sécurisés pour uploader directement vers Cloudinary (photos) ou Cloudflare R2 (vidéos)."
+      description: "Émet les paramètres signés sécurisés pour uploader directement vers Cloudinary (photos et vidéos)."
       operationId: "getUploadSignature"
       tags: ["Admin — Médias & Traitement IA"]
       security:

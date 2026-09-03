@@ -27,7 +27,7 @@ Quand un terme est dans ce glossaire, on l'utilise tel quel — dans le code, da
 | **Amélioration** | Une demande de dérivé, avec son état et son résultat. Table `media_enhancements`. C'est ce qui permet l'avant/après du CDC §3.2. |
 | **Photo principale** | La photo affichée dans le catalogue et en image Open Graph. Exactement une par annonce. |
 | **Habillage vidéo** | Réencodage d'une vidéo avec intro, logo et texte publicitaire. **Hors V1** (Lot 7). Ne pas confondre avec le simple lecteur habillé côté front. |
-| **Upload signé** | Le navigateur envoie le fichier directement à Cloudinary ou R2, avec une signature délivrée par l'API. Le fichier ne traverse jamais notre serveur. |
+| **Upload signé** | Le navigateur envoie le fichier directement à Cloudinary, avec une signature délivrée par l'API. Le fichier ne traverse jamais notre serveur. |
 | **Confirmation** | L'appel que le front fait à l'API après un upload signé réussi, pour enregistrer le média en base. Un upload non confirmé est un fichier orphelin. |
 
 ## Technique

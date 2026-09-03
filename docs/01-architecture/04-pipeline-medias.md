@@ -2,7 +2,7 @@
 
 C'est la partie techniquement la plus riche du projet, et celle qui porte la valeur commerciale : de belles photos vendent des voitures. C'est aussi celle où il y a le plus de manières de se tromper.
 
-Décisions concernées : D06 (photos Cloudinary, vidéos R2), D07 (upload direct signé), D13 (IA photos et quota).
+Décisions concernées : D06 (médias sur Cloudinary, révisée par D23), D07 (upload direct signé), D13 (IA photos et quota).
 
 ## Trois invariants
 
@@ -17,7 +17,7 @@ Tout ce qui suit en découle. Si un développement les contredit, c'est le déve
 | Type | Fournisseur | Pourquoi |
 |---|---|---|
 | Photos | **Cloudinary** | Transformations à la volée par URL, WebP/AVIF automatiques, CDN inclus. Le gros du trafic et de la valeur |
-| Vidéos | **Cloudflare R2** | Égress gratuit — décisif pour de la vidéo. Aucune transformation, on sert le fichier tel quel |
+| Vidéos | **Cloudinary** | Même compte et même mécanique que les photos, sur le point d'entrée `video`. Un seul hébergeur à exploiter |
 
 Rien de lourd ne tourne sur le serveur Excellence Team : Laravel signe, enregistre et orchestre, il ne transcode rien.
 
@@ -30,7 +30,7 @@ sequenceDiagram
     participant N as Navigateur (admin)
     participant B as BFF Next
     participant A as API Laravel
-    participant S as Cloudinary / R2
+    participant S as Cloudinary
 
     Note over N,S: 1 — Signer
     N->>B: POST /bff/media/upload-signature {car_id, kind, mime, bytes}
@@ -62,7 +62,7 @@ Comme le fichier ne traverse pas l'API, on ne peut plus le valider au moment de 
 
 **À la signature** — le mécanicien est-il authentifié ? le `car_id` lui appartient-il ? le type MIME est-il dans la liste blanche ? la taille annoncée respecte-t-elle le maximum ? l'annonce a-t-elle déjà atteint sa limite (2 vidéos) ?
 
-La signature est **restrictive** : Cloudinary et R2 refusent eux-mêmes un fichier qui dépasse la taille signée ou dont le type ne correspond pas au dossier signé. La contrainte est appliquée par le fournisseur, pas seulement annoncée.
+La signature est **restrictive** : Cloudinary refuse lui-même un fichier qui dépasse la taille signée ou dont le type ne correspond pas au dossier signé. La contrainte est appliquée par le fournisseur, pas seulement annoncée.
 
 **À la confirmation** — un `HEAD` vérifie que l'objet existe réellement, avec la taille et le type attendus. Un client malveillant ne peut pas déclarer un média qu'il n'a pas envoyé.
 
@@ -142,9 +142,9 @@ Le compteur est visible **avant** le clic, pas après : le mécanicien doit pouv
 
 Simple, par construction (D06, écart E5) :
 
-1. Upload direct signé vers R2 (PUT présigné).
+1. Upload direct signé vers Cloudinary (point d'entrée `video`).
 2. Confirmation, `role` = `video_interior` ou `video_exterior`.
-3. Servie telle quelle derrière le CDN Cloudflare, dans un lecteur aux couleurs du garage.
+3. Servie en `f_auto,q_auto` derrière le CDN Cloudinary, dans un lecteur aux couleurs du garage.
 
 **Aucun réencodage, aucun habillage.** L'habillage publicitaire du Lot 7 exigerait de réencoder — voir [écart E5](../00-contexte/ecarts-cahier-des-charges.md#e5--lhabillage-vidéo-est-reporté-en-v2). Reporté en V2, décision différée R05.
 
@@ -176,7 +176,7 @@ Un pipeline qui dépend de trois services externes doit dire ce qui se passe qua
 |---|---|---|---|
 | Cloudinary indisponible à la signature | Upload photo impossible | « Envoi de photos momentanément indisponible, réessayez » | Rien — les photos déjà en ligne sont servies par le CDN |
 | Cloudinary indisponible en diffusion | Images non chargées | — | Emplacement réservé, mise en page intacte (`width`/`height` connus) |
-| R2 indisponible | Upload vidéo impossible | Message équivalent | Lecteur en erreur, le reste de la fiche fonctionne |
+| Cloudinary indisponible pour la vidéo | Upload vidéo impossible | Message équivalent | Lecteur en erreur, le reste de la fiche fonctionne |
 | remove.bg indisponible | `status: failed`, crédit rendu | « Suppression de fond indisponible, votre crédit n'a pas été consommé » | Rien — l'original est servi |
 | Quota épuisé | `409` avant tout appel | « Quota mensuel atteint (50/50), disponible le 1er du mois » | Rien |
 | Webhook de revalidation en échec | Page publique périmée | Rien de visible — **c'est le plus dangereux** | Une donnée obsolète, jusqu'à 1 h |

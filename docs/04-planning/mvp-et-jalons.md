@@ -39,7 +39,7 @@ Corollaire important : **M0 seul ne vaut rien pour le client.** Il ne doit donc 
 | API | Laravel initialisé, MySQL, Sanctum, `users`, migration initiale, `/health`, `/auth/*` |
 | `apps/web` | Next initialisé, coquille, jetons Tailwind, shadcn/ui, déployé sur `garage.com` |
 | `apps/admin` | Next initialisé, BFF, page de connexion, garde serveur, `noindex`, déployé sur `admin.garage.com` |
-| Infra | Domaine branché sur Vercel, serveur préparé, TLS, comptes Cloudinary et R2 créés |
+| Infra | Domaine branché sur Vercel, serveur préparé, TLS, compte Cloudinary créé |
 
 ### Critères de sortie
 
@@ -135,7 +135,7 @@ C'est le seul jalon dont l'absence rendrait le projet inutile. Tout le reste est
 |---|---|
 | Données | `media_enhancements`, `integration_quotas` |
 | API | Demande d'amélioration, consultation des dérivés, approbation, quotas |
-| Médias | Vidéos sur R2 (upload direct signé), améliorations Cloudinary, suppression de fond remove.bg |
+| Médias | Vidéos sur Cloudinary (upload direct signé), améliorations Cloudinary, suppression de fond remove.bg |
 | `apps/web` | Lecteur vidéo habillé, vignette, `preload="none"` |
 | `apps/admin` | Panneau d'amélioration, comparateur avant/après, compteur de quota, interrogation d'état |
 

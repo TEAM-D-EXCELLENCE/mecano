@@ -28,7 +28,7 @@ docs/
 | [02 — Architecture applicative](01-architecture/02-architecture-applicative.md) | Couches et arborescence des trois applications |
 | [03 — Modèle de données](01-architecture/03-modele-de-donnees.md) | Tables, colonnes, énumérations, index |
 | [04 — Pipeline médias](01-architecture/04-pipeline-medias.md) | Upload signé, dérivés, IA photo, quotas, files d'attente |
-| [05 — Intégrations externes](01-architecture/05-integrations-externes.md) | Cloudinary, R2, remove.bg, wa.me, Vercel |
+| [05 — Intégrations externes](01-architecture/05-integrations-externes.md) | Cloudinary, remove.bg, wa.me, Vercel |
 | [06 — Sécurité](01-architecture/06-securite.md) | Authentification, BFF, surface d'attaque, secrets |
 | [07 — Performance, SEO, PWA](01-architecture/07-performance-seo-pwa.md) | Budget de performance, ISR, données structurées |
 | [08 — Environnements & déploiement](01-architecture/08-environnements-deploiement.md) | Local, préproduction, production, sauvegardes |

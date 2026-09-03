@@ -8,7 +8,7 @@
 | Backoffice | `localhost:3001` | `*.vercel.app` (par PR) | `admin.garage.com` |
 | API | `localhost:8000` | serveur, base `mecano_preview` | `mecano-api.duckdns.org` |
 | Base | MySQL local | `mecano_preview` | `mecano_prod` |
-| Médias | Cloudinary `mecano/dev`, bucket R2 `mecano-videos-dev` | dossiers `preview` | dossiers `prod` |
+| Médias | Cloudinary `mecano/dev` (photos et vidéos) | dossiers `preview` | dossiers `prod` |
 | `APP_DEBUG` | `true` | `true` | **`false`** — vérifié au déploiement |
 | Emails | `log` | `log` | `log` (aucun email en V1) |
 
@@ -24,7 +24,7 @@ Cet ordre n'est pas arbitraire : chaque étape conditionne la suivante.
 
 1. **Brancher le domaine sur Vercel.** Avant tout code. La configuration des cookies du BFF, les origines CORS et les URL canoniques du SEO en dépendent. Le faire en fin de projet impose de tout reconfigurer.
 2. Créer les deux projets Vercel (`mecano-web` → `apps/web`, `mecano-admin` → `apps/admin`), avec leurs domaines.
-3. Créer le compte Cloudinary, le bucket R2 et son domaine personnalisé (`media.garage.com`).
+3. Créer le compte Cloudinary (photos et vidéos y sont hébergées, voir [ADR 0010](adr/0010-videos-sur-cloudinary.md)).
 4. Préparer le serveur : PHP 8.4, MySQL 8, Nginx, Composer, Supervisor.
 5. Créer le certificat TLS de `mecano-api.duckdns.org` (Let's Encrypt, renouvellement automatique).
 6. Renseigner les variables d'environnement des deux côtés.
@@ -147,14 +147,8 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 CLOUDINARY_UPLOAD_FOLDER=mecano/prod/cars
 
-R2_ACCOUNT_ID=
-R2_ACCESS_KEY_ID=
-R2_SECRET_ACCESS_KEY=
-R2_BUCKET=mecano-videos
-R2_PUBLIC_BASE_URL=https://media.garage.com
-
-REMOVEBG_API_KEY=
-REMOVEBG_MONTHLY_LIMIT=50
+REMOVE_BG_API_KEY=
+REMOVE_BG_MONTHLY_QUOTA=50
 
 REVALIDATE_URL=https://garage.com/api/revalidate
 REVALIDATE_SECRET=              # identique côté Vercel
@@ -172,7 +166,7 @@ Décision différée R03, à figer avant la mise en production de M1. Propositio
 |---|---|---|---|
 | Base MySQL (`mysqldump` chiffré) | quotidienne, 3 h | 30 jours | Hors du serveur d'exécution |
 | `shared/.env` | à chaque modification | — | Gestionnaire de secrets, hors dépôt |
-| Médias | — | — | Cloudinary et R2 sont durables, pas de sauvegarde de notre côté |
+| Médias | — | — | Cloudinary est durable, pas de sauvegarde de notre côté |
 
 **La restauration doit être testée une fois avant la mise en production**, sur une base de préproduction. Une sauvegarde jamais restaurée n'est pas une sauvegarde.
 

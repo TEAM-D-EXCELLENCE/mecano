@@ -19,7 +19,7 @@ Comment chaque application est organisée en interne, et quelle règle de dépen
      ↓           « les règles du garage, sans savoir qu'il existe du HTTP »
    Données       Models Eloquent, Query builders, Migrations
      ↓
-   Externe       Contrats + implémentations (Cloudinary, R2, remove.bg, Revalidation)
+   Externe       Contrats + implémentations (Cloudinary, remove.bg, Revalidation)
 ```
 
 **Règle de dépendance : une couche ne connaît que celle du dessous.** Un `Action` ne reçoit jamais une `Request`, il reçoit un objet de données. Un `Model` n'appelle jamais Cloudinary.
@@ -61,7 +61,7 @@ apps/api/
 │   ├── Queries/                  CarCatalogQuery — filtres et tri du catalogue public
 │   └── Support/
 │       ├── Contracts/            ImageStorage, VideoStorage, BackgroundRemover, FrontendRevalidator
-│       └── Integrations/         CloudinaryImageStorage, R2VideoStorage,
+│       └── Integrations/         CloudinaryImageStorage, CloudinaryVideoStorage,
 │                                 RemoveBgBackgroundRemover, NextRevalidator, FakeAdapters
 ├── database/
 │   ├── migrations/
@@ -219,7 +219,7 @@ apps/admin/
 ├── lib/
 │   ├── auth.ts                      Lecture/écriture du cookie, garde serveur
 │   ├── api/                         Client typé (via le BFF)
-│   └── upload.ts                    Upload signé vers Cloudinary et R2
+│   └── upload.ts                    Upload signé vers Cloudinary
 └── types/api.d.ts                   GÉNÉRÉ
 ```
 

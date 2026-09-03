@@ -2,7 +2,7 @@
 
 Un ADR consigne une décision structurante : son contexte, les options examinées, le choix retenu, et ce qu'il coûte.
 
-**Pourquoi on en écrit.** Dans six mois, personne ne se souviendra pourquoi le backoffice a un BFF, ni pourquoi les vidéos sont sur R2 et les photos sur Cloudinary. Sans ADR, quelqu'un « simplifiera » un choix dont il ignore la raison, et réintroduira le problème qu'il évitait.
+**Pourquoi on en écrit.** Dans six mois, personne ne se souviendra pourquoi le backoffice a un BFF, ni pourquoi les vidéos ont d'abord été placées ailleurs que les photos. Sans ADR, quelqu'un « simplifiera » un choix dont il ignore la raison, et réintroduira le problème qu'il évitait.
 
 ## Règles
 
@@ -21,10 +21,11 @@ Un ADR consigne une décision structurante : son contexte, les options examinée
 | [0003](0003-monorepo-trois-apps.md) | Monorepo de trois applications, sans paquet partagé | Accepté | 2026-08-25 |
 | [0004](0004-auth-bearer-bff.md) | Jeton Bearer détenu par un BFF Next en cookie httpOnly | Accepté | 2026-08-25 |
 | [0005](0005-openapi-source-de-verite.md) | `openapi.yaml` écrit à la main comme source de vérité | Accepté | 2026-08-25 |
-| [0006](0006-medias-cloudinary-r2.md) | Photos sur Cloudinary, vidéos sur Cloudflare R2 | Accepté | 2026-08-25 |
+| [0006](0006-medias-cloudinary-r2.md) | Photos sur Cloudinary, vidéos sur Cloudflare R2 | Partiellement remplacé par 0010 | 2026-08-25 |
 | [0007](0007-upload-direct-signe.md) | Upload direct signé depuis le navigateur | Accepté | 2026-08-25 |
 | [0008](0008-facebook-video-hors-v1.md) | Facebook (Lot 6) et habillage vidéo (Lot 7) hors V1 | Accepté | 2026-08-25 |
 | [0009](0009-revalidation-isr-webhook.md) | Revalidation ISR par webhook signé | Accepté | 2026-08-25 |
+| [0010](0010-videos-sur-cloudinary.md) | Les vidéos passent sur Cloudinary, R2 est retiré | Accepté | 2026-09-04 |
 
 ## Gabarit
 

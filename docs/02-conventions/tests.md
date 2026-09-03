@@ -67,7 +67,7 @@ Un test de non-régression sur un bug corrigé est **obligatoire** : c'est la se
 
 ### Règles
 
-- **Aucun appel réseau.** Cloudinary, R2 et remove.bg passent par leurs implémentations factices. Un test qui appelle le réseau est refusé : il est lent et instable.
+- **Aucun appel réseau.** Cloudinary et remove.bg passent par leurs implémentations factices. Un test qui appelle le réseau est refusé : il est lent et instable.
 - Base de test dédiée, `RefreshDatabase`.
 - `Model::preventLazyLoading()` actif : **une requête N+1 fait échouer le test**.
 - Une factory par modèle, avec des états nommés (`available()`, `sold()`, `draft()`, `withPhotos(8)`).
