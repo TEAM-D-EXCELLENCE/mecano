@@ -11,6 +11,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -111,6 +112,37 @@ return Application::configure(basePath: dirname(__DIR__))
                     'details' => null,
                 ],
             ], 429);
+        });
+
+        /*
+         * Les exceptions HTTP de Symfony portent déjà leur statut : 409 pour un
+         * quota épuisé, 422 pour un dérivé non prêt. Sans ce rendu, elles
+         * tombaient dans le filet générique ci-dessous et sortaient en 500,
+         * ce qui rend un refus métier indiscernable d'une panne.
+         */
+        $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
+            $status = $e->getStatusCode();
+
+            $code = match ($status) {
+                400 => 'BAD_REQUEST',
+                409 => 'CONFLICT',
+                410 => 'GONE',
+                413 => 'PAYLOAD_TOO_LARGE',
+                415 => 'UNSUPPORTED_MEDIA_TYPE',
+                422 => 'UNPROCESSABLE_ENTITY',
+                423 => 'LOCKED',
+                default => $status >= 500 ? 'SERVER_ERROR' : 'HTTP_ERROR',
+            };
+
+            $message = $e->getMessage();
+
+            return response()->json([
+                'error' => [
+                    'code' => $code,
+                    'message' => $message !== '' ? $message : 'La requête n\'a pas pu être traitée.',
+                    'details' => null,
+                ],
+            ], $status);
         });
 
         $exceptions->render(function (Throwable $e, Request $request) {

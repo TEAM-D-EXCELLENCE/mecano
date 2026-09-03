@@ -186,7 +186,7 @@ final class AdminMediaEnhancementsTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        $response = $this->withToken($token)->getJson('/api/v1/admin/admin/quotas');
+        $response = $this->withToken($token)->getJson('/api/v1/admin/quotas');
 
         $response->assertOk()
             ->assertJsonPath('data.provider', 'removebg')

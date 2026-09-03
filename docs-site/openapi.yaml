@@ -981,7 +981,7 @@ paths:
                   data:
                     $ref: "#/components/schemas/AdminMediaEnhancement"
 
-  /admin/admin/quotas:
+  /admin/quotas:
     get:
       summary: "Suivi des quotas IA mensuels (remove.bg)"
       operationId: "getQuotas"

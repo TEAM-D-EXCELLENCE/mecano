@@ -475,7 +475,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/admin/quotas": {
+    "/admin/quotas": {
         parameters: {
             query?: never;
             header?: never;

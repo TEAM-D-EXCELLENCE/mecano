@@ -108,7 +108,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
     Route::delete('/media/{id}', [AdminMediaController::class, 'destroy'])->name('admin.media.destroy');
 
     // Media enhancements (BE-33, BE-34, BE-35, BE-36)
-    Route::get('/admin/quotas', [AdminMediaEnhancementController::class, 'quotas'])->name('admin.quotas.index');
+    Route::get('/quotas', [AdminMediaEnhancementController::class, 'quotas'])->name('admin.quotas.index');
     Route::get('/media/{id}/enhancements', [AdminMediaEnhancementController::class, 'index'])->name('admin.media.enhancements.index');
     Route::post('/media/{id}/enhance', [AdminMediaEnhancementController::class, 'store'])->name('admin.media.enhance');
     Route::post('/enhancements/{id}/approve', [AdminMediaEnhancementController::class, 'approve'])->name('admin.enhancements.approve');
