@@ -1,7 +1,14 @@
 import "server-only";
 
 import { apiRequest } from "./server";
-import type { AdminBrand, AdminCar, AdminMedia, Envelope, Paginated } from "./schemas";
+import type {
+  AdminBrand,
+  AdminCar,
+  AdminMedia,
+  Envelope,
+  IntegrationQuota,
+  Paginated,
+} from "./schemas";
 
 /**
  * Lectures serveur du domaine véhicules.
@@ -37,4 +44,22 @@ export async function listBrands(): Promise<AdminBrand[]> {
 export async function listCarMedia(carId: number): Promise<AdminMedia[]> {
   const { data } = await apiRequest<{ data: AdminMedia[] }>(`admin/cars/${carId}/media`);
   return data;
+}
+
+/**
+ * Quota mensuel de suppression de fond.
+ *
+ * Lu côté serveur pour que le compteur soit affiché **avant** le premier clic
+ * (CDC §3.2) : le mécanicien doit savoir ce qu'il lui reste avant de choisir,
+ * pas après avoir consommé un crédit.
+ */
+export async function getRemoveBgQuota(): Promise<IntegrationQuota | null> {
+  try {
+    const { data } = await apiRequest<Envelope<IntegrationQuota>>("admin/quotas");
+    return data;
+  } catch {
+    // Un quota indisponible ne doit pas faire tomber la fiche véhicule : la
+    // page reste utilisable, le panneau affichera simplement l'état inconnu.
+    return null;
+  }
 }

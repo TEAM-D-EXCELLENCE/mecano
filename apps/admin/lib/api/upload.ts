@@ -59,14 +59,29 @@ function putToProvider(
   signal?: AbortSignal,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const form = new FormData();
-    for (const [key, value] of Object.entries(signed.fields ?? {})) {
-      form.append(key, String(value));
-    }
-    form.append("file", file);
+    const fields = signed.fields ?? {};
+
+    // R2 délivre une URL PUT présignée, Cloudinary attend un POST multipart.
+    // La méthode est portée par le champ `method` de la signature ; l'ignorer
+    // enverrait la vidéo en formulaire sur une URL qui n'en accepte pas.
+    const usePut = String(fields.method ?? "").toUpperCase() === "PUT";
 
     const request = new XMLHttpRequest();
-    request.open("POST", signed.upload_url);
+    request.open(usePut ? "PUT" : "POST", signed.upload_url);
+
+    let payload: XMLHttpRequestBodyInit;
+
+    if (usePut) {
+      request.setRequestHeader("Content-Type", file.type);
+      payload = file;
+    } else {
+      const form = new FormData();
+      for (const [key, value] of Object.entries(fields)) {
+        form.append(key, String(value));
+      }
+      form.append("file", file);
+      payload = form;
+    }
 
     request.upload.addEventListener("progress", (event) => {
       if (event.lengthComputable) onProgress?.(event.loaded / event.total);
@@ -91,7 +106,7 @@ function putToProvider(
 
     signal?.addEventListener("abort", () => request.abort(), { once: true });
 
-    request.send(form);
+    request.send(payload);
   });
 }
 

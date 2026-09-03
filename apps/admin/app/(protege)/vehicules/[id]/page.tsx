@@ -9,8 +9,9 @@ import { StatusBadge } from "@/components/cars/StatusBadge";
 import { CarForm } from "@/components/forms/CarForm";
 import { MediaGrid } from "@/components/media/MediaGrid";
 import { MediaUploader } from "@/components/media/MediaUploader";
+import { VideoManager } from "@/components/media/VideoManager";
 import { ApiError } from "@/lib/api/errors";
-import { getCar, listBrands, listCarMedia } from "@/lib/api/cars";
+import { getCar, getRemoveBgQuota, listBrands, listCarMedia } from "@/lib/api/cars";
 import { formatDate } from "@/lib/format";
 
 async function load(rawId: string) {
@@ -18,12 +19,13 @@ async function load(rawId: string) {
   if (!Number.isInteger(id) || id <= 0) notFound();
 
   try {
-    const [car, brands, media] = await Promise.all([
+    const [car, brands, media, quota] = await Promise.all([
       getCar(id),
       listBrands(),
       listCarMedia(id),
+      getRemoveBgQuota(),
     ]);
-    return { car, brands, media };
+    return { car, brands, media, quota };
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) notFound();
     throw error;
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: PageProps<"/vehicules/[id]">)
 
 export default async function CarDetailPage({ params }: PageProps<"/vehicules/[id]">) {
   const { id } = await params;
-  const { car, brands, media } = await load(id);
+  const { car, brands, media, quota } = await load(id);
   const photos = media.filter((item) => item.kind?.value === "photo");
 
   const title = `${car.brand?.name ? `${car.brand.name} ` : ""}${car.model}`;
@@ -97,7 +99,21 @@ export default async function CarDetailPage({ params }: PageProps<"/vehicules/[i
         </div>
 
         <MediaUploader carId={car.id!} hasMainPhoto={photos.some((p) => p.role?.value === "main")} />
-        <MediaGrid carId={car.id!} media={media} carStatus={car.status?.value} />
+        <MediaGrid carId={car.id!} media={media} carStatus={car.status?.value} quota={quota} />
+      </section>
+
+      <section aria-labelledby="videos" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 id="videos" className="text-sm font-medium">
+            Vidéos
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Deux emplacements au maximum. Une vidéo rassure l&apos;acheteur sur
+            l&apos;état réel du véhicule.
+          </p>
+        </div>
+
+        <VideoManager carId={car.id!} media={media} />
       </section>
 
       <section aria-labelledby="infos" className="flex flex-col gap-4">

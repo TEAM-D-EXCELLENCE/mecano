@@ -46,3 +46,9 @@ export type SignedUpload = Schemas["SignedUpload"];
 
 /** Rôles de média. `main`, `video_interior` et `video_exterior` sont exclusifs par annonce. */
 export type MediaRole = "main" | "gallery" | "video_interior" | "video_exterior";
+
+export type MediaEnhancement = Schemas["AdminMediaEnhancement"];
+export type IntegrationQuota = Schemas["IntegrationQuota"];
+
+/** Retouches proposées par le contrat. `background_removal` est la seule à consommer un quota. */
+export type EnhancementType = "auto_improve" | "smart_crop" | "background_removal";

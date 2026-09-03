@@ -17,9 +17,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { EnhanceDialog } from "@/components/media/EnhanceDialog";
 import { bff } from "@/lib/api/client";
 import { messageForError } from "@/lib/api/errors";
-import type { AdminMedia } from "@/lib/api/schemas";
+import type { AdminMedia, IntegrationQuota } from "@/lib/api/schemas";
 import { formatBytes } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -35,9 +36,11 @@ interface MediaGridProps {
   media: AdminMedia[];
   /** Statut de l'annonce : il décide si retirer la dernière photo est risqué. */
   carStatus?: string;
+  /** Crédits de détourage restants, lus côté serveur pour être lisibles d'emblée. */
+  quota?: IntegrationQuota | null;
 }
 
-export function MediaGrid({ carId, media, carStatus }: MediaGridProps) {
+export function MediaGrid({ carId, media, carStatus, quota = null }: MediaGridProps) {
   const router = useRouter();
   const [busyId, setBusyId] = useState<number | null>(null);
   const [confirming, setConfirming] = useState<AdminMedia | null>(null);
@@ -217,6 +220,8 @@ export function MediaGrid({ carId, media, carStatus }: MediaGridProps) {
                 >
                   <Star aria-hidden="true" className={cn(isMain && "fill-current")} />
                 </Button>
+
+                <EnhanceDialog media={item} initialQuota={quota} />
 
                 <Button
                   type="button"
