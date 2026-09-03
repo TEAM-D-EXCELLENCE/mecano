@@ -188,7 +188,7 @@ Filet de sécurité : chaque route porte aussi un `revalidate` d'une heure, pour
 **Le code React ne voit jamais le jeton d'authentification.** Il appelle ses propres route handlers Next, qui lisent le jeton dans un cookie httpOnly et le retransmettent en `Bearer` à Laravel. C'est le BFF, décision D04.
 
 ```
-Navigateur ──fetch('/bff/cars')──▶ Route handler Next ──Bearer──▶ api.garage.com
+Navigateur ──fetch('/bff/cars')──▶ Route handler Next ──Bearer──▶ mecano-api.duckdns.org
               (cookie httpOnly,                        (jeton lu côté
                inaccessible au JS)                      serveur uniquement)
 ```

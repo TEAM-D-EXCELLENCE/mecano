@@ -126,7 +126,7 @@ Le délai de revue est la règle la plus importante de cette liste. À deux pers
 - De règle métier. Si une condition d'affichage dépend d'une règle du garage, elle vient de l'API.
 - De composition du message WhatsApp, ni de construction d'URL Cloudinary.
 - De modification de `types/api.d.ts` (fichier généré).
-- D'appel direct à `api.garage.com` depuis `apps/admin` — tout passe par le BFF.
+- D'appel direct à `mecano-api.duckdns.org` depuis `apps/admin` — tout passe par le BFF.
 
 ### Le responsable architecture ne fait pas
 

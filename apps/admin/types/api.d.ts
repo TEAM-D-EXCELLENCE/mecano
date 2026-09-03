@@ -871,7 +871,7 @@ export interface components {
              * @example 12
              */
             to?: number | null;
-            /** @example https://api.garage.com/api/v1/cars */
+            /** @example https://mecano-api.duckdns.org/api/v1/cars */
             path?: string;
             /** @description Liens de pagination prêts à l'affichage. */
             links?: {
